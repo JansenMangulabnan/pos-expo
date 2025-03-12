@@ -79,7 +79,7 @@ app.get('/', async (req, res) => {
             'css/home.css',
         ],
         beforeBody: [
-            'views/partials/HEADER.handlebars'
+            'views/partials/header.handlebars'
         ],
         afterbody: [],
         nodeModules: [
@@ -87,11 +87,14 @@ app.get('/', async (req, res) => {
             '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
         ],
         scripts: [
+            'https://code.jquery.com/jquery-3.6.0.min.js',
             'js/home.js'
         ],
-        Product
+        Product,
     });
 });
+
+
 
 app.listen(port, async () => {
     console.log(`Server running on http://localhost:${port}`);
