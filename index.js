@@ -94,8 +94,6 @@ app.get('/', async (req, res) => {
     });
 });
 
-
-
 app.listen(port, async () => {
     console.log(`Server running on http://localhost:${port}`);
     const db = await dbPromise;
