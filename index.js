@@ -60,6 +60,9 @@ const scheduleStorage = multer.diskStorage({
 
 const scheduleUpload = multer({ storage: scheduleStorage });
 
+app
+
+// home
 app.get('/', async (req, res) => {
     const db = await dbPromise;
     const Product = await db.all('SELECT * FROM Product');
@@ -67,6 +70,8 @@ app.get('/', async (req, res) => {
     res.render('home', {
         title: 'Home',
         styles: [
+            '/node_modules/bootstrap/dist/css/bootstrap.min.css',
+            '/node_modules/dropzone/dist/dropzone.css',
             'css/BASE.css',
             'css/home.css',
         ],
