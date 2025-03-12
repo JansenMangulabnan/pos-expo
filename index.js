@@ -73,17 +73,19 @@ app.get('/', async (req, res) => {
     
     res.render('home', {
         title: 'Home',
-        beforeBody: [
-            `views/partials/HEADER.handlebars`
-        ],
-        afterbody: [],
         styles: [
-            '/node_modules/bootstrap/dist/css/bootstrap.min.css',
-            '/node_modules/dropzone/dist/dropzone.css',
+            'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
             'css/BASE.css',
             'css/home.css',
         ],
-        nodeModules: [],
+        beforeBody: [
+            'views/partials/HEADER.handlebars'
+        ],
+        afterbody: [],
+        nodeModules: [
+            '/node_modules/jquery/dist/jquery.min.js',
+            '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
+        ],
         scripts: [
             'js/home.js'
         ],
