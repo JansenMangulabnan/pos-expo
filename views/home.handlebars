@@ -1,7 +1,11 @@
-test handelbars
-
-<ul>
+<div class="product_container">
 {{#each Product}}
-    <li>{{this.product_id}}, {{this.product_name}}, {{this.product_price}}, {{this.shop_id}}</li>
+    <div class="product">
+        <img src="{{product_img}}" alt="img" class="product_img">
+        <p class="product_name">{{product_name}}</p>
+        <p class="product_description">{{product_description}}</p>
+        <p class="product_price">{{product_price}}</p>
+    </div>
 {{/each}}
-</ul>
+</div>
+

@@ -2,12 +2,14 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
 }
 
 html,
 body {
     user-select: none;
     height: 100%;
+    background-color: #1E1E1E;
 }
 
 html {
@@ -33,7 +35,7 @@ body {
 }
 
 .custom-navbar {
-    background-color: #d41507 !important;
+    background-color: #292C2D !important;
 }
 
 /* Credit: https://stackoverflow.com/a/7354648
