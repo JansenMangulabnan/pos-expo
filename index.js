@@ -64,8 +64,6 @@ const scheduleStorage = multer.diskStorage({
 
 const scheduleUpload = multer({ storage: scheduleStorage });
 
-app
-
 // home
 app.get('/', async (req, res) => {
     const db = await dbPromise;

@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-
 }
 
 html,
@@ -13,8 +12,8 @@ body {
 }
 
 html {
-    /* 1rem = 16px */
     font-size: 16px;
+    /* 1rem = 16px */
 }
 
 body {
@@ -23,19 +22,8 @@ body {
     flex-direction: column;
 }
 
-.containerr {
-    flex: 1;
-    overflow: hidden;
-}
-
-.content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.custom-navbar {
-    background-color: #292C2D !important;
+.partial_header {
+    background-color: #292C2D;
 }
 
 /* Credit: https://stackoverflow.com/a/7354648
