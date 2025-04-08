@@ -98,7 +98,7 @@ app.get('/register', (req, res) => {
     });
 });
 
-//login render
+//login hbs render
 app.get('/login', (req, res) => {
     res.render('login', {
         title: 'Login',
@@ -119,14 +119,14 @@ app.get('/login', (req, res) => {
         ]
     });
 });
-
+//login req res
 app.post('/login', async (req, res) => {
     try {
         const { username, password, type } = req.body;
         console.log(req.body);
 
         if (!['admin', 'user'].includes(type)) {
-            return res.status(400).send('Invalid account type.');
+            return res.status(400).json({ success: false, message: 'Invalid account type.' });
         }
 
         const table = type === 'admin' ? 'Admin' : 'User';
@@ -144,7 +144,7 @@ app.post('/login', async (req, res) => {
 
         const login = record.recordset[0];
         if (!login) {
-            return res.status(401).send('Invalid login info.');
+            return res.status(401).json({ success: false, message: 'Invalid login info.' });
         }
 
         req.session.login = {
@@ -152,10 +152,10 @@ app.post('/login', async (req, res) => {
             role: type
         };
 
-        res.redirect(type === 'admin' ? '/admin' : '/');
+        res.json({ success: true, redirectUrl: type === 'admin' ? '/admin' : '/' });
     } catch (error) {
         console.error('Error during login:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 

@@ -1,7 +1,7 @@
 <div>
     <h2 style="color: red;">Login</h2>
     <h1>POSSIE</h1>
-    <form action="/login" method="POST">
+    <form id="loginForm">
         <input type="text" name="username" placeholder="Username or Email" required>
         <input type="password" name="password" placeholder="Password" required>
         <select name="type" required>
@@ -13,4 +13,5 @@
             <button type="submit">Login</button>
         </div>
     </form>
+    <div id="popup" style="display: none;"></div>
 </div>
