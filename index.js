@@ -26,28 +26,11 @@ const sqlConfig = {
     database: process.env.DB_DATABASE,
     options: {
         encrypt: true,
-        trustServerCertificate: true,
-    },
+        trustServerCertificate: true
+    }
 };
 
 const dbPromise = sql.connect(sqlConfig);
-
-app.engine('handlebars', engine({
-    helpers: {
-        include: (path) => fs.readFileSync(join(__dirname, path), `utf-8`),
-    },
-}));
-app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
-
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-    secret: 'your_secret_key',
-    resave: false,
-    saveUninitialized: true,
-}));
 
 const adminStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -55,7 +38,7 @@ const adminStorage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
-    },
+    }
 });
 
 const adminUpload = multer({ storage: adminStorage });
@@ -70,10 +53,28 @@ const scheduleStorage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
-    },
+    }
 });
 
 const scheduleUpload = multer({ storage: scheduleStorage });
+
+app.engine('hbs', engine({
+    extname: '.hbs',
+    helpers: {
+        include: (path) => fs.readFileSync(join(__dirname, path), `utf-8`)
+    }
+}));
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true
+}));
 
 // home
 app.get('/', async (req, res) => {
@@ -90,7 +91,7 @@ app.get('/', async (req, res) => {
                 'css/home.css',
             ],
             beforeBody: [
-                'views/partials/header.handlebars',
+                'views/partials/header.hbs',
             ],
             afterbody: [],
             nodeModules: [
@@ -101,10 +102,10 @@ app.get('/', async (req, res) => {
                 'https://code.jquery.com/jquery-3.6.0.min.js',
                 'js/home.js',
             ],
-            Product,
+            Product
         });
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error(error);
         res.status(500).send('Internal Server Error');
     }
 });
