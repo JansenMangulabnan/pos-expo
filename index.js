@@ -97,6 +97,26 @@ app.get('/login', (req, res) => {
     });
 });
 
+app.get('/admin', (req, res) => {
+    res.render('admin', {
+        title: 'Admin',
+        styles: [
+            'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
+            'css/BASE.css',
+            'css/admin.css',
+        ],
+        beforeBody: [],
+        afterbody: [],
+        nodeModules: [
+            '/node_modules/jquery/dist/jquery.min.js',
+            '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
+        ],
+        scripts: [
+            'https://code.jquery.com/jquery-3.6.0.min.js',
+            'js/admin.js',
+        ]
+    });
+});
 
 // home
 app.get('/', async (req, res) => {
