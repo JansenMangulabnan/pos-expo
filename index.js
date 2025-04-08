@@ -98,7 +98,7 @@ app.get('/register', (req, res) => {
     });
 });
 
-//login
+//login render
 app.get('/login', (req, res) => {
     res.render('login', {
         title: 'Login',
@@ -120,6 +120,45 @@ app.get('/login', (req, res) => {
     });
 });
 
+app.post('/login', async (req, res) => {
+    try {
+        const { username, password, type } = req.body;
+        console.log(req.body);
+
+        if (!['admin', 'user'].includes(type)) {
+            return res.status(400).send('Invalid account type.');
+        }
+
+        const table = type === 'admin' ? 'Admin' : 'User';
+        const nameColumn = type === 'admin' ? 'admin_name' : 'user_name';
+        const emailColumn = type === 'admin' ? 'admin_email' : 'user_email';
+        const passwordColumn = type === 'admin' ? 'admin_password' : 'user_password';
+        const db = await dbPromise;
+
+        const record = await db.request()
+            .input('username', sql.VarChar, username)
+            .input('password', sql.VarChar, password)
+            .query(
+                `SELECT * FROM [${table}] WHERE (${nameColumn} = @username OR ${emailColumn} = @username) AND ${passwordColumn} = @password`
+            );
+
+        const login = record.recordset[0];
+        if (!login) {
+            return res.status(401).send('Invalid login info.');
+        }
+
+        req.session.login = {
+            id: login.id,
+            role: type
+        };
+
+        res.redirect(type === 'admin' ? '/admin' : '/');
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 //admin
 app.get('/admin', (req, res) => {
     res.render('admin', {
@@ -129,6 +168,8 @@ app.get('/admin', (req, res) => {
             'css/BASE.css',
             'css/admin.css',
         ],
+
+
         beforeBody: [],
         afterbody: [],
         nodeModules: [

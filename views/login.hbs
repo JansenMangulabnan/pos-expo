@@ -1,8 +1,14 @@
 <div>
+    <h2 style="color: red;">Login</h2>
     <h1>POSSIE</h1>
     <form action="/login" method="POST">
         <input type="text" name="username" placeholder="Username or Email" required>
         <input type="password" name="password" placeholder="Password" required>
+        <select name="type" required>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+            <option value="dev">Dev</option>
+        </select>
         <div>
             <button type="submit">Login</button>
         </div>
