@@ -130,6 +130,7 @@ app.post('/login', async (req, res) => {
         }
 
         const table = type === 'admin' ? 'Admin' : 'User';
+        const idColumn = type === 'admin' ? 'admin_id' : 'user_id'; // Correct ID column
         const nameColumn = type === 'admin' ? 'admin_name' : 'user_name';
         const emailColumn = type === 'admin' ? 'admin_email' : 'user_email';
         const passwordColumn = type === 'admin' ? 'admin_password' : 'user_password';
@@ -147,9 +148,11 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid login info.' });
         }
 
+        // Set the session with the correct ID column
         req.session.login = {
-            id: login.id,
-            role: type
+            id: login[idColumn], // Use the correct ID column
+            role: type,
+            username: login[nameColumn]
         };
 
         res.json({ success: true, redirectUrl: type === 'admin' ? '/admin' : '/' });
@@ -158,29 +161,71 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
+function isLoggedIn(req, res, next) {
+    if (req.session.login) {
+        return next();
+    }
+    res.redirect('/login');
+}
 
 //admin
-app.get('/admin', (req, res) => {
-    res.render('admin', {
-        title: 'Admin',
-        styles: [
-            'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
-            'css/BASE.css',
-            'css/admin.css',
-        ],
+app.get('/admin', isLoggedIn, async (req, res) => {
+    try {
+        console.log('Session Data: ' + JSON.stringify(req.session.login)); // Convert the object to a string
+        // Ensure the user is an admin
+        if (req.session.login.role !== 'admin') {
+            return res.status(403).send('Access denied.');
+        }
 
+        const adminId = req.session.login.id;
+        const adminName = req.session.login.username;
+        const db = await dbPromise;
 
-        beforeBody: [],
-        afterbody: [],
-        nodeModules: [
-            '/node_modules/jquery/dist/jquery.min.js',
-            '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
-        ],
-        scripts: [
-            'https://code.jquery.com/jquery-3.6.0.min.js',
-            'js/admin.js',
-        ]
-    });
+        // Fetch the shop_id for the logged-in admin
+        const adminRecord = await db.request()
+            .input('adminId', sql.Int, adminId)
+            .query('SELECT admin_shop_id FROM Admin WHERE admin_id = @adminId');
+
+        const admin = adminRecord.recordset[0];
+        console.log('log before the unauthorized msg' + adminRecord.recordset[0]);
+        if (!admin) {
+            return res.status(401).send('Unauthorized access.');
+        }
+
+        const shopId = admin.admin_shop_id;
+
+        console.log(adminId, shopId,);
+
+        // Fetch products for the admin's shop
+        const productRecord = await db.request()
+            .input('shopId', sql.Int, shopId)
+            .query('SELECT * FROM Product WHERE product_shop_id = @shopId');
+
+        const products = productRecord.recordset;
+
+        res.render('admin', {
+            title: 'Admin',
+            styles: [
+                'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
+                'css/BASE.css',
+                'css/admin.css',
+            ],
+            beforeBody: [],
+            afterbody: [],
+            nodeModules: [
+                '/node_modules/jquery/dist/jquery.min.js',
+                '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
+            ],
+            scripts: [
+                'https://code.jquery.com/jquery-3.6.0.min.js',
+                'js/admin.js',
+            ],
+            products // Pass the filtered products to the view
+        });
+    } catch (error) {
+        console.error('Error fetching admin products:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 // home
