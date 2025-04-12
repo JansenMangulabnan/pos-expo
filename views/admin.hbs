@@ -1,5 +1,3 @@
-admin
-
 <div class="product_container">
 {{#each products}}
     <div class="product">
@@ -9,4 +7,19 @@ admin
         <p class="product_price">{{product_price}}</p>
     </div>
 {{/each}}
+</div>
+
+<div class="modal_backdrop" onclick="closeModal()"></div>
+    <div class="modal-content">
+        <form id="addProductForm">
+            <input type="text" name="product_name" placeholder="Product Name" required>
+            <input type="text" name="product_description" placeholder="Product Description" required>
+            <input type="text" name="product_price" placeholder="Product Price" required>
+            <input type="file" name="product_img" accept="image/*" required>
+            <div class="button_container">
+                <button type="submit">Add Product</button>  
+                <button type="button" onclick="closeModal()">Close</button>
+            </div>
+        </form>
+    </div>
 </div>

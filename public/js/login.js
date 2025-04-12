@@ -22,6 +22,15 @@ $(document).ready(function () {
         });
     });
 
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        if (error === 'unauthorized') {
+            showPopup('Unauthorized access.');
+        }
+    }
+    );
+
     function showPopup(message) {
         const $popup = $('#popup');
         $popup.text(message)

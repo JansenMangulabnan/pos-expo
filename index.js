@@ -161,20 +161,27 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
+
 function isLoggedIn(req, res, next) {
     if (req.session.login) {
         return next();
     }
     res.redirect('/login');
 }
+function isAdmin(req, res, next) {
+    if (!req.session?.login || req.session.login.role !== 'admin') {
+        return res.redirect('/login?error=unauthorized');
+    }
+    next();
+}
 
 //admin
-app.get('/admin', isLoggedIn, async (req, res) => {
+app.get('/admin',isAdmin, async (req, res) => {
     try {
-        console.log('Session Data: ' + JSON.stringify(req.session.login)); // Convert the object to a string
-        // Ensure the user is an admin
+        console.log('Session Data: ' + JSON.stringify(req.session.login)); 
+
         if (req.session.login.role !== 'admin') {
-            return res.status(403).send('Access denied.');
+            return res.status(401).send('Unauthorized access.');
         }
 
         const adminId = req.session.login.id;
@@ -228,7 +235,7 @@ app.get('/admin', isLoggedIn, async (req, res) => {
     }
 });
 
-// home
+// home hbs render
 app.get('/', async (req, res) => {
     try {
         const db = await dbPromise;
