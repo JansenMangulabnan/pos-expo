@@ -176,16 +176,9 @@ function isAdmin(req, res, next) {
 }
 
 //admin
-app.get('/admin',isAdmin, async (req, res) => {
+app.get('/admin', isAdmin, async (req, res) => {
     try {
-        console.log('Session Data: ' + JSON.stringify(req.session.login)); 
-
-        if (req.session.login.role !== 'admin') {
-            return res.status(401).send('Unauthorized access.');
-        }
-
         const adminId = req.session.login.id;
-        const adminName = req.session.login.username;
         const db = await dbPromise;
 
         // Fetch the shop_id for the logged-in admin
@@ -194,14 +187,11 @@ app.get('/admin',isAdmin, async (req, res) => {
             .query('SELECT admin_shop_id FROM Admin WHERE admin_id = @adminId');
 
         const admin = adminRecord.recordset[0];
-        console.log('log before the unauthorized msg' + adminRecord.recordset[0]);
         if (!admin) {
             return res.status(401).send('Unauthorized access.');
         }
 
         const shopId = admin.admin_shop_id;
-
-        console.log(adminId, shopId,);
 
         // Fetch products for the admin's shop
         const productRecord = await db.request()
@@ -225,12 +215,39 @@ app.get('/admin',isAdmin, async (req, res) => {
             ],
             scripts: [
                 'https://code.jquery.com/jquery-3.6.0.min.js',
+                'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js',
                 'js/admin.js',
             ],
-            products // Pass the filtered products to the view
+            products,
+            adminShopId: shopId // Pass the shop ID to the frontend
         });
     } catch (error) {
         console.error('Error fetching admin products:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+app.post('/admin/products/add', adminUpload.single('product_img'), async (req, res) => {
+    try {
+        const { product_name, product_description, product_price, product_shop_id } = req.body;
+        const product_img = req.file ? `/img/${req.file.filename}` : null;
+
+        const db = await dbPromise;
+
+        await db.request()
+            .input('product_name', sql.VarChar, product_name)
+            .input('product_description', sql.VarChar, product_description)
+            .input('product_price', sql.Decimal(10, 2), product_price)
+            .input('product_img', sql.VarChar, product_img)
+            .input('product_shop_id', sql.Int, product_shop_id)
+            .query(`
+                INSERT INTO Product (product_name, product_description, product_price, product_img, product_shop_id)
+                VALUES (@product_name, @product_description, @product_price, @product_img, @product_shop_id)
+            `);
+
+        res.status(200).send('Product added successfully.');
+    } catch (error) {
+        console.error('Error adding product:', error);
         res.status(500).send('Internal Server Error');
     }
 });
