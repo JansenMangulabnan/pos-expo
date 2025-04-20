@@ -1,17 +1,27 @@
-<div>
-    <h2 style="color: red;">Login</h2>
-    <h1>POSSIE</h1>
-    <form id="loginForm">
-        <input type="text" name="username" placeholder="Username or Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <select name="type" required>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="dev">Dev</option>
-        </select>
-        <div>
-            <button type="submit">Login</button>
+<h1 class="app-title">POSSIE</h1>
+<div class="login-container">
+    <div class="login-header">
+        <h1 class="login-title">LOGIN</h1>
+
+    </div>
+    <form id="loginForm" class="login-form">
+        <div class="form-group">
+            <input type="text" class="form-input" name="username" placeholder="Enter your Username or Email" required>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-input" name="password" placeholder="Enter your Password" required>
+        </div>
+        <div class="form-group">
+            <select class="form-select" name="type" required>
+                <option value="" disabled selected>Select Account Type</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+                <option value="dev">Dev</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Login</button>
         </div>
     </form>
-    <div id="popup" style="display: none;"></div>
+    <div id="popup" class="popup" style="display: none;"></div>
 </div>

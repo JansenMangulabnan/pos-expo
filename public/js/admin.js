@@ -5,9 +5,9 @@ function showAddProductModal() {
 $(document).ready(function () {
     $('#addProductForm').on('submit', function (event) {
         event.preventDefault();
-
-        const formData = new FormData(this);
-        formData.append('product_shop_id', adminShopId); // Use the admin's shop ID
+        console.log('submit add trigger');
+;
+        const formData = $(this).serialize();
 
         $.ajax({
             url: '/admin/products/add',

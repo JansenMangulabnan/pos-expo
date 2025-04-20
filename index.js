@@ -45,7 +45,7 @@ const adminUpload = multer({ storage: adminStorage });
 
 const scheduleStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const dir = path.join(__dirname, 'public/img/cdn');
+        const dir = path.join(__dirname, 'public/img');
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
@@ -119,6 +119,7 @@ app.get('/login', (req, res) => {
         ]
     });
 });
+
 //login req res
 app.post('/login', async (req, res) => {
     try {
@@ -228,8 +229,10 @@ app.get('/admin', isAdmin, async (req, res) => {
 });
 
 app.post('/admin/products/add', adminUpload.single('product_img'), async (req, res) => {
+    console.log('admin add trigger')
     try {
-        const { product_name, product_description, product_price, product_shop_id } = req.body;
+        const { product_name, product_description, product_price } = req.body;
+        const product_shop_id = session.login
         const product_img = req.file ? `/img/${req.file.filename}` : null;
 
         const db = await dbPromise;
