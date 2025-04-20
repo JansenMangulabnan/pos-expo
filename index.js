@@ -35,10 +35,14 @@ const dbPromise = sql.connect(sqlConfig);
 
 const adminStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, 'public/img'));
+        const dir = path.join(__dirname, 'public/img');
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true }); // Create the directory if it doesn't exist
+        }
+        cb(null, dir);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        cb(null, Date.now() + path.extname(file.originalname)); // Use a timestamp for unique filenames
     }
 });
 
@@ -315,11 +319,16 @@ app.get('/admin', isAdmin, async (req, res) => {
     }
 });
 
-app.post('/admin/products/add', adminUpload.single('product_img'), async (req, res) => {
-    console.log('admin add trigger')
+app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
     try {
         const { product_name, product_description, product_price } = req.body;
-        const product_shop_id = session.login
+
+        // Use the admin_shop_id from the session
+        const product_shop_id = req.session?.login?.admin_shop_id;
+        if (!product_shop_id) {
+            return res.status(401).send('Unauthorized: Admin shop ID not found.');
+        }
+
         const product_img = req.file ? `/img/${req.file.filename}` : null;
 
         const db = await dbPromise;
