@@ -9,6 +9,7 @@ import fs from 'fs';
 import session from 'express-session';
 import sql from 'mssql';
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 
@@ -76,7 +77,7 @@ app.use(session({
     saveUninitialized: true
 }));
 
-//register hbs render
+//signup hbs render
 app.get('/signup', (req, res) => {
     res.render('signup', {
         title: 'Sign Up',
@@ -96,6 +97,65 @@ app.get('/signup', (req, res) => {
             'js/signup.js',
         ]
     });
+});
+
+//signup request handler
+app.post('/signup', async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ success: false, message: 'Invalid email format.' });
+        }
+
+        // Validate password strength
+        if (password.length < 8) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long.' });
+        }
+
+        const db = await dbPromise;
+
+        // Check if the username or email already exists in the User table
+        const userCheck = await db.request()
+            .input('username', sql.VarChar, username)
+            .input('email', sql.VarChar, email)
+            .query(`
+                SELECT * FROM [User]
+                WHERE user_name = @username OR user_email = @email
+            `);
+
+        if (userCheck.recordset.length > 0) {
+            return res.status(400).json({ success: false, message: 'Username or email already exists.' });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Insert new user into the User table
+        await db.request()
+            .input('username', sql.VarChar, username)
+            .input('email', sql.VarChar, email)
+            .input('password', sql.VarChar, hashedPassword)
+            .query(`
+                INSERT INTO [User] (user_name, user_email, user_password)
+                VALUES (@username, @email, @password)
+            `);
+
+        // Automatically log in the user
+        req.session.login = {
+            id: username, // Replace with the actual user ID if available
+            role: 'user',
+            username: username
+        };
+
+        // Send success response
+        res.status(200).json({ success: true, message: 'User registered successfully. Redirecting...', redirectUrl: '/' });
+    } catch (error) {
+        console.error('Error during signup:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
 });
 
 //login hbs render
