@@ -120,43 +120,61 @@ app.get('/login', (req, res) => {
     });
 });
 
-//login req res
+// Login request handler
 app.post('/login', async (req, res) => {
     try {
-        const { username, password, type } = req.body;
+        const { username, password } = req.body;
         console.log(req.body);
 
-        if (!['admin', 'user'].includes(type)) {
-            return res.status(400).json({ success: false, message: 'Invalid account type.' });
-        }
-
-        const table = type === 'admin' ? 'Admin' : 'User';
-        const idColumn = type === 'admin' ? 'admin_id' : 'user_id'; // Correct ID column
-        const nameColumn = type === 'admin' ? 'admin_name' : 'user_name';
-        const emailColumn = type === 'admin' ? 'admin_email' : 'user_email';
-        const passwordColumn = type === 'admin' ? 'admin_password' : 'user_password';
         const db = await dbPromise;
 
-        const record = await db.request()
+        // Query both Admin and User tables
+        const adminRecord = await db.request()
             .input('username', sql.VarChar, username)
             .input('password', sql.VarChar, password)
-            .query(
-                `SELECT * FROM [${table}] WHERE (${nameColumn} = @username OR ${emailColumn} = @username) AND ${passwordColumn} = @password`
-            );
+            .query(`
+                SELECT 'admin' AS role, admin_id AS id, admin_name AS username
+                FROM Admin
+                WHERE (admin_name = @username OR admin_email = @username) AND admin_password = @password
+            `);
 
-        const login = record.recordset[0];
+        const userRecord = await db.request()
+            .input('username', sql.VarChar, username)
+            .input('password', sql.VarChar, password)
+            .query(`
+                SELECT 'user' AS role, user_id AS id, user_name AS username
+                FROM [User]
+                WHERE (user_name = @username OR user_email = @username) AND user_password = @password
+            `);
+
+        // Combine results
+        const login = adminRecord.recordset[0] || userRecord.recordset[0];
+
         if (!login) {
             return res.status(401).json({ success: false, message: 'Invalid login info.' });
         }
 
-        // Set the session with the correct ID column
+        if (login.role === 'admin') {
+            const adminShopRecord = await db.request()
+                .input('adminId', sql.Int, login.id)
+                .query('SELECT admin_shop_id FROM Admin WHERE admin_id = @adminId');
+
+            const adminShop = adminShopRecord.recordset[0];
+            if (adminShop) {
+                login.admin_shop_id = adminShop.admin_shop_id; // Add admin_shop_id to session
+            }
+        }
+
+        // Set the session
         req.session.login = {
-            id: login[idColumn], // Use the correct ID column
-            role: type,
-            username: login[nameColumn]
+            id: login.id,
+            role: login.role,
+            username: login.username,
+            admin_shop_id: login.admin_shop_id || null // Include admin_shop_id if available
         };
 
-        res.json({ success: true, redirectUrl: type === 'admin' ? '/admin' : '/' });
+        // Redirect based on role
+        res.json({ success: true, redirectUrl: login.role === 'admin' ? '/admin' : '/' });
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
