@@ -2,6 +2,16 @@ $(document).ready(function () {
     $('#signupForm').on('submit', function (event) {
         event.preventDefault();
 
+        // Get password and confirm password values
+        const password = $('#password').val();
+        const confirmPassword = $('#confirm-password').val();
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            showPopup('Passwords do not match.');
+            return; // Stop form submission
+        }
+
         const formData = $(this).serialize();
 
         $.ajax({
