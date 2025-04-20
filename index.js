@@ -184,33 +184,42 @@ app.get('/login', (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log(req.body);
 
         const db = await dbPromise;
 
-        // Query both Admin and User tables
+        // Query both Admin and User tables for the username or email
         const adminRecord = await db.request()
             .input('username', sql.VarChar, username)
-            .input('password', sql.VarChar, password)
             .query(`
-                SELECT 'admin' AS role, admin_id AS id, admin_name AS username
+                SELECT 'admin' AS role, admin_id AS id, admin_name AS username, admin_password AS hashedPassword
                 FROM Admin
-                WHERE (admin_name = @username OR admin_email = @username) AND admin_password = @password
+                WHERE admin_name = @username OR admin_email = @username
             `);
 
         const userRecord = await db.request()
             .input('username', sql.VarChar, username)
-            .input('password', sql.VarChar, password)
             .query(`
-                SELECT 'user' AS role, user_id AS id, user_name AS username
+                SELECT 'user' AS role, user_id AS id, user_name AS username, user_password AS hashedPassword
                 FROM [User]
-                WHERE (user_name = @username OR user_email = @username) AND user_password = @password
+                WHERE user_name = @username OR user_email = @username
             `);
 
         // Combine results
         const login = adminRecord.recordset[0] || userRecord.recordset[0];
 
         if (!login) {
+            return res.status(401).json({ success: false, message: 'Invalid login info.' });
+        }
+
+        // Compare the hashed password
+        let isPasswordValid = await bcrypt.compare(password, login.hashedPassword);
+
+        // Fallback: Check if the password matches plain text (for legacy support)
+        if (!isPasswordValid && password === login.hashedPassword) {
+            isPasswordValid = true;
+        }
+
+        if (!isPasswordValid) {
             return res.status(401).json({ success: false, message: 'Invalid login info.' });
         }
 
