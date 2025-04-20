@@ -14,8 +14,7 @@ body {
 }
 
 
-/* Register Container */
-.register-container {
+.signup-container {
     background: var(--div);
     padding: 75px;
     border-radius: 10px;
@@ -24,19 +23,18 @@ body {
     width: 500px;
 }
 
-/* Register Header */
-.register-header .register-title {
+.signup-header .signup-title {
     margin: 0;
     color: var(--button);
     font-weight: 600;
 }
 
-/* Register Form */
-.register-form .form-group {
+/* Signup Form */
+.signup-form .form-group {
     margin-bottom: 15px;
 }
 
-.register-form .form-label {
+.signup-form .form-label {
     color: var(--text);
     font-size: 1rem;
     margin-bottom: 5px;
@@ -44,7 +42,7 @@ body {
     display: block;
 }
 
-.register-form .form-input {
+.signup-form .form-input {
     width: 100%;
     padding: 10px;
     border: 0px;
@@ -54,16 +52,16 @@ body {
     color: var(--text);
 }
 
-.register-form .form-input:focus {
+.signup-form .form-input:focus {
     outline: none;
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
     border: 1px solid var(--input_element);
 }
 
 /* Autofill Fixes */
-.register-form .form-input:-webkit-autofill,
-.register-form .form-input:-webkit-autofill:hover,
-.register-form .form-input:-webkit-autofill:focus {
+.signup-form .form-input:-webkit-autofill,
+.signup-form .form-input:-webkit-autofill:hover,
+.signup-form .form-input:-webkit-autofill:focus {
     background-color: var(--input) !important;
     color: var(--text) !important;
     transition: background-color 5000s ease-in-out 0s;
@@ -72,12 +70,12 @@ body {
 }
 
 /* Placeholder */
-.register-form .form-input::placeholder {
+.signup-form .form-input::placeholder {
     color: var(--text_light);
 }
 
 /* Button */
-.register-form .btn {
+.signup-form .btn {
     width: 100%;
     padding: 10px;
     background: var(--button);
@@ -89,15 +87,15 @@ body {
     transition: background 0.3s ease;
 }
 
-.register-form .btn:focus,
-.register-form .btn:hover {
+.signup-form .btn:focus,
+.signup-form .btn:hover {
     background: var(--button_hover);
     color: var(--button_text_hover);
     box-shadow: 0 0 0px 1000px var(--button_hover) inset !important;
 }
 
 /* Form Link */
-.register-form .form-link {
+.signup-form .form-link {
     font-size: 0.9rem;
     color: var(--text_light);
     text-align: center;
@@ -105,15 +103,15 @@ body {
     margin-top: 10px;
 }
 
-.register-form .login-link {
+.signup-form .login-link {
     color: var(--button);
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s ease;
 }
 
-.register-form .login-link:hover,
-.register-form .login-link:focus {
+.signup-form .login-link:hover,
+.signup-form .login-link:focus {
     color: var(--button_hover);
     text-decoration: underline;
     outline: none;
