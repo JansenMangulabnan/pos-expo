@@ -1,15 +1,18 @@
 :root {
-    --bg: #292C2D;
+    --bg: #2c2c2c;
     --background: #111315;
     --body: #1E1E1E;
     --div: #292C2D;
     --text: #ADADAD;
-    --text_light: #777979;
+    --text_light: #757575;
     --input_element: #A7A7A7; 
-    --input: #3D4142;
-    --input_ligt: #525758;
-    --button: #E6E6E6;
-    --button_hover: #D6D6D6;
+    --input: #424242;
+    --input_light: #585858;
+    --button: #a5a5a5;
+    --button_hover: #d6d6d6;
+    --button_text: #333333;
+    --button_text_hover: #585858;
+    
 }
 
 * {

@@ -9,7 +9,7 @@ body {
 
 .app-title {
     font-size: 2.5rem;
-    color: var(--text_light);
+    color: var(--button);
     font-weight: 600;
     text-align: center;
     margin-bottom: 20px;
@@ -18,17 +18,18 @@ body {
 /* Login Container */
 .login-container {
     background: var(--div);
-    padding: 30px 40px;
+    padding: 75px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     text-align: center;
-    width: 350px;
+    width: 500px;
 }
 
 .login-header .login-title {
     font-size: 2.5rem;
     margin: 0;
     color: var(--button);
+    font-weight: 600;
 }
 
 .login-header .login-subtitle {
@@ -37,6 +38,14 @@ body {
     color: var(--text_light);
 }
 
+/* Form Label Styles */
+.login-form .form-label {
+    color: var(--text);
+    font-size: 1rem;
+    margin-bottom: 5px;
+    text-align: left;
+    display: block;
+}
 /* Form Styles */
 .login-form .form-group {
     margin-bottom: 15px;
@@ -50,12 +59,13 @@ body {
     border-radius: 5px;
     font-size: 1rem;
     background: var(--input);
-    color: var(--text_light);
+    color: var(--text);
 }
 
 .login-form .form-input:focus,
 .login-form .form-select:focus {
     outline: none;
+    box-shadow: 0 0 0px 1000px var(--input) inset !important;
     border: 1px solid var(--input_element);
 }
 
@@ -75,12 +85,74 @@ body {
     color: var(--text_light);
 }
 
+/* Remember Me and Forgot Password */
+.form-remember {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Checkbox Styles */
+.form-checkbox-input {
+    margin-right: 5px;
+    accent-color: var(--button); /* Change the color of the checkmark */
+    border: 1px solid var(--button); /* Default border color */
+    background-color: var(--div); /* Default background color */
+    border-radius: 2px; /* Rounded corners */
+    width: 13px; /* Fixed width */
+    height: 13px; /* Fixed height */
+    display: inline-block; /* Proper rendering */
+    cursor: pointer; /* Pointer cursor for better UX */
+}
+.form-checkbox-input:not(:checked) {
+    appearance: none;
+}
+
+/* Hover Effect */
+.form-checkbox-input:hover {
+    border-color: var(--button_hover); /* Change border color on hover */
+    background-color: var(--input_light); /* Change background color on hover */
+}
+
+/* Focus Effect (same as hover) */
+.form-checkbox-input:focus {
+    outline: none; /* Remove default focus outline */
+    border-color: var(--button_hover); /* Change border color on hover */
+    background-color: var(--input_light); /* Change background color on hover */
+}
+
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text_light);
+}
+
+.forgot-password-link {
+    font-size: 0.9rem;
+    color: var(--button);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-password-link:hover {
+    color: var(--button_hover);
+    text-decoration: underline;
+}
+
+.forgot-password-link:focus {
+    color: var(--button_hover);
+    text-decoration: underline;
+    outline: none;
+}
+
 /* Button Styles */
 .btn {
     width: 100%;
     padding: 10px;
     background: var(--button);
-    color: var(--body);
+    color: var(--button_text);
     border: none;
     border-radius: 5px;
     font-size: 1rem;
@@ -88,8 +160,11 @@ body {
     transition: background 0.3s ease;
 }
 
+.btn:focus,
 .btn-primary:hover {
     background: var(--button_hover);
+    color: var(--button_text_hover);
+    box-shadow: 0 0 0px 1000px var(--button_hover) inset !important;
 }
 
 /* Popup Styles */
@@ -105,6 +180,34 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     animation: fadeInOut 3s ease-in-out;
+}
+
+/* Form Link Styles */
+.form-link {
+    font-size: 0.9rem;
+    color: var(--text_light);
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Register Link Styles */
+.register-link {
+    color: var(--button);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.register-link:hover {
+    color: var(--button_hover);
+    text-decoration: underline;
+}
+
+.register-link:focus {
+    color: var(--button_hover);
+    text-decoration: underline;
+    outline: none;
 }
 
 @keyframes fadeInOut {
