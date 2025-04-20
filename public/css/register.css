@@ -1,0 +1,120 @@
+/* General Styles */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background);
+}
+
+.app-title {
+    color: var(--button);
+    font-weight: 600;
+    text-align: center;
+}
+
+
+/* Register Container */
+.register-container {
+    background: var(--div);
+    padding: 75px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 500px;
+}
+
+/* Register Header */
+.register-header .register-title {
+    margin: 0;
+    color: var(--button);
+    font-weight: 600;
+}
+
+/* Register Form */
+.register-form .form-group {
+    margin-bottom: 15px;
+}
+
+.register-form .form-label {
+    color: var(--text);
+    font-size: 1rem;
+    margin-bottom: 5px;
+    text-align: left;
+    display: block;
+}
+
+.register-form .form-input {
+    width: 100%;
+    padding: 10px;
+    border: 0px;
+    border-radius: 5px;
+    font-size: 1rem;
+    background: var(--input);
+    color: var(--text);
+}
+
+.register-form .form-input:focus {
+    outline: none;
+    box-shadow: 0 0 0px 1000px var(--input) inset !important;
+    border: 1px solid var(--input_element);
+}
+
+/* Autofill Fixes */
+.register-form .form-input:-webkit-autofill,
+.register-form .form-input:-webkit-autofill:hover,
+.register-form .form-input:-webkit-autofill:focus {
+    background-color: var(--input) !important;
+    color: var(--text) !important;
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: var(--text) !important;
+    box-shadow: 0 0 0px 1000px var(--input) inset !important;
+}
+
+/* Placeholder */
+.register-form .form-input::placeholder {
+    color: var(--text_light);
+}
+
+/* Button */
+.register-form .btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--button);
+    color: var(--button_text);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.register-form .btn:focus,
+.register-form .btn:hover {
+    background: var(--button_hover);
+    color: var(--button_text_hover);
+    box-shadow: 0 0 0px 1000px var(--button_hover) inset !important;
+}
+
+/* Form Link */
+.register-form .form-link {
+    font-size: 0.9rem;
+    color: var(--text_light);
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+}
+
+.register-form .login-link {
+    color: var(--button);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.register-form .login-link:hover,
+.register-form .login-link:focus {
+    color: var(--button_hover);
+    text-decoration: underline;
+    outline: none;
+}
