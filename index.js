@@ -37,12 +37,12 @@ const adminStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         const dir = path.join(__dirname, 'public/img');
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true }); // Create the directory if it doesn't exist
+            fs.mkdirSync(dir, { recursive: true });
         }
         cb(null, dir);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Use a timestamp for unique filenames
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 
@@ -108,20 +108,17 @@ app.post('/signup', async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json({ success: false, message: 'Invalid email format.' });
         }
 
-        // Validate password strength
         if (password.length < 8) {
             return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long.' });
         }
 
         const db = await dbPromise;
 
-        // Check if the username or email already exists in the User table
         const userCheck = await db.request()
             .input('username', sql.VarChar, username)
             .input('email', sql.VarChar, email)
@@ -134,10 +131,8 @@ app.post('/signup', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Username or email already exists.' });
         }
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insert new user into the User table
         await db.request()
             .input('username', sql.VarChar, username)
             .input('email', sql.VarChar, email)
@@ -147,14 +142,12 @@ app.post('/signup', async (req, res) => {
                 VALUES (@username, @email, @password)
             `);
 
-        // Automatically log in the user
         req.session.login = {
-            id: username, // Replace with the actual user ID if available
+            id: username,
             role: 'user',
             username: username
         };
 
-        // Send success response
         res.status(200).json({ success: true, message: 'User registered successfully. Redirecting...', redirectUrl: '/' });
     } catch (error) {
         console.error('Error during signup:', error);
@@ -191,7 +184,6 @@ app.post('/login', async (req, res) => {
 
         const db = await dbPromise;
 
-        // Query both Admin and User tables for the username or email
         const adminRecord = await db.request()
             .input('username', sql.VarChar, username)
             .query(`
@@ -208,17 +200,14 @@ app.post('/login', async (req, res) => {
                 WHERE user_name = @username OR user_email = @username
             `);
 
-        // Combine results
         const login = adminRecord.recordset[0] || userRecord.recordset[0];
 
         if (!login) {
             return res.status(401).json({ success: false, message: 'Invalid login info.' });
         }
 
-        // Compare the hashed password
         let isPasswordValid = await bcrypt.compare(password, login.hashedPassword);
 
-        // Fallback: Check if the password matches plain text (for legacy support)
         if (!isPasswordValid && password === login.hashedPassword) {
             isPasswordValid = true;
         }
@@ -234,19 +223,17 @@ app.post('/login', async (req, res) => {
 
             const adminShop = adminShopRecord.recordset[0];
             if (adminShop) {
-                login.admin_shop_id = adminShop.admin_shop_id; // Add admin_shop_id to session
+                login.admin_shop_id = adminShop.admin_shop_id;
             }
         }
 
-        // Set the session
         req.session.login = {
             id: login.id,
             role: login.role,
             username: login.username,
-            admin_shop_id: login.admin_shop_id || null // Include admin_shop_id if available
+            admin_shop_id: login.admin_shop_id || null 
         };
 
-        // Redirect based on role
         res.json({ success: true, redirectUrl: login.role === 'admin' ? '/admin' : '/' });
     } catch (error) {
         console.error('Error during login:', error);
@@ -273,7 +260,6 @@ app.get('/admin', isAdmin, async (req, res) => {
         const adminId = req.session.login.id;
         const db = await dbPromise;
 
-        // Fetch the shop_id for the logged-in admin
         const adminRecord = await db.request()
             .input('adminId', sql.Int, adminId)
             .query('SELECT admin_shop_id FROM Admin WHERE admin_id = @adminId');
@@ -285,7 +271,6 @@ app.get('/admin', isAdmin, async (req, res) => {
 
         const shopId = admin.admin_shop_id;
 
-        // Fetch products for the admin's shop
         const productRecord = await db.request()
             .input('shopId', sql.Int, shopId)
             .query('SELECT * FROM Product WHERE product_shop_id = @shopId');
@@ -311,7 +296,7 @@ app.get('/admin', isAdmin, async (req, res) => {
                 'js/admin.js',
             ],
             products,
-            adminShopId: shopId // Pass the shop ID to the frontend
+            adminShopId: shopId
         });
     } catch (error) {
         console.error('Error fetching admin products:', error);
@@ -323,7 +308,6 @@ app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
     try {
         const { product_name, product_description, product_price } = req.body;
 
-        // Use the admin_shop_id from the session
         const product_shop_id = req.session?.login?.admin_shop_id;
         if (!product_shop_id) {
             return res.status(401).send('Unauthorized: Admin shop ID not found.');

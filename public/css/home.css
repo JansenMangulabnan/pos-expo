@@ -1,0 +1,101 @@
+.product_container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    margin: 0px, 50px, 0px, 50px;
+}
+.product {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 15px;
+    padding: 20px;
+    border-radius: 10px;
+    width: 500px;
+    aspect-ratio: 5/4;
+    background-color: var(--div);
+    color: var(--text);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow for depth */
+    transition: transform 0.3s, box-shadow 0.3s; /* Add hover effect */
+}
+
+.product:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+}
+
+.product_img {
+    width: 100%;
+    height: 250px; /* Increased height for a larger image */
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 0px 0px 10px 0px;
+}
+
+.product_details {
+    display: flex;
+    justify-content: space-between; /* Space out left and right details */
+    align-items: flex-start; /* Align items at the top */
+    width: 100%; /* Ensure it spans the full width of the product card */
+}
+
+.left_detail {
+    flex: 2; /* Take up more space for the left detail */
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Add spacing between elements */
+    margin: 0px 0px 10px 0px;
+}
+
+.right_detail {
+    flex: 1; /* Take up less space for the right detail */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Align content to the right */
+    gap: 5px; /* Add spacing between elements */
+    margin: 0px 0px 10px 0px;
+}
+
+.product_name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--button_hover);
+    text-transform: capitalize;
+}
+
+.product_description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--text_light);
+    text-align: justify;
+}
+
+.product_price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--button);
+}
+
+.product_stock {
+    font-size: 0.95rem;
+    color: var(--text_light);
+}
+  
+.add-cart {
+    background-color: var(--button);
+    color: var(--button_text);
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%; /* Make the button span the full width */
+    text-align: center;
+}
+  
+.add-cart:hover {
+    background-color: var(--button_hover);
+    color: var(--button_text_hover);
+}
