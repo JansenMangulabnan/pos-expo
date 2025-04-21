@@ -17,8 +17,10 @@ $('document').ready(function() {
         window.location.href = '/login';
     });
 
-    $('#dropDown').click(function () {
-        const dropdownContent = $('.dropdown-content');
-        dropdownContent.toggle();
+    $('document').ready(function() {
+        $('#dropDown').click(function () {
+            const dropdownContent = $('.dropdown-content');
+            dropdownContent.toggleClass('visible'); // Toggle the 'visible' class
+        });
     });
 });

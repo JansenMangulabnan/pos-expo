@@ -164,10 +164,11 @@ body {
 }
 
 .user_profile {
-    position: relative; /* Position relative for dropdown alignment */
+    font-size: 1.3rem;
+    position: relative; 
     display: flex;
     align-items: center;
-    gap: 10px; /* Space between profile icon and text */
+    gap: 10px;
     cursor: pointer;
     color: var(--button);
 }
@@ -177,15 +178,25 @@ body {
 }
 
 .user_profile .dropdown-content {
-    display: none;
+    display: block; /* Ensure it's positioned properly */
     position: absolute;
     top: 100%;
-    left: -50%;
+    left: 0;
     background-color: var(--input);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     z-index: 1000;
     min-width: max-content;
+    opacity: 0; /* Initially hidden */
+    visibility: hidden; /* Prevent interaction when hidden */
+    transform: translateY(-10px); /* Start slightly above */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Add sliding effect */
+}
+
+.user_profile .dropdown-content.visible {
+    transform: translateY(0); 
+    opacity: 1; /* Fully visible */
+    visibility: visible; /* Allow interaction */
 }
 
 .user_profile .dropdown-content a {
