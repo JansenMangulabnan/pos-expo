@@ -4,11 +4,7 @@ $('document').ready(function() {
             url: '/logout',
             method: 'POST',
             success: function(response) {
-                if (response.success) {
-                    window.location.href = response.redirectUrl;
-                } else {
-                    showPopup(response.message);
-                }
+                window.location.href = '/';
             },
             error: function(xhr) {
                 const errorMessage = xhr.responseJSON?.message || 'An unexpected error occurred.';
@@ -21,4 +17,8 @@ $('document').ready(function() {
         window.location.href = '/login';
     });
 
+    $('#dropDown').click(function () {
+        const dropdownContent = $('.dropdown-content');
+        dropdownContent.toggle();
+    });
 });

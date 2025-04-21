@@ -109,8 +109,8 @@ app.post('/logout', (req, res) => {
             console.error('Error destroying session:', err);
             return res.status(500).json({ success: false, message: 'Failed to log out. Please try again.' });
         }
-        res.clearCookie('connect.sid'); // Clear the session cookie
-        res.status(200).json({ success: true, message: 'Logged out successfully.', redirectUrl: '/login' });
+        res.clearCookie('connect.sid');
+        res.status(200).json({ success: true });
     });
 });
 

@@ -10,23 +10,25 @@
                     <li><a href="#">Contact</a></li>
                 </ul>
             </div>
-            <div class="search_container">
-                <input type="text" placeholder="Search..." class="search_input" />
-                <button class="search_btn">Search</button>
-            </div>
-            {{#if isLoggedIn}}
-            <div class="user_profile">
-                <span class="username">{{username}}</span>
-                <div class="dropdown-content">
-                    <a id="settingBtn">Settings</a>
-                    <a id="logOutBtn">Log Out</a>
+            <div class="right_nav_content">
+                <div class="search_container">
+                    <input type="text" placeholder="Search..." class="search_input" />
+                    <button class="search_btn">Search</button>
                 </div>
+                {{#if isLoggedIn}}
+                <div class="user_profile">
+                    <span id="dropDown" class="username">{{username}} &#128899;</span>
+                    <div class="dropdown-content">
+                        <a id="settingBtn">Settings</a>
+                        <a id="logOutBtn">Log Out</a>
+                    </div>
+                </div>
+                {{else}}
+                <div class="user_profile">
+                    <button id="btnLogin" class="btn_login">Login</button>
+                </div>
+                {{/if}}
             </div>
-            {{else}}
-            <div class="user_profile">
-                <button id="btnLogin" class="btn_login">Login</button>
-            </div>
-            {{/if}}
         </nav>
     </div>
 </div>

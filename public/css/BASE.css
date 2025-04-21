@@ -113,30 +113,29 @@ body {
     width: 100%;
     display: flex;
     flex-direction: row;
-}
-
-.header_customer {
-    background-color: var(--div);
-    border-radius: 0px 0px 10px 10px; /* Bottom radius set to 10px */
-    width: 100%;
-    display: flex;
-    flex-direction: row;
     align-items: center; /* Align items vertically */
     justify-content: space-between; /* Space out title and nav */
     padding: 10px 20px; /* Add padding for spacing */
+    
 }
 
 .header_nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px; /* Add spacing between nav items */
+    width: 100%;
 }
 
 .left_nav_content {
     display: flex;
     align-items: center;
     gap: 20px; /* Add spacing between nav items */
+}
+
+.right_nav_content {
+    display: flex;
+    gap: 50px;
+    margin-right: 0px;
 }
 
 .brand {
@@ -173,17 +172,20 @@ body {
     color: var(--button);
 }
 
+.user_profile:hover {
+    color: var(--button_hover);
+}
+
 .user_profile .dropdown-content {
-    display: none; /* Hide dropdown by default */
+    display: none;
     position: absolute;
-    top: 100%; /* Position below the user profile */
-    left: 0; /* Align dropdown to the left */
-    background-color: var(--div);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    top: 100%;
+    left: -50%;
+    background-color: var(--input);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     z-index: 1000;
-    min-width: 150px; /* Set a minimum width for the dropdown */
-    padding: 10px 0; /* Add padding for dropdown items */
+    min-width: max-content;
 }
 
 .user_profile .dropdown-content a {
@@ -196,12 +198,8 @@ body {
 }
 
 .user_profile .dropdown-content a:hover {
-    background-color: var(--button_hover);
-    color: var(--button_text_hover);
-}
-
-.user_profile:hover .dropdown-content {
-    display: block; /* Show dropdown on hover */
+    border: solid 1px var(--button_hover);
+    border-radius: 5px;
 }
 
 .btn_login {
@@ -213,4 +211,9 @@ body {
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s, color 0.3s;
+}
+
+.btn_login:hover {
+    background-color: var(--button_hover);
+    color: var(--button_text_hover);
 }
