@@ -1,13 +1,32 @@
 <div class="header_container">
     <div class="header_customer">
         <nav class="header_nav">
-            <a href="#" class="brand">POSSIE</a>
-            <ul class="nav_links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Products</a></li>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
+            <div class="left_nav_content">
+                <a href="#" class="brand">POSSIE</a>
+                <ul class="nav_links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Products</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="search_container">
+                <input type="text" placeholder="Search..." class="search_input" />
+                <button class="search_btn">Search</button>
+            </div>
+            {{#if isLoggedIn}}
+            <div class="user_profile">
+                <span class="username">{{username}}</span>
+                <div class="dropdown-content">
+                    <a id="settingBtn">Settings</a>
+                    <a id="logOutBtn">Log Out</a>
+                </div>
+            </div>
+            {{else}}
+            <div class="user_profile">
+                <button id="btnLogin" class="btn_login">Login</button>
+            </div>
+            {{/if}}
         </nav>
     </div>
 </div>

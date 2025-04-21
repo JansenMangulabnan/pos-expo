@@ -129,6 +129,13 @@ body {
 .header_nav {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 20px; /* Add spacing between nav items */
+}
+
+.left_nav_content {
+    display: flex;
+    align-items: center;
     gap: 20px; /* Add spacing between nav items */
 }
 
@@ -155,4 +162,55 @@ body {
 
 .nav_links li a:hover {
     color: var(--text);
+}
+
+.user_profile {
+    position: relative; /* Position relative for dropdown alignment */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between profile icon and text */
+    cursor: pointer;
+    color: var(--button);
+}
+
+.user_profile .dropdown-content {
+    display: none; /* Hide dropdown by default */
+    position: absolute;
+    top: 100%; /* Position below the user profile */
+    left: 0; /* Align dropdown to the left */
+    background-color: var(--div);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    border-radius: 5px;
+    z-index: 1000;
+    min-width: 150px; /* Set a minimum width for the dropdown */
+    padding: 10px 0; /* Add padding for dropdown items */
+}
+
+.user_profile .dropdown-content a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 1rem;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.user_profile .dropdown-content a:hover {
+    background-color: var(--button_hover);
+    color: var(--button_text_hover);
+}
+
+.user_profile:hover .dropdown-content {
+    display: block; /* Show dropdown on hover */
+}
+
+.btn_login {
+    background-color: var(--button);
+    color: var(--button_text);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s, color 0.3s;
 }

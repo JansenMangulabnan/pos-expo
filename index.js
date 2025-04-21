@@ -103,6 +103,17 @@ app.get('/signup', (req, res) => {
     });
 });
 
+app.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).json({ success: false, message: 'Failed to log out. Please try again.' });
+        }
+        res.clearCookie('connect.sid'); // Clear the session cookie
+        res.status(200).json({ success: true, message: 'Logged out successfully.', redirectUrl: '/login' });
+    });
+});
+
 //signup request handler
 app.post('/signup', async (req, res) => {
     try {
@@ -349,9 +360,7 @@ app.get('/', async (req, res) => {
                 'css/BASE.css',
                 'css/home.css',
             ],
-            beforeBody: [
-                'views/partials/header.hbs',
-            ],
+            beforeBody: [],
             afterbody: [],
             nodeModules: [
                 '/node_modules/jquery/dist/jquery.min.js',
@@ -359,9 +368,12 @@ app.get('/', async (req, res) => {
             ],
             scripts: [
                 'https://code.jquery.com/jquery-3.6.0.min.js',
+                'js/BASE.js',
                 'js/home.js',
             ],
-            Product
+            Product,
+            isLoggedIn: !!req.session?.login,
+            username: req.session?.login?.username || null
         });
     } catch (error) {
         console.error(error);
