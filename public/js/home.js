@@ -5,4 +5,9 @@ $(document).ready(function () {
             $("#searchBar").focus();
         }
     });
+
+    $("#searchContainer").on("keyup", function (e) {
+        
+    });
+
 });
