@@ -346,6 +346,31 @@ app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
     }
 });
 
+// home search request handler
+// app.get('/search', async (req, res) => {
+//     try {
+//         const searchQuery = req.query.query;
+
+//         const db = await dbPromise;
+
+//         const products = await db.request()
+//             .input('searchQuery', sql.VarChar, `%${searchQuery}%`)
+//             .query(`
+//                 SELECT * FROM Product
+//                 WHERE product_name LIKE @searchQuery OR product_description LIKE @searchQuery
+//             `);
+
+//         if (products.recordset.length === 0) {
+//             return res.status(404).json({ success: false, message: 'No products found.' });
+//         }
+
+//         res.status(200).json({ success: true, products: products.recordset });
+//     } catch (error) {
+//         console.error('Error during product search:', error);
+//         res.status(500).json({ success: false, message: 'An error occurred while searching for products.' });
+//     }
+// });
+
 // home hbs render
 app.get('/', async (req, res) => {
     try {
