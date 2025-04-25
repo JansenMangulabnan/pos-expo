@@ -1,34 +1,39 @@
 <div class="flex-container">
     {{> admin_nav}}
     <div class="contents">
-        <div class="sidebar-toggle" id="sidebarToggle">
-            <div class="toggle-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M13.939 4.939 6.879 12l7.06 7.061 2.122-2.122L11.121 12l4.94-4.939z"></path>
-                </svg>
+        <div class="top-details">
+            <div class="sidebar-toggle" id="sidebarToggle">
+                <div class="toggle-icon">
+                    <i class='bx bxs-chevron-left'></i>
+                </div>
             </div>
+            {{#each shops}}
+            <h1 class="shop_name">{{shop_name}}</h1>
+            {{/each}}
+            {{#if isLoggedIn}}
+            <div class="user_profile">
+                <h3 id="dropDown" class="username">{{username}}</h3>
+            </div>
+            {{/if}}
         </div>
-        {{#each shops}}
-        <h1 class="shop_name">{{shop_name}}</h1>
-        {{/each}}
 
         <div class="container">
             {{#each products}}
-            <div class="card-container">
-                <div class="product-card">
-                    <img src="{{product_img}}" alt="Product Image" class="product-img" />
-                    <div class="product-info">
-                        <h4 class="product-name">{{product_name}}</h4>
-                        <p class="product-desc">{{product_description}}</p>
-                    </div>
-                    <div class="product-id">#{{product_id}}</div>
-                    <div class="product-qty">{{product_stock}} items</div>
-                    <div class="product-category">{{product_category}}</div>
-                    <div class="product-price">${{product_price}}</div>
-                    <div class="product-actions">
-                        <button class="edit-btn">✏️</button>
-                        <button class="delete-btn">🗑️</button>
-                    </div>
+            <div class="product-card">
+                <img src="{{product_img}}" alt="" class="product-img">
+
+
+                <div class="product-info">
+                    <h4 class="product-name">{{product_name}}</h4>
+                    <p class="product-desc">{{product_description}}</p>
+                </div>
+                <div class="product-id">#{{product_id}}</div>
+                <div class="product-qty">{{product_stock}} Items</div>
+                <div class="product-category">{{product_category}}</div>
+                <div class="product-price">${{product_price}}</div>
+                <div class="product-actions">
+                    <button class="edit-btn"><i class='bx bxs-edit-alt'></i></button>
+                    <button class="delete-btn"><i class='bx bxs-trash'></i></button>
                 </div>
             </div>
             {{/each}}
@@ -36,38 +41,4 @@
     </div>
 </div>
 
-<div class="add_product_button" onclick="showAddProductModal()">Add Product</div>
-
-<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addProductForm" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="productName" class="form-label">Product Name</label>
-                        <input type="text" class="form-control" id="productName" name="product_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productDescription" class="form-label">Product Description</label>
-                        <textarea class="form-control" id="productDescription" name="product_description"
-                            required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productPrice" class="form-label">Product Price</label>
-                        <input type="number" class="form-control" id="productPrice" name="product_price" step="0.01"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productImage" class="form-label">Product Image</label>
-                        <input type="file" class="form-control" id="productImage" name="product_img" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Product</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="add-product-btn" id="addProductBtn" onclick="showAddProductModal()">+</i></div>
