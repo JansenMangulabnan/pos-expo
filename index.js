@@ -288,12 +288,17 @@ app.get('/admin', isAdmin, async (req, res) => {
 
         const products = productRecord.recordset;
 
+        const shopRecord = await db.request()
+            .input('shopId', sql.Int, shopId)
+            .query('SELECT * FROM Shop WHERE shop_id = @shopId');
+            
+        const shops = shopRecord.recordset;
         res.render('admin', {
             title: 'Admin',
             styles: [
                 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
                 'css/BASE.css',
-                'css/admin.css',
+                'css/admin.css'
             ],
             beforeBody: [],
             afterbody: [],
@@ -307,7 +312,8 @@ app.get('/admin', isAdmin, async (req, res) => {
                 'js/admin.js',
             ],
             products,
-            adminShopId: shopId
+            adminShopId: shopId,
+            shops
         });
     } catch (error) {
         console.error('Error fetching admin products:', error);
@@ -345,31 +351,6 @@ app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-// home search request handler
-// app.get('/search', async (req, res) => {
-//     try {
-//         const searchQuery = req.query.query;
-
-//         const db = await dbPromise;
-
-//         const products = await db.request()
-//             .input('searchQuery', sql.VarChar, `%${searchQuery}%`)
-//             .query(`
-//                 SELECT * FROM Product
-//                 WHERE product_name LIKE @searchQuery OR product_description LIKE @searchQuery
-//             `);
-
-//         if (products.recordset.length === 0) {
-//             return res.status(404).json({ success: false, message: 'No products found.' });
-//         }
-
-//         res.status(200).json({ success: true, products: products.recordset });
-//     } catch (error) {
-//         console.error('Error during product search:', error);
-//         res.status(500).json({ success: false, message: 'An error occurred while searching for products.' });
-//     }
-// });
 
 // home hbs render
 app.get('/', async (req, res) => {

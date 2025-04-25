@@ -1,15 +1,42 @@
-<div class="product_container">
-{{#each products}}
+{{#each shops}}
+<h1 class="shop_name">{{shop_name}}</h1>
+{{/each}}
+
+<div class="container">
+    {{#each products}}
+    <div class="card-container">
+        <div class="product-card">
+            <img src="{{product_img}}" alt="Product Image" class="product-img" />
+            <div class="product-info">
+                <h4 class="product-name">{{product_name}}</h4>
+                <p class="product-desc">{{product_description}}</p>
+            </div>
+            <div class="product-id">#{{product_id}}</div>
+            <div class="product-qty">119 items</div>
+            <div class="product-category">{{pordcut_category}}</div>
+            <div class="product-price">${{product_price}}</div>
+            <div class="product-stock">Stock: {{prodcut_stock}}</div>
+            <div class="product-actions">
+                <button class="edit-btn">✏️</button>
+                <button class="delete-btn">🗑️</button>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+{{!-- <div class="product_container">
+    {{#each products}}
     <div class="product" onclick="editProduct('{{product_id}}')">
         <img src="{{product_img}}" alt="img" class="product_img">
         <p class="product_name">{{product_name}}</p>
         <p class="product_description">{{product_description}}</p>
         <p class="product_price">{{product_price}}</p>
     </div>
-{{/each}}
-</div>
+    {{/each}}
+</div> --}}
 
-<div class="btn btn-primary" onclick="showAddProductModal()">Add Product</div>
+<div class="add_product_button" onclick="showAddProductModal()">Add Product</div>
 
 <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -26,11 +53,13 @@
                     </div>
                     <div class="mb-3">
                         <label for="productDescription" class="form-label">Product Description</label>
-                        <textarea class="form-control" id="productDescription" name="product_description" required></textarea>
+                        <textarea class="form-control" id="productDescription" name="product_description"
+                            required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="productPrice" class="form-label">Product Price</label>
-                        <input type="number" class="form-control" id="productPrice" name="product_price" step="0.01" required>
+                        <input type="number" class="form-control" id="productPrice" name="product_price" step="0.01"
+                            required>
                     </div>
                     <div class="mb-3">
                         <label for="productImage" class="form-label">Product Image</label>
