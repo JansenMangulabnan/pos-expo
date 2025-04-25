@@ -8,7 +8,6 @@
                 </svg>
             </div>
         </div>
-
         {{#each shops}}
         <h1 class="shop_name">{{shop_name}}</h1>
         {{/each}}
@@ -23,10 +22,9 @@
                         <p class="product-desc">{{product_description}}</p>
                     </div>
                     <div class="product-id">#{{product_id}}</div>
-                    <div class="product-qty">119 items</div>
-                    <div class="product-category">{{pordcut_category}}</div>
+                    <div class="product-qty">{{product_stock}} items</div>
+                    <div class="product-category">{{product_category}}</div>
                     <div class="product-price">${{product_price}}</div>
-                    <div class="product-stock">Stock: {{prodcut_stock}}</div>
                     <div class="product-actions">
                         <button class="edit-btn">✏️</button>
                         <button class="delete-btn">🗑️</button>

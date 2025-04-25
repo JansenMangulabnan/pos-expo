@@ -71,7 +71,7 @@ body {
 
 /* Placeholder */
 .signup-form .form-input::placeholder {
-    color: var(--text_light);
+    color: var(--text_fade);
 }
 
 /* Button */
@@ -97,7 +97,7 @@ body {
 /* Form Link */
 .signup-form .form-link {
     font-size: 0.9rem;
-    color: var(--text_light);
+    color: var(--text_fade);
     text-align: center;
     display: block;
     margin-top: 10px;

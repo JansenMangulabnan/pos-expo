@@ -1,17 +1,23 @@
 :root {
     --bg: #2c2c2c;
-    --background: #111315;
-    --body: #1E1E1E;
-    --div: #292C2D;
+    --background: #111111;
+    --body: #111111;
+
+    --div: #292929;
+    --div_hover: #3D3D3D;
+
+    --text_highlight: #b6b6b6;
     --text: #ADADAD;
-    --text_light: #757575;
+    --text_fade: #757575;
+
     --input_element: #A7A7A7; 
-    --input: #424242;
     --input_light: #585858;
+    --input: #424242;
+
     --button: #a5a5a5;
-    --button_hover: #d6d6d6;
+    --button_hover: #949393;
+    --button_text_hover: #3a3a3a;
     --button_text: #333333;
-    --button_text_hover: #585858;
     
 }
 

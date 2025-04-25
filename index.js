@@ -81,6 +81,17 @@ app.use(session({
     saveUninitialized: true
 }));
 
+app.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).json({ success: false, message: 'Failed to log out. Please try again.' });
+        }
+        res.clearCookie('connect.sid');
+        res.status(200).json({ success: true });
+    });
+});
+
 //signup hbs render
 app.get('/signup', (req, res) => {
     res.render('signup', {
@@ -100,17 +111,6 @@ app.get('/signup', (req, res) => {
             'https://code.jquery.com/jquery-3.6.0.min.js',
             'js/signup.js',
         ]
-    });
-});
-
-app.post('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Error destroying session:', err);
-            return res.status(500).json({ success: false, message: 'Failed to log out. Please try again.' });
-        }
-        res.clearCookie('connect.sid');
-        res.status(200).json({ success: true });
     });
 });
 
@@ -207,7 +207,7 @@ app.post('/login', async (req, res) => {
             .input('username', sql.VarChar, username)
             .query(`
                 SELECT 'user' AS role, user_id AS id, user_name AS username, user_password AS hashedPassword
-                FROM [User]
+                FROM [User] 
                 WHERE user_name = @username OR user_email = @username
             `);
 
@@ -323,7 +323,7 @@ app.get('/admin', isAdmin, async (req, res) => {
 
 app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
     try {
-        const { product_name, product_description, product_price } = req.body;
+        const { product_name, product_description, product_stock, product_category, product_price } = req.body;
 
         const product_shop_id = req.session?.login?.admin_shop_id;
         if (!product_shop_id) {
@@ -335,15 +335,18 @@ app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
         const db = await dbPromise;
 
         await db.request()
+        .input('product_img', sql.VarChar, product_img)
             .input('product_name', sql.VarChar, product_name)
             .input('product_description', sql.VarChar, product_description)
+            .input('product_stock', sql.Int, product_stock)
+            .input('product_category', sql.VarChar, product_category)
             .input('product_price', sql.Decimal(10, 2), product_price)
-            .input('product_img', sql.VarChar, product_img)
             .input('product_shop_id', sql.Int, product_shop_id)
             .query(`
-                INSERT INTO Product (product_name, product_description, product_price, product_img, product_shop_id)
-                VALUES (@product_name, @product_description, @product_price, @product_img, @product_shop_id)
-            `);
+                INSERT INTO Product 
+                (product_img, product_name, product_description, product_stock, product_category, product_price, product_shop_id) 
+                VALUES 
+                (@product_img, @product_name, @product_description, @product_stock, @product_category, @product_price, @product_shop_id)`);
 
         res.status(200).send('Product added successfully.');
     } catch (error) {
