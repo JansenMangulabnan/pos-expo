@@ -364,6 +364,7 @@ app.get('/', async (req, res) => {
             styles: [
                 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
                 'css/BASE.css',
+                'css/header.css',
                 'css/home.css',
             ],
             beforeBody: [],

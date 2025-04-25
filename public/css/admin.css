@@ -6,6 +6,32 @@ body {
     padding: 20px;
 }
 
+.contents {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-left: 120px; /* Adjusted to account for sidebar width */
+}
+
+.sidebar-toggle {
+    color: var(--text);
+    width: 35px;
+    height: 35px;
+    background-color: var(--div);
+    border-radius: 50%;
+    transition: transform 0.3s;
+    display: flex;
+}
+
+.toggle-icon {
+    display: flex;
+    fill: var(--text);
+    width: 30px;
+    height: 30px;
+    margin: 2.5px;
+}
+
+
 .shop_name {
   color: var(--text_light);
 }
@@ -84,3 +110,90 @@ body {
 .delete-btn:hover {
     color: #ff4d4d;
 }
+
+/* sidebar */
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh; /* Full height of the viewport */
+}
+
+.sidebar {
+  width: 100px;
+  background-color: var(--div);
+  height: 100vh;
+  padding: 50px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0 20px 20px 0;
+  gap: 30px;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar-title {
+  color: var(--button_hover);
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.sidebar-item a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: transparent;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.8rem;
+  padding: 10px;
+  width: 60px;
+  border-radius: 10px;
+  transition: background 0.3s;
+  text-align: center;
+}
+
+.sidebar-item.active a,
+.sidebar-item a:hover {
+  background-color: var(--button_hover);
+  color: var(--button_text_hover);
+}
+
+.sidebar-item .icon {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.sidebar-logout {
+  margin-top: auto;
+  padding-bottom: 10px;
+}
+
+.sidebar-logout a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: color 0.3s;
+}
+
+.sidebar-logout a:hover {
+  color: var(--button_hover);
+}
+
