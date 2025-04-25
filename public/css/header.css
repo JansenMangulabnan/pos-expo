@@ -65,7 +65,6 @@
 
 .search_form {
     width: 100%;
-    
 }
 
 .search_container {
@@ -74,16 +73,31 @@
     background-color: var(--input);
     border-radius: 5px;
     padding: 5px 10px;
-    width: 300px; /* Set a fixed width for the search bar */
+    width: 300px; 
 }
-.search_container input {
+
+.search_input {
     background-color: transparent;
     border: none;
     color: var(--text);
     font-size: 1rem;
-    width: 100%; /* Make input take full width of container */
-    padding: 5px; /* Add some padding for better appearance */
+    width: 100%;
+    padding: 5px;
+    appearance: none;
+    -webkit-appearance: none; 
 }
+
+.search_input:-webkit-autofill,
+.search_input:-webkit-autofill:hover,
+.search_input:-webkit-autofill:focus {
+    background-color: var(--input) !important;
+    color: var(--text) !important;
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: var(--text) !important;
+    box-shadow: 0 0 0px 1000px var(--input) inset !important;
+}
+
+
 
 .search_container svg{
     fill: var(--input_element);
