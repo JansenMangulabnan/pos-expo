@@ -4,31 +4,29 @@
     --body: #111111;
 
     --div: #292929;
-    --div_hover: #3D3D3D;
+    --div_hover: #3d3d3d;
 
     --text_highlight: #b6b6b6;
-    --text: #ADADAD;
+    --text: #adadad;
     --text_fade: #757575;
 
-    --input_element: #A7A7A7; 
+    --input_element: #a7a7a7;
     --input_light: #585858;
     --input: #424242;
 
-    --button: #a5a5a5;
-    --button_hover: #7e7e7e;
-    --button_text_hover: #3a3a3a;
+    --button: rgb(165, 165, 165);
+    --button_hover: rgb(185, 185, 185);
+    --button_text_hover: rgb(58, 58, 58);
     --button_text: #333333;
 
-    --button_fade: #808080;
-    --button_fade_hover: #949393;
-    
+    --button_fade: rgb(66, 66, 66);
+    --button_fade_hover: rgb(86, 86, 86);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-
 }
 
 html,
@@ -49,57 +47,50 @@ body {
     flex-direction: column;
 }
 
-
 /* Credit: https://stackoverflow.com/a/7354648
 */
-@media (max-width:320px) {
+@media (max-width: 320px) {
     html {
         font-size: 6px;
     }
 }
 
-@media (min-width:320px) {
-    
+@media (min-width: 320px) {
     /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
     html {
         font-size: 10px;
     }
 }
 
-@media (min-width:480px) {
-    
+@media (min-width: 480px) {
     /* smartphones, Android phones, landscape iPhone */
     html {
         font-size: 12px;
     }
 }
 
-@media (min-width:600px) {
-    
+@media (min-width: 600px) {
     /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
     html {
         font-size: 14px;
     }
 }
 
-@media (min-width:801px) {
-    
+@media (min-width: 801px) {
     /* tablet, landscape iPad, lo-res laptops ands desktops */
     html {
         font-size: 14px;
     }
 }
 
-@media (min-width:1025px) {
-    
+@media (min-width: 1025px) {
     /* big landscape tablets, laptops, and desktops */
     html {
         font-size: 14px;
     }
 }
 
-@media (min-width:1281px) {
-    
+@media (min-width: 1281px) {
     /* hi-res laptops and desktops */
     html {
         font-size: 16px;
@@ -110,5 +101,4 @@ body {
     body {
         scrollbar-color: var(--button) transparent;
     }
-  }
-  
+}

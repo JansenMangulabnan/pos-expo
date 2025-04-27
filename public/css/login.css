@@ -75,7 +75,7 @@ body {
     color: var(--text) !important;
     transition: background-color 5000s ease-in-out 0s;
     -webkit-text-fill-color: var(--text) !important;
-    -webkit-insert-text-auto-fill: none !important;
+    caret-color: var(--text);
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
 }
 
@@ -92,41 +92,7 @@ body {
     margin-bottom: 15px;
 }
 
-/* Checkbox Styles */
-.form-checkbox-input {
-    margin-right: 5px;
-    accent-color: var(--button); /* Change the color of the checkmark */
-    border: 1px solid var(--button); /* Default border color */
-    background-color: var(--div); /* Default background color */
-    border-radius: 2px; /* Rounded corners */
-    width: 13px; /* Fixed width */
-    height: 13px; /* Fixed height */
-    display: inline-block; /* Proper rendering */
-    cursor: pointer; /* Pointer cursor for better UX */
-}
-.form-checkbox-input:not(:checked) {
-    appearance: none;
-}
-
 /* Hover Effect */
-.form-checkbox-input:hover {
-    border-color: var(--button_hover); /* Change border color on hover */
-    background-color: var(--input_light); /* Change background color on hover */
-}
-
-/* Focus Effect (same as hover) */
-.form-checkbox-input:focus {
-    outline: none; /* Remove default focus outline */
-    border-color: var(--button_hover); /* Change border color on hover */
-    background-color: var(--input_light); /* Change background color on hover */
-}
-
-.form-checkbox {
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-    color: var(--text_light);
-}
 
 .forgot-password-link {
     font-size: 0.9rem;
@@ -183,7 +149,7 @@ body {
 /* Form Link Styles */
 .form-link {
     font-size: 0.9rem;
-    color: var(--text_light);
+    color: var(--text_fade);
     text-align: center;
     display: block;
     margin-top: 10px;

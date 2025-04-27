@@ -44,6 +44,10 @@ h2 {
     display: block;
 }
 
+.form-group textarea {
+    resize: vertical;
+}
+
 .form-group input,
 .form-group textarea {
     width: 100%;
@@ -59,9 +63,31 @@ h2 {
 .form-group textarea:focus {
     outline: none;
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
-    border: 1px solid var(--input_element); /* Match focus effect */
+    border: 1px solid var(--input_element); 
 }
 
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus {
+    background-color: var(--input) !important;
+    color: var(--text) !important;
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: var(--text) !important;
+    caret-color: var(--text);
+    box-shadow: 0 0 0px 1000px var(--input) inset !important;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}   
+
+.button-container {
+    display: flex;
+    gap:10px;
+    width: max-content;
+    margin: auto 0 auto auto;
+}
 .submit-btn {
     align-self: flex-end;
     background-color: var(--button); /* Match button background */
@@ -80,7 +106,7 @@ h2 {
 }
 .close-btn {
     background-color: var(--button_fade); /* Match button background */
-    color: var(--button_text); /* Match button text color */
+    color: var(--input_element); /* Match button text color */
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
