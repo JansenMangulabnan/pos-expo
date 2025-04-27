@@ -102,16 +102,22 @@ $(document).ready(function () {
 
         // Change edit button to confirm button
         $(this)
-            .html("<i class='bx bx-check' ></i>")
+            .empty() // clear existing content
+            .append("<i class='bx bx-check'></i>") // append icon
             .addClass("save-btn")
+            .on("click", function () {
+                saveevent();
+            })
             .removeClass("edit-btn");
     });
 
     // Confirm button click
-    $(document).on("click", ".save-btn", function () {
+    function saveevent() {
         currentProductCard = $(this).closest(".product-card");
         const productId = currentProductCard
-        .find(".product-id").text().replace("#", "");
+            .find(".product-id")
+            .text()
+            .replace("#", "");
         $(".save-modal").css("display", "flex");
-    });
+    }
 });
