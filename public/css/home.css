@@ -24,13 +24,24 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
 }
 
-.product_img {
+.img-display {
+    display: flex;
     width: 100%;
-    height: 250px; /* Increased height for a larger image */
-    object-fit: cover;
-    border-radius: 10px;
+    height: 250px; 
+    overflow: hidden; 
+    border-radius: 10px; 
+    background-color: var(--input);
+    justify-content: center;
+    align-items: center; /* Center the image vertically */
+    align-content: center;
     margin: 0px 0px 10px 0px;
 }
+
+.product-img {
+    width: 100%;
+    object-fit:cover;
+}
+   
 
 .product_details {
     display: flex;

@@ -27,4 +27,8 @@ $(document).ready(function () {
             $(".product").show(); // Show all if input is cleared
         }
     });
+
+    $(".product-img").on("error", function () {
+        console.log("Image not found, setting default image.");
+    });
 });
