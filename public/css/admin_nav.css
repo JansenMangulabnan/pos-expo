@@ -61,7 +61,6 @@
 .sidebar-item.active a,
 .sidebar-item a:hover {
     background-color: var(--button_hover);
-    color: var(--button_text_hover);
 }
 
 .sidebar-item .icon {

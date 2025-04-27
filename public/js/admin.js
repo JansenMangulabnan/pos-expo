@@ -1,5 +1,6 @@
 function showAddProductModal() {
-    $("#addProductModal").modal("show");
+    console.log("showAddProductModal called");
+    $(".add-modal").css("display", "block");
 }
 
 $(document).ready(function () {

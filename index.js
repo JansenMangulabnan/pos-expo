@@ -355,7 +355,8 @@ app.get('/admin', isAdmin, async (req, res) => {
                 'css/BASE.css',
                 'css/admin.css',
                 'css/admin_nav.css',
-                'css/searchbar.css'
+                'css/searchbar.css',
+                'css/admin_modal.css'
             ],
             beforeBody: [],
             afterbody: [],

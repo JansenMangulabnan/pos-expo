@@ -1,0 +1,94 @@
+.add-modal {
+    display: none;
+    position: fixed;
+    z-index: 3;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column; /* Stack child elements vertically */
+    align-items: center; /* Center-align child elements horizontally */
+    justify-content: center; /* Center-align child elements vertically */
+    background-color: var(--div); /* Match login container background */
+    padding: 50px; /* Similar padding to login container */
+    border-radius: 10px; /* Rounded corners */    
+    width: 500px; /* Match login container width */
+    text-align: center; /* Center-align text */
+}
+
+h2 {
+    color: var(--button); /* Match login title color */
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    width: 100%; /* Ensure form groups take full width */
+    margin-bottom: 15px;
+    text-align: left; /* Align labels and inputs to the left */
+}
+
+.form-group label {
+    color: var(--text); /* Match text color */
+    font-size: 1rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 0px;
+    border-radius: 5px;
+    font-size: 1rem;
+    background: var(--input); /* Match input background */
+    color: var(--text); /* Match input text color */
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0px 1000px var(--input) inset !important;
+    border: 1px solid var(--input_element); /* Match focus effect */
+}
+
+.submit-btn {
+    align-self: flex-end;
+    background-color: var(--button); /* Match button background */
+    color: var(--button_text); /* Match button text color */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 20px; /* Add spacing above the button */
+}
+
+.submit-btn:hover {
+    background-color: var(--button_hover); /* Match hover effect */
+}
+.close-btn {
+    background-color: var(--button_fade); /* Match button background */
+    color: var(--button_text); /* Match button text color */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 20px; /* Add spacing above the button */
+}
+.close-btn:hover {
+    background-color: var(--button_fade_hover); /* Match hover effect */
+}

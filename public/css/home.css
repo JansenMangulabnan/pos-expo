@@ -106,5 +106,4 @@
   
 .add-cart:hover {
     background-color: var(--button_hover);
-    color: var(--button_text_hover);
 }

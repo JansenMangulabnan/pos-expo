@@ -15,9 +15,12 @@
     --input: #424242;
 
     --button: #a5a5a5;
-    --button_hover: #949393;
+    --button_hover: #7e7e7e;
     --button_text_hover: #3a3a3a;
     --button_text: #333333;
+
+    --button_fade: #808080;
+    --button_fade_hover: #949393;
     
 }
 
