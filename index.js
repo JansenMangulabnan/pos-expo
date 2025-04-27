@@ -100,7 +100,7 @@ app.post('/logout', (req, res) => {
     });
 });
 
-//signup hbs render
+//signup hbs renderer
 app.get('/signup', (req, res) => {
     res.render('signup', {
         title: 'Sign Up',
@@ -190,7 +190,7 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-//login hbs render
+//login hbs renderer
 app.get('/login', (req, res) => {
     res.render('login', {
         title: 'Login',
@@ -306,7 +306,7 @@ function isAdmin(req, res, next) {
     next();
 }
 
-//admin
+//admin renderer
 app.get('/admin', isAdmin, async (req, res) => {
     try {
         const adminId = req.session.login.id;
@@ -355,6 +355,7 @@ app.get('/admin', isAdmin, async (req, res) => {
                 'css/BASE.css',
                 'css/admin.css',
                 'css/admin_nav.css',
+                'css/searchbar.css'
             ],
             beforeBody: [],
             afterbody: [],
@@ -421,7 +422,7 @@ app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
     }
 });
 
-// home hbs render
+// home hbs renderer
 app.get('/', async (req, res) => {
     try {
         const db = await dbPromise;
@@ -438,6 +439,7 @@ app.get('/', async (req, res) => {
                 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
                 'css/BASE.css',
                 'css/header.css',
+                'css/searchbar.css',
                 'css/home.css',
             ],
             beforeBody: [],
