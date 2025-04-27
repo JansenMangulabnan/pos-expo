@@ -84,6 +84,11 @@
     transition: color 0.3s; /* Added transition */
 }
 
+.sidebar-logout a .icon {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
 .sidebar-logout a:hover {
     color: var(--button_hover);
 }

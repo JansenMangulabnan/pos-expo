@@ -366,7 +366,10 @@ app.get('/admin', isAdmin, async (req, res) => {
             scripts: [
                 'https://code.jquery.com/jquery-3.6.0.min.js',
                 'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
+                'js/BASE.js',
+                'js/admin_nav.js',
                 'js/admin.js',
+                'js/searchbar.js'
             ],
             products,
             adminShopId: shopId,
