@@ -1,18 +1,18 @@
-<div class="header_container">
-    <div class="header_customer">
-        <nav class="header_nav">
-            <div class="left_nav_content">
+<div class="header-container">
+    <div class="header-customer">
+        <nav class="header-nav">
+            <div class="left-nav-content">
                 <a href="#" class="brand">POSSIE</a>
-                <ul class="nav_links">
+                <ul class="nav-links">
                     <li><a href="#">Home</a></li>
                     <li><a href="#">Products</a></li>
                     <li><a href="#">About Us</a></li>
                     <li><a href="#">Contact</a></li>
                 </ul>
             </div>
-            <div class="right_nav_content">
-                <div class="search_container" id="searchContainer">
-                    <input id="searchBar" type="text" placeholder="Search..." class="search_input" />
+            <div class="right-nav-content">
+                <div class="search-container" id="searchContainer">
+                    <input id="searchBar" type="text" placeholder="Search..." class="search-input" />
                     <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
                         <path
                             d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z">
@@ -21,7 +21,7 @@
 
                 </div>
                 {{#if isLoggedIn}}
-                <div class="user_profile">
+                <div class="user-profile">
                     <span id="dropDown" class="username">{{username}} &#128899;</span>
                     <div class="dropdown-content">
                         <a id="settingBtn">Settings</a>
@@ -29,8 +29,8 @@
                     </div>
                 </div>
                 {{else}}
-                <div class="user_profile">
-                    <button id="btnLogin" class="btn_login">Login</button>
+                <div class="user-profile">
+                    <button id="btnLogin" class="btn-login">Login</button>
                 </div>
                 {{/if}}
             </div>
