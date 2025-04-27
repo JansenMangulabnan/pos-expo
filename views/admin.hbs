@@ -16,7 +16,10 @@
             </div>
             {{/if}}
         </div>
-        {{> search_bar}}
+        <div class="search-add">
+            {{> search_bar}}
+            <div class="add-product-btn" id="addProductBtn" onclick="showAddProductModal()">+</i></div>
+        </div>
         <div class="container">
             {{#each products}}
             <div class="product-card">
@@ -41,5 +44,3 @@
         </div>
     </div>
 </div>
-
-<div class="add-product-btn" id="addProductBtn" onclick="showAddProductModal()">+</i></div>
