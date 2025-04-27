@@ -113,7 +113,6 @@ app.get('/signup', (req, res) => {
         afterbody: [],
         nodeModules: [
             '/node_modules/jquery/dist/jquery.min.js',
-            '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
         ],
         scripts: [
             'https://code.jquery.com/jquery-3.6.0.min.js',
@@ -203,7 +202,6 @@ app.get('/login', (req, res) => {
         afterbody: [],
         nodeModules: [
             '/node_modules/jquery/dist/jquery.min.js',
-            '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
         ],
         scripts: [
             'https://code.jquery.com/jquery-3.6.0.min.js',
@@ -356,13 +354,12 @@ app.get('/admin', isAdmin, async (req, res) => {
                 'css/admin.css',
                 'css/admin_nav.css',
                 'css/searchbar.css',
-                'css/admin_modal.css'
+                'css/admin_modal.css',
             ],
             beforeBody: [],
             afterbody: [],
             nodeModules: [
                 '/node_modules/jquery/dist/jquery.min.js',
-                '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
             ],
             scripts: [
                 'https://code.jquery.com/jquery-3.6.0.min.js',
@@ -370,7 +367,8 @@ app.get('/admin', isAdmin, async (req, res) => {
                 'js/BASE.js',
                 'js/admin_nav.js',
                 'js/admin.js',
-                'js/searchbar.js'
+                'js/searchbar.js',
+                'js/admin_modal.js'
             ],
             products,
             adminShopId: shopId,
@@ -384,6 +382,7 @@ app.get('/admin', isAdmin, async (req, res) => {
     }
 });
 
+//adminAdd request handler
 app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
     try {
         const {
@@ -426,6 +425,71 @@ app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
     }
 });
 
+//adminUpdate request handler
+app.post('/adminUpdate', async (req, res) => {
+    try {
+        const {
+            product_id,
+            product_img,
+            product_name,
+            product_description,
+            product_stock,
+            product_category,
+            product_price,
+        } = req.body;
+
+        const db = await dbPromise;
+
+        await db
+            .request()
+            .input('product_id', sql.Int, product_id)
+            .input('product_img', sql.VarChar, product_img)
+            .input('product_name', sql.VarChar, product_name)
+            .input('product_description', sql.VarChar, product_description)
+            .input('product_stock', sql.Int, product_stock)
+            .input('product_category', sql.VarChar, product_category)
+            .input('product_price', sql.Decimal(10, 2), product_price)
+            .query(`
+                UPDATE Product
+                SET 
+                    product_img = @product_img,
+                    product_name = @product_name,
+                    product_description = @product_description,
+                    product_stock = @product_stock,
+                    product_category = @product_category,
+                    product_price = @product_price
+                WHERE product_id = @product_id
+            `);
+
+        res.status(200).send("Product updated successfully.");
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//adminDelete request handler
+app.post('/adminDelete', async (req, res) => {
+    try {
+        const { product_id } = req.body;
+
+        const db = await dbPromise;
+
+        await db
+            .request()
+            .input('product_id', sql.Int, product_id)
+            .query(`
+                DELETE FROM Product
+                WHERE product_id = @product_id
+            `);
+
+        res.status(200).send("Product deleted successfully.");
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 // home hbs renderer
 app.get('/', async (req, res) => {
     try {
@@ -450,7 +514,6 @@ app.get('/', async (req, res) => {
             afterbody: [],
             nodeModules: [
                 '/node_modules/jquery/dist/jquery.min.js',
-                '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
             ],
             scripts: [
                 'https://code.jquery.com/jquery-3.6.0.min.js',

@@ -157,6 +157,7 @@ body {
 }
 
 .edit-btn,
+.save-btn,
 .delete-btn {
     background: none;
     border: none;
@@ -166,12 +167,18 @@ body {
     transition: color 0.3s; /* Added transition */
 }
 
+.save-btn:hover
 .edit-btn:hover {
     color: #fff;
 }
 
 .delete-btn:hover {
     color: #ff4d4d;
+}
+
+.save-btn,
+.save-btn:hover{
+    font-size: 1.6rem;
 }
 
 
