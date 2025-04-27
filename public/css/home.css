@@ -15,13 +15,11 @@
     aspect-ratio: 5/4;
     background-color: var(--div);
     color: var(--text);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow for depth */
-    transition: transform 0.3s, box-shadow 0.3s; /* Add hover effect */
+    transition: transform 0.3s;
 }
 
 .product:hover {
-    transform: translateY(-5px); /* Slight lift on hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+    transform: scale(1.02);
 }
 
 .img-display {

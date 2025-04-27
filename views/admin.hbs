@@ -20,8 +20,9 @@
         <div class="container">
             {{#each products}}
             <div class="product-card">
-                <img src="{{product_img}}" alt="" class="product-img">
-
+                <div class="img-display">
+                    <img src="{{product_img}}" class="product-img" onerror="this.style.display='none';"/>
+                </div>
 
                 <div class="product-info">
                     <h4 class="product-name">{{product_name}}</h4>
