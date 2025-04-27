@@ -1,9 +1,20 @@
-function showAddProductModal() {
-    console.log("showAddProductModal called");
-    $(".add-modal").css("display", "block");
-}
-
 $(document).ready(function () {
+    $(document).on("keydown", function (event) {
+        if (event.key === "Escape") {
+            $(".add-modal").css("display", "none");
+        }
+    });
+        
+
+    $(".modal-backdrop, .close-btn").on("click", function () {
+        $(".add-modal").css("display", "none");
+    });
+
+    $(".add-product-btn").on("click", function () {
+        $(".add-modal").css("display", "flex");
+    });
+
+
     $("#addProductForm").on("submit", function (event) {
         event.preventDefault();
 

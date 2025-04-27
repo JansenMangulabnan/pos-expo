@@ -7,10 +7,17 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
-    display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
 }
 
 .modal-content {
@@ -23,6 +30,7 @@
     border-radius: 10px; /* Rounded corners */    
     width: 500px; /* Match login container width */
     text-align: center; /* Center-align text */
+    z-index: 4; /* Ensure modal content is above the background */
 }
 
 h2 {
