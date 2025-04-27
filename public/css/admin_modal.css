@@ -160,11 +160,11 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 #deleteModal .submit-btn {
-    background-color: var(--danger); /* Red button for delete */
+    background-color: var(--button); /* Red button for delete */
 }
 
 #deleteModal .submit-btn:hover {
-    background-color: var(--danger_hover); /* Darker red on hover */
+    background-color: var(--button_hover); /* Darker red on hover */
 }
 
 /* Specific styles for save changes modal */

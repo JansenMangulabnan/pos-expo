@@ -3,12 +3,19 @@ $(document).ready(function () {
     //hide modal on escape key press
     $(".modal-backdrop, .close-btn").on("click", function () {
         $("#addProductModal").css("display", "none");
+        $("#editProductModal").css("display", "none");
+        $("#deleteModal").css("display", "none");
     });
 
-    // Save changes in modal
+
+
 
 
     // Discard changes in modal
+    $("#discardChanges").on("click", function () {
+        location.reload();
+    });
+
     $("#discardChanges").on("click", function () {
         location.reload();
     });
