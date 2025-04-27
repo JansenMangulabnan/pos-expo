@@ -10,9 +10,9 @@ $(document).ready(function () {
         const query = $(this).val().trim().toLowerCase();
 
         $(".product").each(function () {
-            const name = $(this).find(".product_name").text().toLowerCase();
+            const name = $(this).find(".product-name").text().toLowerCase();
             const desc = $(this)
-                .find(".product_description")
+                .find(".product-description")
                 .text()
                 .toLowerCase();
 

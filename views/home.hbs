@@ -1,19 +1,19 @@
 {{> header }}
 
-<div class="product_container">
+<div class="product-container">
     {{#each Product}}
-    <div class="product" id="product_{{product_id}}">
+    <div class="product" id="{{product_id}}">
         <div class="img-display">
             <img src="{{product_img}}" alt="" class="product-img"/>
         </div>
-        <div class="product_details">
-            <div class="left_detail">
-                <div class="product_name">{{product_name}}</div>
-                <div class="product_description">{{product_description}}</div>
+        <div class="product-details">
+            <div class="left-detail">
+                <div class="product-name">{{product_name}}</div>
+                <div class="product-description">{{product_description}}</div>
             </div>
-            <div class="right_detail">
-                <div class="product_stock">{{product_stock}} Stock</div>
-                <div class="product_price">${{product_price}}</div>
+            <div class="right-detail">
+                <div class="product-stock">{{product_stock}} Stock</div>
+                <div class="product-price">${{product_price}}</div>
             </div>
         </div>
         <button class="add-cart">Add to Cart</button>
