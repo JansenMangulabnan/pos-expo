@@ -56,21 +56,20 @@ $(document).ready(function () {
     $(".delete-btn").on("click", function () {
         currentProductCard = $(this).closest(".product-card");
 
-        
         const productId = currentProductCard
-        .find(".product-id")
-        .text()
-        .replace("#", "");
-        
+            .find(".product-id")
+            .text()
+            .replace("#", "");
+
         $("#deleteModal").css("display", "flex").data("productId", productId);
     });
-    
+
     // Edit button click
     $(".edit-btn").on("click", function () {
         console.log(this);
         currentProductCard = $(this).closest(".product-card");
         console.log(currentProductCard);
-        
+
         const imgDisplay = currentProductCard.find(".img-display img");
         const productName = currentProductCard.find(".product-name");
         const productDesc = currentProductCard.find(".product-desc");
@@ -102,14 +101,18 @@ $(document).ready(function () {
         productCategory.replaceWith(
             `<div class="category-edit-lable" contenteditable="true">${currentProductCard
                 .find(".category-edit-lable")
-                .text()}</div>`
+                .text()
+                .trim()}</div>`
         );
         productPrice.replaceWith(
             `<div class="price-edit-lable" contenteditable="true">${parseFloat(
-                currentProductCard.find(".price-edit-lable").text().replace("$", "")
+                currentProductCard
+                    .find(".price-edit-lable")
+                    .text()
+                    .replace("$", "")
             )}</div>`
         );
-    
+
         // Change edit button to confirm button
         $(this)
             .empty() // clear existing content
@@ -127,15 +130,15 @@ $(document).ready(function () {
         const productId = currentProductCard
             .find(".product-id")
             .text()
-            .replace("#", ""); 
-            $(".save-modal").css("display", "flex").data("productId", productId);
-        }
-    
-        $("#saveChanges").on("click", function () {
-            const productId = currentProductCard
-                .find(".product-id")
-                .text()
-                .replace("#", "");
+            .replace("#", "");
+        $(".save-modal").css("display", "flex").data("productId", productId);
+    }
+
+    $("#saveChanges").on("click", function () {
+        const productId = currentProductCard
+            .find(".product-id")
+            .text()
+            .replace("#", "");
 
         // Get updated values from contenteditable divs
         const imgSrc = currentProductCard.find(".product-img-input").val();
@@ -159,7 +162,6 @@ $(document).ready(function () {
                 product_price: price,
             }),
             success: function () {
-                alert("Product updated successfully!");
                 location.reload();
             },
             error: function (xhr) {
