@@ -486,19 +486,22 @@ app.post("/uploadImage", adminUpload.single("product_img"), (req, res) => {
 //adminUpdateWithImage request handler
 app.post("/adminUpdateWithImage", adminUpload.single("product_img"), async (req, res) => {
     try {
-        const {
-            product_id,
-            product_name,
-            product_description,
-            product_stock,
-            product_category,
-            product_price,
-        } = req.body;
-
-        // Handle file upload
-        const product_img = req.file ? `/img/${req.file.filename}` : null;
+        const { product_id, product_name, product_description, product_stock, product_category, product_price } = req.body;
 
         const db = await dbPromise;
+
+        // Retrieve the current product details from the database
+        const currentProduct = await db
+            .request()
+            .input("product_id", sql.Int, product_id)
+            .query(`
+                SELECT product_img
+                FROM Product
+                WHERE product_id = @product_id
+            `);
+
+        // Use the old image path if no new file is uploaded
+        const product_img = req.file ? `/img/${req.file.filename}` : currentProduct.recordset[0].product_img;
 
         // Update the product in the database
         await db
@@ -513,7 +516,7 @@ app.post("/adminUpdateWithImage", adminUpload.single("product_img"), async (req,
             .query(`
                 UPDATE Product
                 SET 
-                    product_img = ISNULL(@product_img, product_img),
+                    product_img = @product_img,
                     product_name = @product_name,
                     product_description = @product_description,
                     product_stock = @product_stock,
@@ -525,7 +528,7 @@ app.post("/adminUpdateWithImage", adminUpload.single("product_img"), async (req,
         // Return the updated product details
         res.status(200).json({
             product_id,
-            product_img: product_img || req.body.product_img, // Use the new image or keep the old one
+            product_img,
             product_name,
             product_description,
             product_stock,

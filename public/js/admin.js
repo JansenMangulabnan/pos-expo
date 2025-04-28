@@ -81,41 +81,43 @@ $(document).ready(function () {
         imgDisplay.replaceWith(`
             <div class="edit-img-dropzone">
                 <p>Drag and drop an image here, or click to select a file</p>
-                <input type="file" class="edit-img-input" accept="image/*" hidden value="${imgDisplay.attr("src")}" />
+                <input type="file" class="edit-img-input" accept="image/*" hidden value="${imgDisplay.attr(
+                    "src"
+                )}" />
             </div>
         `);
 
         const dz = $(".edit-img-dropzone");
-        const fileInput = $('.edit-img-input');
-        
+        const fileInput = $(".edit-img-input");
+
         $(document).on("click", ".edit-img-dropzone", function (e) {
             console.log("clicked edit img");
             e.stopPropagation(); // Important: stop bubbling up
             fileInput[0].click(); // trigger file input click
         });
-        dz.on('dragover', function(e) {
+        dz.on("dragover", function (e) {
             e.preventDefault();
-            dz.addClass('dragover');
+            dz.addClass("dragover");
         });
-        dz.on('dragleave', function(e) {
+        dz.on("dragleave", function (e) {
             e.preventDefault();
-            dz.removeClass('dragover');
+            dz.removeClass("dragover");
         });
-        dz.on('drop', function(e) {
+        dz.on("drop", function (e) {
             e.preventDefault();
-            dz.removeClass('dragover');
+            dz.removeClass("dragover");
             let files = e.originalEvent.dataTransfer.files;
             if (files.length) {
                 fileInput[0].files = files;
-                fileInput.trigger('change');
+                fileInput.trigger("change");
             }
         });
-        fileInput.on('change', function() {
+        fileInput.on("change", function () {
             if (this.files.length > 0) {
-                dz.find('p').text(this.files[0].name);
+                dz.find("p").text(this.files[0].name);
             }
         });
-        
+
         productName.replaceWith(
             `<div class="product-name" contenteditable="true">${currentProductCard
                 .find(".product-name")
@@ -154,7 +156,6 @@ $(document).ready(function () {
             .removeClass("edit-btn");
     });
 
-
     // Confirm button click
 
     $(document).on("click", ".save-btn", function () {
@@ -166,16 +167,23 @@ $(document).ready(function () {
         $(".save-modal").css("display", "flex").data("productId", productId);
     });
 
-
     $("#saveChanges").on("click", function () {
         const productId = currentProductCard.find(".product-id").text().replace("#", "");
+
+        // Get the current image src
+        const imgDisplay = currentProductCard.find(".img-display").attr("src");
 
         // Create FormData to include file and other product details
         const formData = new FormData();
         const fileInput = currentProductCard.find(".edit-img-input")[0];
+
+        // Check if a new file is selected; if not, use the existing image src
         if (fileInput.files.length > 0) {
-            formData.append("product_img", fileInput.files[0]); // Add the file
+            formData.append("product_img", fileInput.files[0]); // Add the new file
+        } else {
+            formData.append("product_img", imgDisplay); // Use the old image path
         }
+
         formData.append("product_id", productId);
         formData.append("product_name", currentProductCard.find(".product-name").text().trim());
         formData.append("product_description", currentProductCard.find(".product-desc").text().trim());
@@ -185,28 +193,13 @@ $(document).ready(function () {
 
         // Send the FormData via AJAX
         $.ajax({
-            url: "/adminUpdateWithImage", // New endpoint to handle both file upload and update
+            url: "/adminUpdateWithImage", // Endpoint to handle both file upload and update
             method: "POST",
             data: formData,
             processData: false, // Prevent jQuery from processing the data
             contentType: false, // Prevent jQuery from setting the content type
             success: function (response) {
-                // // Update the product card dynamically
-                // currentProductCard.find(".img-display").attr("src", response.product_img);
-                // currentProductCard.find(".product-name").text(response.product_name);
-                // currentProductCard.find(".product-desc").text(response.product_description);
-                // currentProductCard.find(".qty-edit-lable").text(response.product_stock);
-                // currentProductCard.find(".category-edit-lable").text(response.product_category);
-                // currentProductCard.find(".price-edit-lable").text(`$${response.product_price}`);
-
-                // // Close the modal
-                // $(".save-modal").css("display", "none");
-                // $(".save-btn")
-                // .empty()
-                // .append("<i class='bx bxs-edit-alt'></i>")
-                // .removeClass("save-btn")
-                // .addClass("edit-btn");
-                location.reload();
+                location.reload(); 
             },
             error: function (xhr) {
                 alert("Error updating product: " + xhr.responseText);
