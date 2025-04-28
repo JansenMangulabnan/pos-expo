@@ -182,4 +182,20 @@ body {
 }
 
 
+.product-name-input,
+.product-desc-input,
+.product-desc-input,
+.product-qty-input,
+.product-category-input,
+.product-price-input {
+    width: fit-content;
+    padding: 10px;
+    border: 0px;
+    border-radius: 5px;
+    font-size: 1rem;
+    background: var(--input);
+    color: var(--text); 
+    white-space: nowrap
+}
+
 

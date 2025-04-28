@@ -55,19 +55,22 @@ $(document).ready(function () {
 
     $(".delete-btn").on("click", function () {
         currentProductCard = $(this).closest(".product-card");
-        const productId = currentProductCard
-            .find(".product-id")
-            .text()
-            .replace("#", "");
 
+        
+        const productId = currentProductCard
+        .find(".product-id")
+        .text()
+        .replace("#", "");
+        
         $("#deleteModal").css("display", "flex").data("productId", productId);
     });
-
+    
     // Edit button click
     $(".edit-btn").on("click", function () {
+        console.log(this);
         currentProductCard = $(this).closest(".product-card");
-
-        // Replace elements with input fields
+        console.log(currentProductCard);
+        
         const imgDisplay = currentProductCard.find(".img-display img");
         const productName = currentProductCard.find(".product-name");
         const productDesc = currentProductCard.find(".product-desc");
@@ -75,31 +78,38 @@ $(document).ready(function () {
         const productCategory = currentProductCard.find(".product-category");
         const productPrice = currentProductCard.find(".product-price");
 
+        // Replace elements with contenteditable divs
         imgDisplay.replaceWith(
             `<input type="text" class="product-img-input" value="${imgDisplay.attr(
                 "src"
             )}" />`
         );
         productName.replaceWith(
-            `<input type="text" class="product-name-input" value="${productName.text()}" />`
+            `<div class="product-name" contenteditable="true">${currentProductCard
+                .find(".product-name")
+                .text()}</div>`
         );
         productDesc.replaceWith(
-            `<input type="text" class="product-desc-input" value="${productDesc.text()}" />`
+            `<div class="product-desc" contenteditable="true">${currentProductCard
+                .find(".product-desc")
+                .text()}</div>`
         );
         productQty.replaceWith(
-            `<input type="number" class="product-qty-input" value="${parseInt(
-                productQty.text()
-            )}" />`
+            `<div class="product-qty" contenteditable="true">${parseInt(
+                currentProductCard.find(".product-qty").text()
+            )}</div>`
         );
         productCategory.replaceWith(
-            `<input type="text" class="product-category-input" value="${productCategory.text()}" />`
+            `<div class="product-category" contenteditable="true">${currentProductCard
+                .find(".product-category")
+                .text()}</div>`
         );
         productPrice.replaceWith(
-            `<input type="number" class="product-price-input" value="${parseFloat(
-                productPrice.text().replace("$", "")
-            )}" />`
+            `<div class="product-price" contenteditable="true">${parseFloat(
+                currentProductCard.find(".product-price").text().replace("$", "")
+            )}</div>`
         );
-
+    
         // Change edit button to confirm button
         $(this)
             .empty() // clear existing content
@@ -117,25 +127,23 @@ $(document).ready(function () {
         const productId = currentProductCard
             .find(".product-id")
             .text()
-            .replace("#", "");
-        $(".save-modal").css("display", "flex").data("productId", productId);
-    }
+            .replace("#", ""); 
+            $(".save-modal").css("display", "flex").data("productId", productId);
+        }
+    
+        $("#saveChanges").on("click", function () {
+            const productId = currentProductCard
+                .find(".product-id")
+                .text()
+                .replace("#", "");
 
-    $("#saveChanges").on("click", function () {
-        const productId = currentProductCard
-            .find(".product-id")
-            .text()
-            .replace("#", "");
-
-        // Get updated values from input fields
+        // Get updated values from contenteditable divs
         const imgSrc = currentProductCard.find(".product-img-input").val();
-        const name = currentProductCard.find(".product-name-input").val();
-        const desc = currentProductCard.find(".product-desc-input").val();
-        const qty = currentProductCard.find(".product-qty-input").val();
-        const category = currentProductCard
-            .find(".product-category-input")
-            .val();
-        const price = currentProductCard.find(".product-price-input").val();
+        const name = currentProductCard.find(".product-name").text();
+        const desc = currentProductCard.find(".product-desc").text();
+        const qty = currentProductCard.find(".product-qty").text();
+        const category = currentProductCard.find(".product-category").text();
+        const price = currentProductCard.find(".product-price").text();
 
         $.ajax({
             url: "/adminUpdate",
