@@ -74,9 +74,9 @@ $(document).ready(function () {
         const imgDisplay = currentProductCard.find(".img-display img");
         const productName = currentProductCard.find(".product-name");
         const productDesc = currentProductCard.find(".product-desc");
-        const productQty = currentProductCard.find(".product-qty");
-        const productCategory = currentProductCard.find(".product-category");
-        const productPrice = currentProductCard.find(".product-price");
+        const productQty = currentProductCard.find(".qty-edit-lable");
+        const productCategory = currentProductCard.find(".category-edit-lable");
+        const productPrice = currentProductCard.find(".price-edit-lable");
 
         // Replace elements with contenteditable divs
         imgDisplay.replaceWith(
@@ -95,18 +95,18 @@ $(document).ready(function () {
                 .text()}</div>`
         );
         productQty.replaceWith(
-            `<div class="product-qty" contenteditable="true">${parseInt(
-                currentProductCard.find(".product-qty").text()
+            `<div class="qty-edit-lable" contenteditable="true">${parseInt(
+                currentProductCard.find(".qty-edit-lable").text()
             )}</div>`
         );
         productCategory.replaceWith(
-            `<div class="product-category" contenteditable="true">${currentProductCard
-                .find(".product-category")
+            `<div class="category-edit-lable" contenteditable="true">${currentProductCard
+                .find(".category-edit-lable")
                 .text()}</div>`
         );
         productPrice.replaceWith(
-            `<div class="product-price" contenteditable="true">${parseFloat(
-                currentProductCard.find(".product-price").text().replace("$", "")
+            `<div class="price-edit-lable" contenteditable="true">${parseFloat(
+                currentProductCard.find(".price-edit-lable").text().replace("$", "")
             )}</div>`
         );
     
