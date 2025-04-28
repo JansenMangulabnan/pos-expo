@@ -539,26 +539,26 @@ app.post("/adminUpdateWithImage", adminUpload.single("product_img"), async (req,
 });
 
 //adminDelete request handler
-// app.post('/adminDelete', async (req, res) => {
-//     try {
-//         const { product_id } = req.body;
+app.post('/adminDelete', async (req, res) => {
+    try {
+        const { product_id } = req.body;
 
-//         const db = await dbPromise;
+        const db = await dbPromise;
 
-//         await db
-//             .request()
-//             .input('product_id', sql.Int, product_id)
-//             .query(`
-//                 DELETE FROM Product
-//                 WHERE product_id = @product_id
-//             `);
+        await db
+            .request()
+            .input('product_id', sql.Int, product_id)
+            .query(`
+                DELETE FROM Product
+                WHERE product_id = @product_id
+            `);
 
-//         res.status(200).send("Product deleted successfully.");
-//     } catch (error) {
-//         console.error("Error deleting product:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
+        res.status(200).send("Product deleted successfully.");
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 // home hbs renderer
 app.get('/', async (req, res) => {
