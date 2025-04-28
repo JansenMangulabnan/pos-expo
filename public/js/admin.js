@@ -65,7 +65,7 @@ $(document).ready(function () {
     });
 
     // Edit button click
-    $(".edit-btn").on("click", function () {
+    $(document).on("click", ".edit-btn", function () {
         console.log(this);
         currentProductCard = $(this).closest(".product-card");
         console.log(currentProductCard);
@@ -116,23 +116,22 @@ $(document).ready(function () {
         // Change edit button to confirm button
         $(this)
             .empty() // clear existing content
-            .append("<i class='bx bx-check'></i>") // append icon
+            .append("<i class='bx bx-save' ></i>") // append icon
             .addClass("save-btn")
-            .on("click", function () {
-                saveevent();
-            })
             .removeClass("edit-btn");
     });
 
     // Confirm button click
-    function saveevent() {
+
+    $(document).on("click", ".save-btn", function () {
         currentProductCard = $(".save-btn").closest(".product-card");
         const productId = currentProductCard
             .find(".product-id")
             .text()
             .replace("#", "");
         $(".save-modal").css("display", "flex").data("productId", productId);
-    }
+    });
+
 
     $("#saveChanges").on("click", function () {
         const productId = currentProductCard
