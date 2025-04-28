@@ -468,27 +468,97 @@ app.post('/adminUpdate', async (req, res) => {
     }
 });
 
-//adminDelete request handler
-app.post('/adminDelete', async (req, res) => {
+// adminUpload request handler
+app.post("/uploadImage", adminUpload.single("product_img"), (req, res) => {
     try {
-        const { product_id } = req.body;
+        if (!req.file) {
+            return res.status(400).send("No file uploaded.");
+        }
 
-        const db = await dbPromise;
-
-        await db
-            .request()
-            .input('product_id', sql.Int, product_id)
-            .query(`
-                DELETE FROM Product
-                WHERE product_id = @product_id
-            `);
-
-        res.status(200).send("Product deleted successfully.");
+        // Return the file path to the client
+        res.status(200).json({ filePath: `/img/${req.file.filename}` });
     } catch (error) {
-        console.error("Error deleting product:", error);
+        console.error("Error uploading image:", error);
         res.status(500).send("Internal Server Error");
     }
 });
+
+//adminUpdateWithImage request handler
+app.post("/adminUpdateWithImage", adminUpload.single("product_img"), async (req, res) => {
+    try {
+        const {
+            product_id,
+            product_name,
+            product_description,
+            product_stock,
+            product_category,
+            product_price,
+        } = req.body;
+
+        // Handle file upload
+        const product_img = req.file ? `/img/${req.file.filename}` : null;
+
+        const db = await dbPromise;
+
+        // Update the product in the database
+        await db
+            .request()
+            .input("product_id", sql.Int, product_id)
+            .input("product_img", sql.VarChar, product_img)
+            .input("product_name", sql.VarChar, product_name)
+            .input("product_description", sql.VarChar, product_description)
+            .input("product_stock", sql.Int, product_stock)
+            .input("product_category", sql.VarChar, product_category)
+            .input("product_price", sql.Decimal(10, 2), product_price)
+            .query(`
+                UPDATE Product
+                SET 
+                    product_img = ISNULL(@product_img, product_img),
+                    product_name = @product_name,
+                    product_description = @product_description,
+                    product_stock = @product_stock,
+                    product_category = @product_category,
+                    product_price = @product_price
+                WHERE product_id = @product_id
+            `);
+
+        // Return the updated product details
+        res.status(200).json({
+            product_id,
+            product_img: product_img || req.body.product_img, // Use the new image or keep the old one
+            product_name,
+            product_description,
+            product_stock,
+            product_category,
+            product_price,
+        });
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//adminDelete request handler
+// app.post('/adminDelete', async (req, res) => {
+//     try {
+//         const { product_id } = req.body;
+
+//         const db = await dbPromise;
+
+//         await db
+//             .request()
+//             .input('product_id', sql.Int, product_id)
+//             .query(`
+//                 DELETE FROM Product
+//                 WHERE product_id = @product_id
+//             `);
+
+//         res.status(200).send("Product deleted successfully.");
+//     } catch (error) {
+//         console.error("Error deleting product:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
 
 // home hbs renderer
 app.get('/', async (req, res) => {

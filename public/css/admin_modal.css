@@ -95,7 +95,7 @@ h2 {
     border: 0px;
     border-radius: 5px;
     font-size: 1rem;
-    background: var(--input); /* Match input background */
+    background: var(--input); 
     color: var(--text); /* Match input text color */
 }
 

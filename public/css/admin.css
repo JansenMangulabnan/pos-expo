@@ -165,7 +165,7 @@ body {
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--text);
-    transition: color 0.3s; /* Added transition */
+    transition: color 0.3s;
 }
 
 .save-btn:hover
@@ -196,11 +196,3 @@ body {
     width: fit-content;
     padding: 10px;
 }
-/* .product-qty:focus,
-.product-category:focus,
-.product-price:focus {
-    outline: none;
-    box-shadow: 0 0 0px 1000px var(--input) inset !important;
-    border: 1px solid var(--input_element);
-    border-radius: 5px;
-} */
