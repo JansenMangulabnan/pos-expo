@@ -26,7 +26,7 @@
     <div class="modal-backdrop"></div>
     <div class="modal-content">
         <h2>ADD PRODUCT</h2>
-        <form id="addProductForm" action="/adminAdd" method="POST" enctype="multipart/form-data">
+        <form id="addProductForm" action="/adminAdd" method="POST" enctype="multipart/form-data" class="add-product-form">
             <div class="form-group">
                 <label for="product_name">Product Name</label>
                 <input type="text" id="product_name" name="product_name" required />
@@ -49,7 +49,10 @@
             </div>
             <div class="form-group">
                 <label for="product_img">Product Image</label>
-                <input type="file" id="product_img" name="product_img" accept="image/*" />
+                <div id="product_img_dropzone" class="dropzone">
+                    <p>Drag and drop an image here, or click to select a file</p>
+                    <input type="file" id="product_img" name="product_img" accept="image/*" hidden />
+                </div>
             </div>
             <div class="button-container">
                 <button type="button" class="close-btn">Close</button>

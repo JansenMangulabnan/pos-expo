@@ -63,6 +63,14 @@ h2 {
     margin-bottom: 20px;
 }
 
+.add-product-form {
+    display: flex;
+    flex-direction: column; 
+    width: 100%; 
+    align-items: center; 
+    justify-content: center; 
+}
+
 .form-group {
     width: 100%; /* Ensure form groups take full width */
     margin-bottom: 15px;
@@ -178,4 +186,28 @@ input[type="number"]::-webkit-outer-spin-button {
 
 #saveChangesModal .submit-btn:hover {
     background-color: var(--success_hover); /* Darker green on hover */
+}
+
+.dropzone {
+    border: 2px dashed var(--input_element);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    color: var(--text);
+    background-color: var(--input);
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    width: inherit;
+}
+
+.dropzone.dragover {
+    background-color: var(--button_fade);
+    border-color: var(--button);
+    width: 100%;
+}
+
+.dropzone p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text);
 }
