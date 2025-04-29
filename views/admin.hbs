@@ -16,45 +16,9 @@
             </div>
             {{/if}}
         </div>
-        <div class="search-add">
-            {{> search_bar}}
-            <div class="add-product-btn" id="addProductBtn">+</i></div>
-        </div>
-        <div class="container">
-            {{#each products}}
-            <div class="product-card">
-                <div class="img-display">
-                    <img src="{{product_img}}" class="product-img" onerror="this.style.display='none';" />
-                </div>
 
-                <div class="product-info">
-                    <h4 class="product-name">{{product_name}}</h4>
-                    <p class="product-desc">{{product_description}}</p>
-                </div>
-                <div class="product-id">
-                    #{{product_id}}
-                </div>
-                <div class="product-qty">
-                    <div class="qty-edit-lable">
-                        {{product_stock}} Items
-                    </div>
-                </div>
-                <div class="product-category">
-                    <div class="category-edit-lable">
-                        {{product_category}}
-                    </div>
-                </div>
-                <div class="product-price">
-                    <div class="price-edit-lable">
-                        ${{product_price}}
-                    </div>
-                </div>
-                <div class="product-actions">
-                    <button class="edit-btn"><i class='bx bxs-edit-alt'></i></button>
-                    <button class="delete-btn"><i class='bx bxs-trash'></i></button>
-                </div>
-            </div>
-            {{/each}}
+        <div class="content-containers">
+            {{> admin_content_menu}}
         </div>
     </div>
 </div>

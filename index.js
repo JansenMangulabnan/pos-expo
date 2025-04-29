@@ -355,6 +355,7 @@ app.get('/admin', isAdmin, async (req, res) => {
                 'css/admin_nav.css',
                 'css/searchbar.css',
                 'css/admin_modal.css',
+                'css/admin_content_menu.css',
             ],
             beforeBody: [],
             afterbody: [],
@@ -367,8 +368,9 @@ app.get('/admin', isAdmin, async (req, res) => {
                 'js/BASE.js',
                 'js/admin_nav.js',
                 'js/admin.js',
+                'js/admin_content_menu.js',
                 'js/searchbar.js',
-                'js/admin_modal.js'
+                'js/admin_modal.js',
             ],
             products,
             adminShopId: shopId,
