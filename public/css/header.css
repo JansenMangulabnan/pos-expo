@@ -1,4 +1,3 @@
-
 .header-container {
     display: flex;
     flex-direction: column;
@@ -16,7 +15,7 @@
     flex-direction: row;
     align-items: center; /* Align items vertically */
     justify-content: space-between; /* Space out title and nav */
-    padding: 10px 20px; /* Add padding for spacing */
+    padding: 20px 20px; /* Add padding for spacing */
     
 }
 
@@ -35,7 +34,7 @@
 
 .right-nav-content {
     display: flex;
-    gap: 50px;
+    gap: 20px;
     margin-right: 0px;
 }
 
@@ -62,6 +61,15 @@
 
 .nav-links li a:hover {
     color: var(--text);
+}
+
+.cart-icon {
+    font-size: 2.5rem;
+    color: var(--button);
+    cursor: pointer;
+    transition: color 0.3s;
+    align-self: center;
+    margin: auto;
 }
 
 .user-profile {
@@ -128,4 +136,45 @@
 
 .btn-login:hover {
     background-color: var(--button_hover);
+}
+
+/* Profile Icon Container */
+.profile-icon {
+    display: flex;
+    align-items: center;
+    background-color: var(--button_hover_hover); 
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Profile Image */
+.profile-image {
+    fill: var(--button_hover);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%; 
+    object-fit: cover;
+}
+
+.profile-icon:hover {
+    background-color: var(--button_text_hover); /* Change  on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+}
+
+/* Profile Placeholder */
+.profile-placeholder {
+    display: none; /* Hidden by default */
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--input);
+    color: var(--input_element);
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase; /* Ensure the letter is uppercase */
+    object-fit: cover;
 }

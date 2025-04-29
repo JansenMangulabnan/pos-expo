@@ -12,12 +12,19 @@
             </div>
             <div class="right-nav-content">
                 {{> search_bar}}
+                <div class="cart-icon">
+                    <i class='bx bx-cart'></i>
+                </div>
                 {{#if isLoggedIn}}
                 <div class="user-profile">
-                    <span id="dropDown" class="username">{{username}} &#128899;</span>
+                    {{!-- <span id="dropDown" class="username">{{username}} &#128899;</span>
                     <div class="dropdown-content">
                         <a id="settingBtn">Settings</a>
                         <a id="logOutBtn">Log Out</a>
+                    </div> --}}
+                    <div class="profile-icon">
+                        <img src="{{user_img}}" alt="Profile Image" class="profile-image" id="profileImage">
+                        <div class="profile-placeholder" id="profilePlaceholder">{{username.[0]}}</div>
                     </div>
                 </div>
                 {{else}}
