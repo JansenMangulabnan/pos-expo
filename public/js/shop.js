@@ -1,5 +1,32 @@
 $(document).ready(function () {
-   
+    // Initially show only the "Menu" content
+    $(".shop-content .content-menu").show();
+    $(".shop-content .content-sales, .shop-content .content-inventory, .shop-content .content-reports, .shop-content .content-order").hide();
+
+    // Handle sidebar navigation clicks
+    $(".sidebar-item").on("click", function () {
+        // Remove 'active' class from all sidebar items
+        $(".sidebar-item").removeClass("active");
+
+        // Add 'active' class to the clicked item
+        $(this).addClass("active");
+
+        // Hide all content sections inside .shop-content
+        $(".shop-content > div").hide();
+
+        // Show the corresponding content section based on the clicked item
+        if ($(this).text().trim() === "Menu") {
+            $(".shop-content .content-menu").show();
+        } else if ($(this).text().trim() === "Sales") {
+            $(".shop-content .content-sales").show();
+        } else if ($(this).text().trim() === "Inventory") {
+            $(".shop-content .content-inventory").show();
+        } else if ($(this).text().trim() === "Reports") {
+            $(".shop-content .content-reports").show();
+        } else if ($(this).text().trim() === "Orders") {
+            $(".shop-content .content-order").show();
+        }
+    });
 
     $(document).on("keydown", function (event) {
         if (event.key === "Escape") {
