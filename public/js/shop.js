@@ -1,7 +1,17 @@
 $(document).ready(function () {
-    // Initially show only the "Menu" content
-    $(".shop-content .content-menu").show();
-    $(".shop-content .content-sales, .shop-content .content-inventory, .shop-content .content-reports, .shop-content .content-order").hide();
+    // Function to show the correct content based on the active nav item
+    function showContent(section) {
+        $(".shop-content > div").hide(); // Hide all sections
+        $(`.shop-content .${section}`).show(); // Show the selected section
+    }
+
+    // Check localStorage for the last active section
+    const savedSection = localStorage.getItem("activeSection") || "content-menu";
+    showContent(savedSection);
+
+    // Set the active class on the corresponding sidebar item
+    $(".sidebar-item").removeClass("active");
+    $(`.sidebar-item:contains(${savedSection.split('-')[1].charAt(0).toUpperCase() + savedSection.split('-')[1].slice(1)})`).addClass("active");
 
     // Handle sidebar navigation clicks
     $(".sidebar-item").on("click", function () {
@@ -11,21 +21,25 @@ $(document).ready(function () {
         // Add 'active' class to the clicked item
         $(this).addClass("active");
 
-        // Hide all content sections inside .shop-content
-        $(".shop-content > div").hide();
-
-        // Show the corresponding content section based on the clicked item
+        // Determine the section to show based on the clicked item's text
+        let section = "content-menu"; // Default section
         if ($(this).text().trim() === "Menu") {
-            $(".shop-content .content-menu").show();
+            section = "content-menu";
         } else if ($(this).text().trim() === "Sales") {
-            $(".shop-content .content-sales").show();
+            section = "content-sales";
         } else if ($(this).text().trim() === "Inventory") {
-            $(".shop-content .content-inventory").show();
+            section = "content-inventory";
         } else if ($(this).text().trim() === "Reports") {
-            $(".shop-content .content-reports").show();
+            section = "content-reports";
         } else if ($(this).text().trim() === "Orders") {
-            $(".shop-content .content-order").show();
+            section = "content-order";
         }
+
+        // Save the active section to localStorage
+        localStorage.setItem("activeSection", section);
+
+        // Show the corresponding content section
+        showContent(section);
     });
 
     $(document).on("keydown", function (event) {
