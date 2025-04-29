@@ -144,7 +144,7 @@ $(document).ready(function () {
 
         // Send the FormData via AJAX
         $.ajax({
-            url: "/adminUpdateWithImage", // Endpoint to handle both file upload and update
+            url: "/sellerUpdateWithImage", // Endpoint to handle both file upload and update
             method: "POST",
             data: formData,
             processData: false, // Prevent jQuery from processing the data

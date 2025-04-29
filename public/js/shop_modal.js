@@ -21,7 +21,7 @@ $(document).ready(function () {
         const productId = $("#deleteModal").data("productId");
 
         $.ajax({
-            url: "/adminDelete",
+            url: "/sellerDelete",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({ product_id: productId }),

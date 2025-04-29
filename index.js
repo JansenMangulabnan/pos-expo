@@ -33,7 +33,7 @@ const sqlConfig = {
 
 const dbPromise = sql.connect(sqlConfig);
 
-const adminStorage = multer.diskStorage({
+const sellerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         const dir = path.join(__dirname, 'public/img');
         if (!fs.existsSync(dir)) {
@@ -46,7 +46,7 @@ const adminStorage = multer.diskStorage({
     },
 });
 
-const adminUpload = multer({ storage: adminStorage });
+const sellerUpload = multer({ storage: sellerStorage });
 
 const scheduleStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -218,12 +218,12 @@ app.post('/login', async (req, res) => {
 
         const db = await dbPromise;
 
-        const adminRecord = await db
+        const sellerRecord = await db
             .request()
             .input('username', sql.VarChar, username).query(`
-                SELECT 'admin' AS role, admin_id AS id, admin_name AS username, admin_password AS hashedPassword
-                FROM Admin
-                WHERE admin_name = @username OR admin_email = @username
+                SELECT 'seller' AS role, seller_id AS id, seller_name AS username, seller_password AS hashedPassword
+                FROM Seller
+                WHERE seller_name = @username OR seller_email = @username
             `);
 
         const userRecord = await db
@@ -234,7 +234,7 @@ app.post('/login', async (req, res) => {
                 WHERE user_name = @username OR user_email = @username
             `);
 
-        const login = adminRecord.recordset[0] || userRecord.recordset[0];
+        const login = sellerRecord.recordset[0] || userRecord.recordset[0];
 
         if (!login) {
             return res
@@ -257,17 +257,17 @@ app.post('/login', async (req, res) => {
                 .json({ success: false, message: 'Invalid login info.' });
         }
 
-        if (login.role === 'admin') {
-            const adminShopRecord = await db
+        if (login.role === 'seller') {
+            const sellerShopRecord = await db
                 .request()
-                .input('adminId', sql.Int, login.id)
+                .input('sellerId', sql.Int, login.id)
                 .query(`
-                    SELECT admin_shop_id FROM Admin WHERE admin_id = @adminId
+                    SELECT seller_shop_id FROM Seller WHERE seller_id = @sellerId
                 `);
 
-            const adminShop = adminShopRecord.recordset[0];
-            if (adminShop) {
-                login.admin_shop_id = adminShop.admin_shop_id;
+            const sellerShop = sellerShopRecord.recordset[0];
+            if (sellerShop) {
+                login.seller_shop_id = sellerShop.seller_shop_id;
             }
         }
 
@@ -275,12 +275,12 @@ app.post('/login', async (req, res) => {
             id: login.id,
             role: login.role,
             username: login.username,
-            admin_shop_id: login.admin_shop_id || null,
+            seller_shop_id: login.seller_shop_id || null,
         };
 
         res.json({
             success: true,
-            redirectUrl: login.role === 'admin' ? '/admin' : '/',
+            redirectUrl: login.role === 'seller' ? '/shop' : '/',
         });
     } catch (error) {
         console.error('Error during login:', error);
@@ -297,34 +297,34 @@ function isLoggedIn(req, res, next) {
     }
     res.redirect('/login');
 }
-function isAdmin(req, res, next) {
-    if (!req.session?.login || req.session.login.role !== 'admin') {
+function isSeller(req, res, next) {
+    if (!req.session?.login || req.session.login.role !== 'seller') {
         return res.redirect('/login?error=unauthorized');
     }
     next();
 }
 
-//admin renderer
-app.get('/admin', isAdmin, async (req, res) => {
+//shop renderer
+app.get('/shop', isSeller, async (req, res) => {
     try {
-        const adminId = req.session.login.id;
+        const sellerId = req.session.login.id;
         const db = await dbPromise;
 
-        const adminRecord = await db
+        const sellerRecord = await db
             .request()
-            .input('adminId', sql.Int, adminId)
+            .input('sellerId', sql.Int, sellerId)
             .query(`
-                SELECT admin_shop_id 
-                FROM Admin 
-                WHERE admin_id = @adminId
+                SELECT seller_shop_id 
+                FROM Seller 
+                WHERE seller_id = @sellerId
                 `);
 
-        const admin = adminRecord.recordset[0];
-        if (!admin) {
+        const seller = sellerRecord.recordset[0];
+        if (!seller) {
             return res.status(401).send('Unauthorized access.');
         }
 
-        const shopId = admin.admin_shop_id;
+        const shopId = seller.seller_shop_id;
 
         const productRecord = await db
             .request()
@@ -346,16 +346,16 @@ app.get('/admin', isAdmin, async (req, res) => {
             `);
 
         const shops = shopRecord.recordset;
-        res.render('admin', {
-            title: 'Admin',
+        res.render('shop', {
+            title: 'Shop',
             styles: [
                 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
                 'css/BASE.css',
-                'css/admin.css',
-                'css/admin_nav.css',
+                'css/shop.css',
+                'css/shop_nav.css',
                 'css/searchbar.css',
-                'css/admin_modal.css',
-                'css/admin_content_menu.css',
+                'css/shop_modal.css',
+                'css/shop_content_menu.css',
             ],
             beforeBody: [],
             afterbody: [],
@@ -366,26 +366,26 @@ app.get('/admin', isAdmin, async (req, res) => {
                 'https://code.jquery.com/jquery-3.6.0.min.js',
                 'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
                 'js/BASE.js',
-                'js/admin_nav.js',
-                'js/admin.js',
-                'js/admin_content_menu.js',
+                'js/shop_nav.js',
+                'js/shop.js',
+                'js/shop_content_menu.js',
+                'js/shop_modal.js',
                 'js/searchbar.js',
-                'js/admin_modal.js',
             ],
             products,
-            adminShopId: shopId,
+            sellerShopId: shopId,
             shops,
             isLoggedIn: !!req.session?.login,
             username: req.session?.login?.username || null,
         });
     } catch (error) {
-        console.error('Error fetching admin products:', error);
+        console.error('Error fetching products:', error);
         res.status(500).send('Internal Server Error');
     }
 });
 
-//adminAdd request handler
-app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
+//sellerAdd request handler
+app.post('/sellerAdd', sellerUpload.single('product_img'), async (req, res) => {
     try {
         const {
             product_name,
@@ -395,11 +395,11 @@ app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
             product_price,
         } = req.body;
 
-        const product_shop_id = req.session?.login?.admin_shop_id;
+        const product_shop_id = req.session?.login?.seller_shop_id;
         if (!product_shop_id) {
             return res
                 .status(401)
-                .send('Unauthorized: Admin shop ID not found.');
+                .send('Unauthorized: Seller shop ID not found.');
         }
 
         const product_img = req.file ? `/img/${req.file.filename}` : null;
@@ -427,8 +427,8 @@ app.post('/adminAdd', adminUpload.single('product_img'), async (req, res) => {
     }
 });
 
-//adminUpdate request handler
-app.post('/adminUpdate', async (req, res) => {
+//sellerUpdate request handler
+app.post('/sellerUpdate', async (req, res) => {
     try {
         const {
             product_id,
@@ -470,8 +470,8 @@ app.post('/adminUpdate', async (req, res) => {
     }
 });
 
-// adminUpload request handler
-app.post("/uploadImage", adminUpload.single("product_img"), (req, res) => {
+// sellerUpload request handler
+app.post("/uploadImage", sellerUpload.single("product_img"), (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).send("No file uploaded.");
@@ -485,8 +485,8 @@ app.post("/uploadImage", adminUpload.single("product_img"), (req, res) => {
     }
 });
 
-//adminUpdateWithImage request handler
-app.post("/adminUpdateWithImage", adminUpload.single("product_img"), async (req, res) => {
+//sellerUpdateWithImage request handler
+app.post("/sellerUpdateWithImage", sellerUpload.single("product_img"), async (req, res) => {
     try {
         const { product_id, product_name, product_description, product_stock, product_category, product_price } = req.body;
 
@@ -543,8 +543,8 @@ app.post("/adminUpdateWithImage", adminUpload.single("product_img"), async (req,
     }
 });
 
-//adminDelete request handler
-app.post('/adminDelete', async (req, res) => {
+//sellerDelete request handler
+app.post('/sellerDelete', async (req, res) => {
     try {
         const { product_id } = req.body;
 

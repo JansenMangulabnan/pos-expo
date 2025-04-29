@@ -18,7 +18,7 @@ $(document).ready(function () {
         const formData = new FormData(this);
 
         $.ajax({
-            url: "adminAdd",
+            url: "sellerAdd",
             method: "POST",
             data: formData,
             processData: false,
