@@ -26,7 +26,6 @@ $(document).ready(function () {
             contentType: "application/json",
             data: JSON.stringify({ product_id: productId }),
             success: function () {
-                alert("Product deleted successfully!");
                 location.reload();
             },
             error: function (xhr) {

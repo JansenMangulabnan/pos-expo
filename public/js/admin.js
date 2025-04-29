@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    let isEditing = false; // Flag to track if a product is being edited
+
     $(document).on("keydown", function (event) {
         if (event.key === "Escape") {
             $(".modal").css("display", "none");
@@ -22,7 +24,6 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
-                alert("Product added successfully!");
                 location.reload();
             },
             error: function (xhr) {
@@ -66,9 +67,14 @@ $(document).ready(function () {
 
     // Edit button click
     $(document).on("click", ".edit-btn", function () {
-        console.log(this);
+        if (isEditing) {
+            showPopup("You are already editing a product. Please save or cancel the current edit before editing another product.");
+            console.log("Already editing another product.");
+            return;
+        }
+
+        isEditing = true; // Set the flag to true
         currentProductCard = $(this).closest(".product-card");
-        console.log(currentProductCard);
 
         const imgDisplay = currentProductCard.find(".img-display img");
         const productName = currentProductCard.find(".product-name");
@@ -80,7 +86,7 @@ $(document).ready(function () {
         // Replace elements with contenteditable divs
         imgDisplay.replaceWith(`
             <div class="edit-img-dropzone">
-                <p>Drag and drop an image here, or click to select a file</p>
+                <p><i class='bx bxs-image-add'></i></p>
                 <input type="file" class="edit-img-input" accept="image/*" hidden value="${imgDisplay.attr(
                     "src"
                 )}" />
@@ -91,7 +97,6 @@ $(document).ready(function () {
         const fileInput = $(".edit-img-input");
 
         $(document).on("click", ".edit-img-dropzone", function (e) {
-            console.log("clicked edit img");
             e.stopPropagation(); // Important: stop bubbling up
             fileInput[0].click(); // trigger file input click
         });
@@ -114,7 +119,7 @@ $(document).ready(function () {
         });
         fileInput.on("change", function () {
             if (this.files.length > 0) {
-                dz.find("p").text(this.files[0].name);
+                dz.find("p").text(this.files[0].name).css("font-size", "12px");
             }
         });
 
@@ -157,7 +162,6 @@ $(document).ready(function () {
     });
 
     // Confirm button click
-
     $(document).on("click", ".save-btn", function () {
         currentProductCard = $(".save-btn").closest(".product-card");
         const productId = currentProductCard
@@ -199,11 +203,41 @@ $(document).ready(function () {
             processData: false, // Prevent jQuery from processing the data
             contentType: false, // Prevent jQuery from setting the content type
             success: function (response) {
-                location.reload(); 
+                location.reload();
+                isEditing = false; // Reset the flag after saving
             },
             error: function (xhr) {
                 alert("Error updating product: " + xhr.responseText);
+                isEditing = false; // Reset the flag even if there's an error
             },
         });
     });
+
+    // Cancel editing
+    $(document).on("click", ".cancel-btn", function () {
+        isEditing = false; // Reset the flag when editing is canceled
+        location.reload(); // Reload the page to reset the UI
+    });
 });
+
+function showPopup(message) {
+    const $popup = $('#popup');
+    $popup.text(message)
+        .css({
+            display: 'block',
+            position: 'fixed',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: '#f44336',
+            color: '#fff',
+            padding: '10px 20px',
+            borderRadius: '5px',
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
+            zIndex: 2
+        });
+
+    setTimeout(() => {
+        $popup.fadeOut();
+    }, 3000);
+}

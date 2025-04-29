@@ -182,8 +182,6 @@ body {
     font-size: 1.6rem;
 }
 
-
-
 .product-name:focus,
 .product-desc:focus,
 .qty-edit-lable:focus,
@@ -195,4 +193,116 @@ body {
     border-radius: 5px;
     width: fit-content;
     padding: 10px;
+}
+
+
+.edit-img-dropzone {
+    display: flex;
+    border: 2px dashed var(--input_element);
+    border-radius: 8px;
+    color: var(--text);
+    background-color: var(--input);
+    cursor: pointer;
+    width: inherit;
+    height: inherit;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 0 0 7px;
+}
+
+.dropzone:-moz-drag-over {
+    background-color: var(--button_fade);
+    border-color: var(--button);
+    width: 100%;
+}
+
+.edit-img-dropzone p {
+    margin: 0;
+    font-size: 4rem;
+    color: var(--text);
+    text-align: center;
+}
+
+.popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #f44336;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: fadeInOut 3s ease-in-out;
+}
+
+/* Form Link Styles */
+.form-link {
+    font-size: 0.9rem;
+    color: var(--text_fade);
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Register Link Styles */
+.register-link {
+    color: var(--button);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.register-link:hover {
+    color: var(--button_hover);
+    text-decoration: underline;
+}
+
+.register-link:focus {
+    color: var(--button_hover);
+    text-decoration: underline;
+    outline: none;
+}
+
+.popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #f44336;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: fadeInOut 3s ease-in-out;
+}
+
+/* Form Link Styles */
+.form-link {
+    font-size: 0.9rem;
+    color: var(--text_fade);
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Register Link Styles */
+.register-link {
+    color: var(--button);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.register-link:hover {
+    color: var(--button_hover);
+    text-decoration: underline;
+}
+
+.register-link:focus {
+    color: var(--button_hover);
+    text-decoration: underline;
+    outline: none;
 }
