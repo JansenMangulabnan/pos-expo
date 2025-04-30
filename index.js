@@ -352,6 +352,7 @@ app.get('/shop', isSeller, async (req, res) => {
                 'css/searchbar.css',
                 'css/shop_modal.css',
                 'css/shop_content_menu.css',
+                'css/profile.css',
             ],
             beforeBody: [],
             afterbody: [],
@@ -368,11 +369,13 @@ app.get('/shop', isSeller, async (req, res) => {
                 'js/shop_content_menu.js',
                 'js/shop_modal.js',
                 'js/searchbar.js',
+                'js/profile.js',
             ],
             products,
             sellerShopId: shopId,
             shops,
             isLoggedIn: !!req.session?.login,
+            loginData: req.session?.login,
             username: req.session?.login?.username || null,
         });
     } catch (error) {

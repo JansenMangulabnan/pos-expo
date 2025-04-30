@@ -10,11 +10,7 @@
             {{#each shops}}
             <h1 class="shop_name">{{shop_name}}</h1>
             {{/each}}
-            {{#if isLoggedIn}}
-            <div class="user_profile">
-                <h3 id="dropDown" class="username">{{username}}</h3>
-            </div>
-            {{/if}}
+            {{> profile}}
         </div>
 
         <div class="shop-content">
