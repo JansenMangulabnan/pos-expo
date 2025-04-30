@@ -27,19 +27,4 @@ $(document).ready(function () {
             $(".product").show(); // Show all if input is cleared
         }
     });
-
-    const profileImage = $("#profileImage");
-    const profilePlaceholder = $("#profilePlaceholder");
-
-    // Check if the profile image is empty or fails to load
-    if (!profileImage.attr("src") || profileImage.attr("src").trim() === "") {
-        profileImage.hide(); // Hide the image
-        profilePlaceholder.css("display", "flex"); // Show the placeholder
-    }
-
-    // Handle image load error
-    profileImage.on("error", function () {
-        $(this).hide(); // Hide the image
-        profilePlaceholder.css("display", "flex"); // Show the placeholder
-    });
 });

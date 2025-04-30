@@ -15,23 +15,7 @@
                 <div class="cart-icon">
                     <i class='bx bx-cart'></i>
                 </div>
-                {{#if isLoggedIn}}
-                <div class="user-profile">
-                    {{!-- <span id="dropDown" class="username">{{username}} &#128899;</span>
-                    <div class="dropdown-content">
-                        <a id="settingBtn">Settings</a>
-                        <a id="logOutBtn">Log Out</a>
-                    </div> --}}
-                    <div class="profile-icon">
-                        <img src="{{user_img}}" alt="Profile Image" class="profile-image" id="profileImage">
-                        <div class="profile-placeholder" id="profilePlaceholder">{{username.[0]}}</div>
-                    </div>
-                </div>
-                {{else}}
-                <div class="user-profile">
-                    <button id="btnLogin" class="btn-login">Login</button>
-                </div>
-                {{/if}}
+                {{> profile}}
             </div>
         </nav>
     </div>

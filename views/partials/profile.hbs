@@ -1,0 +1,36 @@
+{{#if isLoggedIn}}
+<div class="user-profile">
+    <div class="profile-icon" id="profileIcon">
+        {{#if loginData.profile_img}}
+        <img src="{{loginData.profile_img}}" alt="Profile Image" class="profile-image" id="profileImage">
+        {{else}}
+        <div class="profile-placeholder" id="profilePlaceholder">{{loginData.username.[0]}}</div>
+        {{/if}}
+    </div>
+</div>
+<div class="profile-details" id="profileDetails">
+    <div class="detail-container">
+        <p>{{loginData.email}}</p>
+        <div class="profile-detail-icon" id="profileDetailIcon">
+            {{#if loginData.profile_img}}
+            <img src="{{loginData.profile_img}}" alt="Profile Image" class="profile-detail-image"
+                id="profileDetailImage">
+            {{else}}
+            <div class="profile-placeholder" id="profilePlaceholder">{{loginData.username.[0]}}</div>
+            {{/if}}
+        </div>
+        <h3>Hi, {{loginData.username}}!</h3>
+    </div>
+    <div class="profile-header">
+
+        <button id="btnAccManage" class="btn-acc-manage">Manage your Account</button>
+        <div class="detail-logout">
+            <a role="button"><i class="icon"><i class='bx bx-log-out'></i></i>Logout</a>
+        </div>
+    </div>
+</div>
+{{else}}
+<div class="user-profile">
+    <button id="btnLogin" class="btn-login">Login</button>
+</div>
+{{/if}}

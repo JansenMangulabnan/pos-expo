@@ -1,0 +1,165 @@
+/* Profile Icon Container */
+.profile-icon {
+    display: flex;
+    align-items: center;
+    background-color: var(--button_hover_hover); 
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.detail-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--div);
+    border-radius: 10px;
+}
+
+/* Profile Image */
+.profile-image {
+    display: flex;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%; 
+    object-fit: cover;
+}
+
+.profile-icon:hover {
+    background-color: var(--button_text_hover); /* Change on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+}
+
+/* Profile Placeholder */
+.profile-placeholder {
+    display: none; /* Hidden by default */
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--input);
+    color: var(--input_element);
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase; /* Ensure the letter is uppercase */
+    object-fit: cover;
+}
+
+/* Profile Details Container */
+.profile-details {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 400px; /* Match login container width */
+    position: absolute;
+    background: var(--div_hover); /* Match login container background */
+    right: 10px;
+    top: 80px;
+    border-radius: 10px;
+    padding: 30px; /* Match login container padding */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Match login container shadow */
+    z-index: 3;
+    text-align: center; /* Center-align text */
+    color: var(--text); /* Match login text color */
+    gap: 20px;
+}
+
+/* Profile Detail Icon */
+.profile-detail-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px; /* Add spacing below the icon */
+}
+
+.profile-detail-image {
+    display: flex;
+    width: 60px; /* Adjust the size of the icon */
+    height: 60px; /* Adjust the size of the icon */
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover; 
+}
+
+/* Profile Header Text */
+.profile-header h2 {
+    margin: 0;
+    color: var(--button); /* Match login title color */
+    font-weight: 600;
+}
+
+.profile-header p {
+    font-size: 1.2rem;
+    margin: 10px 0 20px;
+    color: var(--text_light); /* Match login subtitle color */
+}
+
+/* Profile Actions */
+.profile-actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.btn-acc-manage {   
+    padding: 10px;
+    background: var(--button);
+    color: var(--button_text);
+    border: solid 1px var(--input_element);
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-acc-manage:hover {
+    background: var(--button_hover); /* Match login button hover */
+    box-shadow: 0 0 0px 1000px var(--button_hover) inset !important;
+}
+
+
+.profile-header h2,
+.profile-header p {
+    color: var(--text);
+}
+
+
+
+.detail-logout {
+    margin-top: auto;
+    padding-bottom: 10px;
+}
+
+.detail-logout a {
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: color 0.3s; /* Added transition */
+}
+
+.detail-logout a .icon {
+    font-size: 1.5rem;
+}
+
+.detail-logout a:hover {
+    color: var(--button_hover);
+}

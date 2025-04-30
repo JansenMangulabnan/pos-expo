@@ -221,7 +221,7 @@ app.post('/login', async (req, res) => {
         const sellerRecord = await db
             .request()
             .input('username', sql.VarChar, username).query(`
-                SELECT 'seller' AS role, seller_id AS id, seller_name AS username, seller_password AS hashedPassword
+                SELECT 'seller' AS role, seller_id AS id, seller_name AS username, seller_password AS hashedPassword, seller_email AS email, profile_img AS profile_img
                 FROM Seller
                 WHERE seller_name = @username OR seller_email = @username
             `);
@@ -229,7 +229,7 @@ app.post('/login', async (req, res) => {
         const userRecord = await db
             .request()
             .input('username', sql.VarChar, username).query(`
-                SELECT 'user' AS role, user_id AS id, user_name AS username, user_password AS hashedPassword
+                SELECT 'user' AS role, user_id AS id, user_name AS username, user_password AS hashedPassword, user_email AS email, profile_img AS profile_img
                 FROM [User] 
                 WHERE user_name = @username OR user_email = @username
             `);
@@ -271,12 +271,8 @@ app.post('/login', async (req, res) => {
             }
         }
 
-        req.session.login = {
-            id: login.id,
-            role: login.role,
-            username: login.username,
-            seller_shop_id: login.seller_shop_id || null,
-        };
+        // Store the entire login object in the session
+        req.session.login = login;
 
         res.json({
             success: true,
@@ -367,6 +363,7 @@ app.get('/shop', isSeller, async (req, res) => {
                 'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
                 'js/BASE.js',
                 'js/shop_nav.js',
+                'js/profile.js',
                 'js/shop.js',
                 'js/shop_content_menu.js',
                 'js/shop_modal.js',
@@ -569,12 +566,13 @@ app.post('/sellerDelete', async (req, res) => {
 app.get('/', async (req, res) => {
     try {
         const db = await dbPromise;
-        const record = await db.request()
-        .query(`
+
+        // Fetch all products
+        const productRecord = await db.request().query(`
             SELECT * 
             FROM Product
         `);
-        const Product = record.recordset;
+        const Product = productRecord.recordset;
 
         res.render('home', {
             title: 'Home',
@@ -582,6 +580,7 @@ app.get('/', async (req, res) => {
                 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
                 'css/BASE.css',
                 'css/header.css',
+                'css/profile.css',
                 'css/searchbar.css',
                 'css/home.css',
             ],
@@ -594,11 +593,13 @@ app.get('/', async (req, res) => {
                 'https://code.jquery.com/jquery-3.6.0.min.js',
                 'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
                 'js/BASE.js',
+                'js/header.js',
+                'js/profile.js',
                 'js/home.js',
             ],
             Product,
             isLoggedIn: !!req.session?.login,
-            username: req.session?.login?.username || null,
+            loginData: req.session?.login || null, // Pass the entire session login object
         });
     } catch (error) {
         console.error(error);
