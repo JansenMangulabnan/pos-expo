@@ -1,12 +1,15 @@
+{{> search_bar}}
 <div class="orders-container">
-  <h2>Orders</h2>
-  <ul>
     {{#each orders}}
-      <li>
-        <strong>Order ID:</strong> {{order_id}}
-        <strong>Customer:</strong> {{order_user_id}} 
-        <strong>Seller:</strong> {{order_seller_id}}
-      </li>
+    <div class="order-card">
+        <h2>Order ID: {{order_id}}</h2>
+        <p><strong>Product:</strong> {{product_name}}</p>
+        <p><strong>Price:</strong> ${{product_price}}</p>
+        <p><strong>Seller:</strong> {{seller_name}}</p>
+        <p><strong>Customer:</strong> {{user_name}}</p>
+        <p><strong>Date:</strong> {{order_date}}</p>
+        <p><strong>Quantity:</strong> {{order_quantity}}</p>
+        <p><strong>Total Price:</strong> ${{order_price}}</p>
+    </div>
     {{/each}}
-  </ul>
 </div>
