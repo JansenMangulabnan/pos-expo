@@ -1,1 +1,12 @@
-<h1>ORDER PARITIALS</h1>
+<div class="orders-container">
+  <h2>Orders</h2>
+  <ul>
+    {{#each orders}}
+      <li>
+        <strong>Order ID:</strong> {{order_id}}
+        <strong>Customer:</strong> {{order_user_id}} 
+        <strong>Seller:</strong> {{order_seller_id}}
+      </li>
+    {{/each}}
+  </ul>
+</div>

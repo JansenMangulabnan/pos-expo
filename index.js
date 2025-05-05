@@ -342,6 +342,18 @@ app.get('/shop', isSeller, async (req, res) => {
             `);
 
         const shops = shopRecord.recordset;
+
+        const ordersRecord = await db
+            .request()
+            .input('shopId', sql.Int, shopId)
+            .query(`
+                SELECT *
+                FROM [Order]
+                WHERE order_seller_id = @shopId
+            `);
+
+        const orders = ordersRecord.recordset;
+
         res.render('shop', {
             title: 'Shop',
             styles: [
@@ -351,9 +363,10 @@ app.get('/shop', isSeller, async (req, res) => {
                 'css/shop_nav.css',
                 'css/searchbar.css',
                 'css/shop_modal.css',
-                'css/shop_content_menu.css',
                 'css/profile.css',
-                'css/shop_content_sales.css'
+                'css/shop_content_menu.css',
+                'css/shop_content_sales.css',
+                'css/shop_content_order.css'
             ],
             beforeBody: [],
             afterbody: [],
@@ -370,9 +383,10 @@ app.get('/shop', isSeller, async (req, res) => {
                 'js/shop_content_menu.js',
                 'js/shop_modal.js',
                 'js/searchbar.js',
-                'js/profile.js',
+                'js/profile.js'
             ],
             products,
+            orders,
             sellerShopId: shopId,
             shops,
             isLoggedIn: !!req.session?.login,
