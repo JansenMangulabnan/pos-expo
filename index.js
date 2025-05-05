@@ -566,76 +566,64 @@ app.post('/sellerDelete', async (req, res) => {
     }
 });
 
+
+// sellerCheckout request handler
 app.post('/sellerCheckout', async (req, res) => {
     try {
         const { orders } = req.body;
 
-        if (!orders || Object.keys(orders).length === 0) {
+        console.log("Received orders:", orders); // Debugging: Log received orders
+
+        console.log("Session login:", JSON.stringify(req.session.login, null, 2));
+
+
+        if (!orders || !Array.isArray(orders) || orders.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: 'No orders provided.',
+                message: 'No orders provided or invalid format.',
             });
         }
 
-        const sellerId = req.session?.login?.seller_id; // Assuming seller_id is stored in the session
+        const sellerId = req.session?.login?.id; // Assuming seller_id is stored in the session
         if (!sellerId) {
             return res.status(401).json({
                 success: false,
-                message: 'Unauthorized: Seller ID not found.',
+                message: `Unauthorized: Seller ID not found. ${sellerId}`,
             });
         }
 
         const db = await dbPromise;
 
         // Process each order
-        for (const productId in orders) {
-            const order = orders[productId];
+        for (const order of orders) {
+            const { id: productId, name, price, quantity } = order;
 
-            // Check if the product exists and has enough stock
-            const productRecord = await db
-                .request()
-                .input('productId', sql.Int, productId)
-                .query(`
-                    SELECT product_stock 
-                    FROM Product 
-                    WHERE product_id = @productId
-                `);
-
-            const product = productRecord.recordset[0];
-            if (!product || product.product_stock < order.quantity) {
+            // Validate the order format
+            if (!productId || !name || !price || !quantity) {
                 return res.status(400).json({
                     success: false,
-                    message: `Insufficient stock for product ID: ${productId}`,
+                    message: `Invalid order format for product ID: ${productId}`,
                 });
             }
 
-            // Deduct stock for the product
-            await db
-                .request()
-                .input('productId', sql.Int, productId)
-                .input('quantity', sql.Int, order.quantity)
-                .query(`
-                    UPDATE Product
-                    SET product_stock = product_stock - @quantity
-                    WHERE product_id = @productId
-                `);
+            console.log(`Processing order for product ID: ${productId}, Name: ${name}, Quantity: ${quantity}`);
 
-            // Log the order in the database
+            // Log the order in the database as "pending"
             await db
                 .request()
                 .input('productId', sql.Int, productId)
-                .input('quantity', sql.Int, order.quantity)
-                .input('totalPrice', sql.Decimal(10, 2), order.price * order.quantity)
+                .input('quantity', sql.Int, quantity)
+                .input('totalPrice', sql.Decimal(10, 2), price * quantity)
                 .input('sellerId', sql.Int, sellerId)
                 .query(`
-                    INSERT INTO Order (order_product_id, order_user_id, order_type, order_seller_id)
-                    VALUES (@productId, NULL, 1, @sellerId)
+                    INSERT INTO [Order] (order_product_id, order_user_id, order_type, order_seller_id, order_quantity)
+                    VALUES (@productId, NULL, 1, @sellerId, @quantity)
                 `);
         }
 
         res.status(200).json({
             success: true,
-            message: 'Order processed successfully.',
+            message: 'Order added to pending list successfully.',
         });
     } catch (error) {
         console.error('Error processing checkout:', error);

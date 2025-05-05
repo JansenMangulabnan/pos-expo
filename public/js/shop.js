@@ -163,34 +163,37 @@ $(document).ready(function () {
         updateOrders();
     });
 
-    // Remove item from orders
     $(document).on("click", ".pos-remove-item", function () {
         const productId = $(this).closest("tr").data("id");
         delete orders[productId];
         updateOrders();
     });
 
-    // Handle checkout
+
+
     $("#pos-checkout-btn").on("click", function () {
         if (Object.keys(orders).length === 0) {
             alert("Orders are empty!");
             return;
         }
-
-        // Example: Send orders data to the server
+    
         $.ajax({
             url: "/sellerCheckout",
             method: "POST",
             contentType: "application/json",
-            data: JSON.stringify(orders),
+            data: JSON.stringify({ orders: Object.entries(orders).map(([id, item]) => ({
+                id: parseInt(id),
+                ...item
+            })) }),
             success: function (response) {
                 alert("Order placed successfully!");
-                location.reload();
+                location.reload(); 
             },
             error: function (xhr) {
                 alert("Error during checkout: " + xhr.responseText);
             },
         });
+        
     });
 });
 

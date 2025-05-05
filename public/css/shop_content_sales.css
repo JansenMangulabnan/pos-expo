@@ -3,6 +3,8 @@
     flex-direction: column;
     gap: 20px;
     padding: 20px;
+    height: 85vh;
+    overflow-y: auto;
 }
 
 .pos-product-list, .pos-order-section {
