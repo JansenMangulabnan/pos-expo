@@ -1,1 +1,40 @@
-<h1>SALES PARTIAL</h1>
+<div class="pos-container">
+    <h1></h1>
+
+    <!-- Product List -->
+    <div class="pos-product-list">
+        <h2>Products</h2>
+        <ul>
+            {{#each products}}
+            <li class="pos-product-item" data-id="{{product_id}}" data-price="{{product_price}}">
+                <span class="pos-product-name">{{product_name}}</span>
+                <span class="pos-product-price">$ {{product_price}}</span>
+                <button class="pos-add-to-order-btn">Add to Orders</button>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+
+    <!-- Orders Section -->
+    <div class="pos-order-section">
+        <h2>Orders</h2>
+        <table class="pos-order-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="pos-order-items">
+                <!-- Order items will be dynamically added here -->
+            </tbody>
+        </table>
+        <div class="pos-order-summary">
+            <p>Total: $ <span id="pos-order-total">0.00</span></p>
+            <button id="pos-checkout-btn">Checkout</button>
+        </div>
+    </div>
+</div>

@@ -353,6 +353,7 @@ app.get('/shop', isSeller, async (req, res) => {
                 'css/shop_modal.css',
                 'css/shop_content_menu.css',
                 'css/profile.css',
+                'css/shop_content_sales.css'
             ],
             beforeBody: [],
             afterbody: [],
@@ -562,6 +563,86 @@ app.post('/sellerDelete', async (req, res) => {
     } catch (error) {
         console.error("Error deleting product:", error);
         res.status(500).send("Internal Server Error");
+    }
+});
+
+app.post('/sellerCheckout', async (req, res) => {
+    try {
+        const { orders } = req.body;
+
+        if (!orders || Object.keys(orders).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'No orders provided.',
+            });
+        }
+
+        const sellerId = req.session?.login?.seller_id; // Assuming seller_id is stored in the session
+        if (!sellerId) {
+            return res.status(401).json({
+                success: false,
+                message: 'Unauthorized: Seller ID not found.',
+            });
+        }
+
+        const db = await dbPromise;
+
+        // Process each order
+        for (const productId in orders) {
+            const order = orders[productId];
+
+            // Check if the product exists and has enough stock
+            const productRecord = await db
+                .request()
+                .input('productId', sql.Int, productId)
+                .query(`
+                    SELECT product_stock 
+                    FROM Product 
+                    WHERE product_id = @productId
+                `);
+
+            const product = productRecord.recordset[0];
+            if (!product || product.product_stock < order.quantity) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Insufficient stock for product ID: ${productId}`,
+                });
+            }
+
+            // Deduct stock for the product
+            await db
+                .request()
+                .input('productId', sql.Int, productId)
+                .input('quantity', sql.Int, order.quantity)
+                .query(`
+                    UPDATE Product
+                    SET product_stock = product_stock - @quantity
+                    WHERE product_id = @productId
+                `);
+
+            // Log the order in the database
+            await db
+                .request()
+                .input('productId', sql.Int, productId)
+                .input('quantity', sql.Int, order.quantity)
+                .input('totalPrice', sql.Decimal(10, 2), order.price * order.quantity)
+                .input('sellerId', sql.Int, sellerId)
+                .query(`
+                    INSERT INTO Order (order_product_id, order_user_id, order_type, order_seller_id)
+                    VALUES (@productId, NULL, 1, @sellerId)
+                `);
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Order processed successfully.',
+        });
+    } catch (error) {
+        console.error('Error processing checkout:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+        });
     }
 });
 

@@ -1,0 +1,89 @@
+.pos-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
+
+.pos-product-list, .pos-order-section {
+    flex: 1 1 45%;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: var(--div);
+}
+
+.pos-product-list h2, .pos-order-section h2 {
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    color: var(--text_highlight);
+}
+
+.pos-product-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.pos-product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--input_element);
+}
+
+.pos-product-item:last-child {
+    border-bottom: none;
+}
+
+.pos-product-name {
+    font-weight: bold;
+    color: var(--text);
+}
+
+.pos-add-to-order-btn {
+    padding: 5px 10px;
+    background-color: var(--button);
+    color: var(--button_text);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.pos-add-to-order-btn:hover {
+    background-color: var(--button_hover);
+    color: var(--button_text_hover);
+}
+
+.pos-order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.pos-order-table th, .pos-order-table td {
+    padding: 10px;
+    text-align: center;
+    color: var(--text);
+    border: 1px solid var(--input_light);
+}
+
+.pos-order-summary {
+    text-align: right;
+    font-size: 1.2em;
+    margin-top: 10px;
+    color: var(--text_highlight);
+}
+
+#pos-checkout-btn {
+    padding: 10px 20px;
+    background-color: var(--button);
+    color: var(--button_text);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#pos-checkout-btn:hover {
+    background-color: var(--button_hover);
+    color: var(--button_text_hover);
+}

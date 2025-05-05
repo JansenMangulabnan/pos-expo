@@ -93,6 +93,105 @@ $(document).ready(function () {
         moved = !moved;
     });
 
+    const orders = {};
+
+    // Add product to orders
+    $(".pos-add-to-order-btn").on("click", function () {
+        const productItem = $(this).closest(".pos-product-item");
+        const productId = productItem.data("id");
+        const productName = productItem.find(".pos-product-name").text();
+        const productPrice = parseFloat(productItem.data("price"));
+
+        if (orders[productId]) {
+            orders[productId].quantity += 1;
+        } else {
+            orders[productId] = {
+                name: productName,
+                price: productPrice,
+                quantity: 1,
+            };
+        }
+
+        updateOrders();
+    });
+
+    // Update orders display
+    function updateOrders() {
+        const $orderItems = $("#pos-order-items");
+        $orderItems.empty();
+
+        let total = 0;
+
+        Object.keys(orders).forEach((productId) => {
+            const item = orders[productId];
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+
+            $orderItems.append(`
+                <tr data-id="${productId}">
+                    <td>${item.name}</td>
+                    <td>
+                        <button class="pos-decrease-qty">-</button>
+                        <span class="pos-quantity">${item.quantity}</span>
+                        <button class="pos-increase-qty">+</button>
+                    </td>
+                    <td>$${item.price.toFixed(2)}</td>
+                    <td>$${itemTotal.toLocaleString()}</td>
+                    <td><button class="pos-remove-item">Remove</button></td>
+                </tr>
+            `);
+        });
+
+        $("#pos-order-total").text(total.toLocaleString());
+    }
+
+    // Increase quantity
+    $(document).on("click",".pos-increase-qty", function () {
+        const productId = $(this).closest("tr").data("id");
+        orders[productId].quantity += 1;
+        updateOrders();
+    });
+
+    // Decrease quantity
+    $(document).on("click", ".pos-decrease-qty", function () {
+        const productId = $(this).closest("tr").data("id");
+        if (orders[productId].quantity > 1) {
+            orders[productId].quantity -= 1;
+        } else {
+            delete orders[productId];
+        }
+        updateOrders();
+    });
+
+    // Remove item from orders
+    $(document).on("click", ".pos-remove-item", function () {
+        const productId = $(this).closest("tr").data("id");
+        delete orders[productId];
+        updateOrders();
+    });
+
+    // Handle checkout
+    $("#pos-checkout-btn").on("click", function () {
+        if (Object.keys(orders).length === 0) {
+            alert("Orders are empty!");
+            return;
+        }
+
+        // Example: Send orders data to the server
+        $.ajax({
+            url: "/sellerCheckout",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(orders),
+            success: function (response) {
+                alert("Order placed successfully!");
+                location.reload();
+            },
+            error: function (xhr) {
+                alert("Error during checkout: " + xhr.responseText);
+            },
+        });
+    });
 });
 
 function showPopup(message) {
