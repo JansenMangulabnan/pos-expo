@@ -15,6 +15,13 @@
         <div class="right-content">
             <p><strong>Status:</strong>Pending</p>
         </div>
+        <div class="order-options" style="display: none;">
+            <button class="delete-order-btn" data-order-id="{{order_id}}">Delete Order</button>
+            <button class="confirm-order-btn" data-order-id="{{order_id}}">Confirm</button>
+        </div>
+        <div class="order-processing">
+            <i class='bx bx-loader-circle bx-spin'></i>
+        </div>
     </div>
     {{/each}}
 </div>

@@ -33,3 +33,21 @@
 
 }
 
+.order-options {
+    margin-top: 10px;
+}
+
+.order-options button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: var(--button);
+    color: var(--button_text);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.order-options button:hover {
+    transition: all 0.3s ease-in-out;
+    background-color: var(--button_hover);
+}

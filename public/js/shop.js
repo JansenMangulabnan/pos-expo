@@ -6,12 +6,18 @@ $(document).ready(function () {
     }
 
     // Check localStorage for the last active section
-    const savedSection = localStorage.getItem("activeSection") || "content-menu";
+    const savedSection =
+        localStorage.getItem("activeSection") || "content-menu";
     showContent(savedSection);
 
     // Set the active class on the corresponding sidebar item
     $(".sidebar-item").removeClass("active");
-    $(`.sidebar-item:contains(${savedSection.split('-')[1].charAt(0).toUpperCase() + savedSection.split('-')[1].slice(1)})`).addClass("active");
+    $(
+        `.sidebar-item:contains(${
+            savedSection.split("-")[1].charAt(0).toUpperCase() +
+            savedSection.split("-")[1].slice(1)
+        })`
+    ).addClass("active");
 
     // Handle sidebar navigation clicks
     $(".sidebar-item").on("click", function () {
@@ -95,7 +101,7 @@ $(document).ready(function () {
 
     const orders = {};
 
-    // Add product to orders
+    // POS
     $(".pos-add-to-order-btn").on("click", function () {
         const productItem = $(this).closest(".pos-product-item");
         const productId = productItem.data("id");
@@ -115,7 +121,6 @@ $(document).ready(function () {
         updateOrders();
     });
 
-    // Update orders display
     function updateOrders() {
         const $orderItems = $("#pos-order-items");
         $orderItems.empty();
@@ -145,14 +150,12 @@ $(document).ready(function () {
         $("#pos-order-total").text(total.toLocaleString());
     }
 
-    // Increase quantity
-    $(document).on("click",".pos-increase-qty", function () {
+    $(document).on("click", ".pos-increase-qty", function () {
         const productId = $(this).closest("tr").data("id");
         orders[productId].quantity += 1;
         updateOrders();
     });
 
-    // Decrease quantity
     $(document).on("click", ".pos-decrease-qty", function () {
         const productId = $(this).closest("tr").data("id");
         if (orders[productId].quantity > 1) {
@@ -169,50 +172,76 @@ $(document).ready(function () {
         updateOrders();
     });
 
-
-
     $("#pos-checkout-btn").on("click", function () {
         if (Object.keys(orders).length === 0) {
             alert("Orders are empty!");
             return;
         }
-    
+
         $.ajax({
             url: "/sellerCheckout",
             method: "POST",
             contentType: "application/json",
-            data: JSON.stringify({ orders: Object.entries(orders).map(([id, item]) => ({
-                id: parseInt(id),
-                ...item
-            })) }),
+            data: JSON.stringify({
+                orders: Object.entries(orders).map(([id, item]) => ({
+                    id: parseInt(id),
+                    ...item,
+                })),
+            }),
             success: function (response) {
                 alert("Order placed successfully!");
-                location.reload(); 
+                location.reload();
             },
             error: function (xhr) {
                 alert("Error during checkout: " + xhr.responseText);
             },
         });
-        
+    });
+
+    // orders
+    $(document).on("click", ".order-card", function () {
+        const $orderOptions = $(this).find(".order-options");
+
+        if ($orderOptions.is(":visible")) {
+            $orderOptions.hide();
+        } else {
+            $(".order-options").hide(); 
+            $orderOptions.show();
+        }
+    });
+
+    $(document).on("click", ".delete-order-btn", function (event) {
+        event.stopPropagation(); 
+        const orderId = $(this).data("order-id");
+        if (confirm(`Are you sure you want to delete order ${orderId}?`)) {
+            console.log(`Order ${orderId} deleted.`);
+        }
+    });
+
+    $(document).on("click", ".confirm-order-btn", function (event) {
+        event.stopPropagation();
+        const orderId = $(this).data("order-id");
+        if (confirm(`Are you sure you want to confirm order ${orderId}?`)) {
+            console.log(`Order ${orderId} confirmed.`);
+        }
     });
 });
 
 function showPopup(message) {
-    const $popup = $('#popup');
-    $popup.text(message)
-        .css({
-            display: 'block',
-            position: 'fixed',
-            top: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            backgroundColor: '#f44336',
-            color: '#fff',
-            padding: '10px 20px',
-            borderRadius: '5px',
-            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
-            zIndex: 2
-        });
+    const $popup = $("#popup");
+    $popup.text(message).css({
+        display: "block",
+        position: "fixed",
+        top: "20px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        backgroundColor: "#f44336",
+        color: "#fff",
+        padding: "10px 20px",
+        borderRadius: "5px",
+        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
+        zIndex: 2,
+    });
 
     setTimeout(() => {
         $popup.fadeOut();
