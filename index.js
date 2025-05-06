@@ -711,22 +711,17 @@ app.get('/', async (req, res) => {
     }
 });
 
-// Create an HTTP server
 const server = http.createServer(app);
 
-// Initialize socket.io
 const io = new Server(server);
 
-// Store active orders being processed
-const activeOrders = new Map(); // Store locked orders and their locker IDs
+const activeOrders = new Map(); 
 
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
-    // Send the current state of locked orders to the newly connected client
     socket.emit('lockedOrders', Array.from(activeOrders.entries()));
 
-    // Handle order card click to lock it
     socket.on('lockOrder', (orderId) => {
         if (activeOrders.has(orderId)) {
             socket.emit('orderAlreadyLocked', orderId);
@@ -736,7 +731,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Handle order card click to unlock it
     socket.on('unlockOrder', (orderId) => {
         if (activeOrders.get(orderId) === socket.id) {
             activeOrders.delete(orderId);
@@ -744,7 +738,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Handle disconnection
     socket.on('disconnect', () => {
         for (const [orderId, lockerId] of activeOrders.entries()) {
             if (lockerId === socket.id) {
