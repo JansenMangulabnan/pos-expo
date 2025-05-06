@@ -2,14 +2,19 @@
 <div class="orders-container">
     {{#each orders}}
     <div class="order-card">
-        <h2>Order ID: {{order_id}}</h2>
-        <p><strong>Product:</strong> {{product_name}}</p>
-        <p><strong>Price:</strong> ${{product_price}}</p>
-        <p><strong>Seller:</strong> {{seller_name}}</p>
-        <p><strong>Customer:</strong> {{user_name}}</p>
-        <p><strong>Date:</strong> {{order_date}}</p>
-        <p><strong>Quantity:</strong> {{order_quantity}}</p>
-        <p><strong>Total Price:</strong> ${{order_price}}</p>
+        <div class="left-content">
+            <h2>Order ID: {{order_id}}</h2>
+            <p><strong>Product:</strong> {{product_name}}</p>
+            <p><strong>Price:</strong> ${{product_price}}</p>
+            <p><strong>Seller:</strong> {{seller_name}}</p>
+            <p><strong>Customer:</strong> {{user_name}}</p>
+            <p><strong>Date:</strong> {{order_date}}</p>
+            <p><strong>Quantity:</strong> {{order_quantity}}</p>
+            <p><strong>Total Price:</strong> ${{order_price}}</p>
+        </div>
+        <div class="right-content">
+            <p><strong>Status:</strong>Pending</p>
+        </div>
     </div>
     {{/each}}
 </div>

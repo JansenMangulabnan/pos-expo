@@ -26,10 +26,10 @@
     width: 40px;
     height: 40px;
     margin: auto 20px auto auto;
-    transition: background-color 0.3s; 
+    transition: all 0.3s;
 }
-
 .add-product-btn:hover {
+    transition: all 0.3s;
     background-color: var(--div_hover);
 }
 
@@ -52,10 +52,11 @@
     gap: 16px;
     width:90%;
     margin: 10px 0;
-    transition: transform 0.3s;
+    transition: all 0.3s;
 
 }
 .product-card:hover {
+    transition: all 0.3s;
     transform: scale(1.02);
 }
 

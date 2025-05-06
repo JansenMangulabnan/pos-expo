@@ -42,6 +42,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    transition: all 0.3s ease-in-out;
 }
 
 .modal-content {
@@ -97,6 +98,7 @@ h2 {
     font-size: 1rem;
     background: var(--input); 
     color: var(--text); /* Match input text color */
+    transition: all 0.3s ease-in-out;
 }
 
 .form-group input:focus,
@@ -104,6 +106,7 @@ h2 {
     outline: none;
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
     border: 1px solid var(--input_element); 
+    transition: all 0.3s ease-in-out;
 }
 
 .form-group input:-webkit-autofill,
@@ -111,7 +114,7 @@ h2 {
 .form-group input:-webkit-autofill:focus {
     background-color: var(--input) !important;
     color: var(--text) !important;
-    transition: background-color 5000s ease-in-out 0s;
+    transition: all 5000s ease-in-out 0s;
     -webkit-text-fill-color: var(--text) !important;
     caret-color: var(--text);
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
@@ -138,11 +141,12 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease-in-out;
     margin-top: 20px; /* Add spacing above the button */
 }
 
 .submit-btn:hover {
+    transition: all 0.3s ease-in-out;
     background-color: var(--button_hover); /* Match hover effect */
 }
 
@@ -154,11 +158,11 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
     margin-top: 20px; /* Add spacing above the button */
 }
-
 .close-btn:hover {
+    transition: all 0.3s ease-in-out;
     background-color: var(--button_fade_hover); /* Match hover effect */
 }
 
@@ -168,10 +172,11 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 #deleteModal .submit-btn {
+    transition: all 0.3s ease-in-out;
     background-color: var(--button); /* Red button for delete */
 }
-
 #deleteModal .submit-btn:hover {
+    transition: all 0.3s ease-in-out;
     background-color: var(--button_hover); /* Darker red on hover */
 }
 
@@ -181,10 +186,11 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 #saveChangesModal .submit-btn {
+    transition: all 0.3s ease-in-out;
     background-color: var(--success); /* Green button for save */
 }
-
 #saveChangesModal .submit-btn:hover {
+    transition: all 0.3s ease-in-out;
     background-color: var(--success_hover); /* Darker green on hover */
 }
 
@@ -196,14 +202,14 @@ input[type="number"]::-webkit-outer-spin-button {
     color: var(--text);
     background-color: var(--input);
     cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
+    transition: all 0.3s ease-in-out;
     width: inherit;
 }
-
 .dropzone.dragover {
     background-color: var(--button_fade);
     border-color: var(--button);
     width: 100%;
+    transition: all 0.3s ease-in-out;
 }
 
 .dropzone p {

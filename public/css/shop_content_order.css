@@ -11,10 +11,25 @@
 
 .order-card {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row; 
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 10px;
     background-color: var(--div);
+    width: 100%;
+    justify-content: space-between;
+    transition: all 0.3s ease-in-out;
+}
+.order-card:hover {
+    transition: all 0.3s ease-in-out;
+    background-color: var(--div_hover);
+}
+
+.left-content {
+    align-self: flex-start;
+}
+
+.right-content {
+   align-self: center;
+
 }
 

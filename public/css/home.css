@@ -16,9 +16,11 @@
     background-color: var(--div);
     color: var(--text);
     transition: transform 0.3s;
+    transition: all 0.3s;
 }
 
 .product:hover {
+    transition: all 0.3s;
     transform: scale(1.02);
 }
 
@@ -99,11 +101,11 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.2s;
     width: 100%; /* Make the button span the full width */
     text-align: center;
+    transition: all 0.3s;
 }
-  
 .add-cart:hover {
+    transition: all 0.3s;
     background-color: var(--button_hover);
 }

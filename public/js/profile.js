@@ -22,9 +22,15 @@ $(document).ready(function () {
         togglePfp = !togglePfp;
         if (togglePfp) {
             $("#profileDetails").css("display", "flex");
+            setTimeout(() => {
+                $("#profileDetails").css("opacity", "1");
+            }, 0);
             $("#profileDetails").focus();
         } else {
-            $("#profileDetails").css("display", "none");
+            $("#profileDetails").css("opacity", "0");
+            setTimeout(() => {
+                $("#profileDetails").css("display", "none");
+            }, 300);
         }
     })
 

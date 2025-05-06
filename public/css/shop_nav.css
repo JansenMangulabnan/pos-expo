@@ -3,7 +3,7 @@
     flex-direction: column;
     width: 100%;
     height: 100%; 
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
     transform: translateX(0);
     margin: 0;
 }
@@ -21,7 +21,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
     transform: translateX(0);
 }
 
@@ -41,6 +41,7 @@
     flex-direction: column;
     gap: 10px;
     align-items: center;
+    transition: all 0.3s ease-in-out;
 }
 
 .sidebar-item a {
@@ -54,12 +55,13 @@
     padding: 10px;
     width: 60px;
     border-radius: 10px;
-    transition: background-color 0.3s, color 0.3s; /* Added transition */
+    transition: all 0.3s ease-in-out;
     text-align: center;
 }
 
 .sidebar-item.active a,
 .sidebar-item a:hover {
+    transition: all 0.3s ease-in-out;
     background-color: var(--button_hover);
     color: var(--button_text_hover);
 }
@@ -76,7 +78,7 @@
     border-radius: 50%; /* Makes it a circle */
     background-color: var(--button_hover); /* Circle background color */
     color: var(--button_text_hover); /* Icon color */
-    transition: background-color 0.3s, color 0.3s;
+    transition: all 0.3s ease-in-out;
 }
 
 .sidebar-item .icon-circle {
@@ -87,17 +89,19 @@
 
 .sidebar-item .icon i {
     color: var(--div); /* Inverted color for the icon */
-    transition: color 0.3s;
+    transition: all 0.3s ease-in-out;
 }
 
 .sidebar-item.active .icon,
 .sidebar-item a:hover .icon {
+    transition: all 0.3s ease-in-out;
     background-color: var(--button_text_hover); /* Invert circle color */
     color: var(--button_hover); /* Invert icon color */
 }
 
 .sidebar-item.active .icon i,
 .sidebar-item a:hover .icon i {
+    transition: all 0.3s ease-in-out;
     color: var(--button_hover);
 }
 
@@ -106,6 +110,7 @@
 .sidebar-logout {
     margin-top: auto;
     padding-bottom: 10px;
+    transition: all 0.3s ease-in-out;
 }
 
 .sidebar-logout a {
@@ -115,14 +120,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: color 0.3s; /* Added transition */
+    transition: all 0.3s ease-in-out;
 }
 
 .sidebar-logout a .icon {
     font-size: 1.5rem;
     margin-bottom: 5px;
+    transition: all 0.3s ease-in-out;
 }
 
 .sidebar-logout a:hover {
     color: var(--button_hover);
+    transition: all 0.3s ease-in-out;
 }

@@ -50,15 +50,18 @@ body {
 
 .save-btn:hover
 .edit-btn:hover {
+    transition: all 0.3s ease-in-out;
     color: #fff;
 }
 
 .delete-btn:hover {
+    transition: all 0.3s ease-in-out;
     color: #ff4d4d;
 }
 
 .save-btn,
 .save-btn:hover{
+    transition: all 0.3s ease-in-out;
     font-size: 1.6rem;
 }
 
@@ -95,7 +98,7 @@ body {
     color: var(--button);
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease-in-out;
 }
 
 .register-link:hover {
@@ -107,6 +110,7 @@ body {
     color: var(--button_hover);
     text-decoration: underline;
     outline: none;
+    transition: all 0.3s ease-in-out;
 }
 
 .popup {
@@ -137,7 +141,7 @@ body {
     color: var(--button);
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease-in-out;
 }
 
 .register-link:hover {

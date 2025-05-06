@@ -64,7 +64,7 @@ body {
 .signup-form .form-input:-webkit-autofill:focus {
     background-color: var(--input) !important;
     color: var(--text) !important;
-    transition: background-color 5000s ease-in-out 0s;
+    transition: all 5000s ease-in-out 0s;
     -webkit-text-fill-color: var(--text) !important;
     caret-color: var(--text);
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
@@ -85,7 +85,7 @@ body {
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .signup-form .btn:focus,
@@ -93,6 +93,8 @@ body {
     background: var(--button_hover);
     color: var(--button_text_hover);
     box-shadow: 0 0 0px 1000px var(--button_hover) inset !important;
+    transition: all 0.3s ease;
+
 }
 
 /* Form Link */
@@ -116,4 +118,5 @@ body {
     color: var(--button_hover);
     text-decoration: underline;
     outline: none;
+    transition: all 0.3s ease;
 }

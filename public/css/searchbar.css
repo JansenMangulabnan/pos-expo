@@ -8,10 +8,12 @@
     background-color: var(--input);
     border-radius: 5px;
     padding: 5px 10px;
-    width: 300px; 
+    width: 300px;
+    transition: all 0.3s ease-in-out;
 }
 .search-container:hover,
 .search-container:focus-within {
+    transition: all 0.3s ease-in-out;
     border: 1px solid var(--input_element);
 }
 
@@ -31,7 +33,7 @@
 .search-input:-webkit-autofill:focus {
     background-color: var(--input) !important;
     color: var(--text) !important;
-    transition: background-color 5000s ease-in-out 0s;
+    transition: all 0.3s ease-in-out 0s !important;
     -webkit-text-fill-color: var(--text) !important;
     caret-color: var(--text);
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
@@ -46,5 +48,6 @@
 }
 
 .search-container input:focus {
+    transition: all 0.3s;
     outline: none;
 }
