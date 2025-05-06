@@ -197,21 +197,36 @@ $(document).ready(function () {
             },
         });
     });
-
+    
     // orders
-    $(document).on("click", ".order-card", function () {
-        const $orderOptions = $(this).find(".order-options");
+    let currentlyLockedOrderId = null; 
 
+    $(document).on("click", ".order-card", function () {
+        const $orderCard = $(this);
+        const orderId = $orderCard.data("order-id");
+
+        const $orderOptions = $orderCard.find(".order-options");
         if ($orderOptions.is(":visible")) {
             $orderOptions.hide();
+
+            socket.emit("unlockOrder", orderId);
+            currentlyLockedOrderId = null; 
         } else {
-            $(".order-options").hide(); 
+            $(".order-options").hide();
+
+            if (currentlyLockedOrderId && currentlyLockedOrderId !== orderId) {
+                socket.emit("unlockOrder", currentlyLockedOrderId);
+            }
+
             $orderOptions.show();
+
+            socket.emit("lockOrder", orderId);
+            currentlyLockedOrderId = orderId; 
         }
     });
 
     $(document).on("click", ".delete-order-btn", function (event) {
-        event.stopPropagation(); 
+        event.stopPropagation();
         const orderId = $(this).data("order-id");
         if (confirm(`Are you sure you want to delete order ${orderId}?`)) {
             console.log(`Order ${orderId} deleted.`);
@@ -221,9 +236,68 @@ $(document).ready(function () {
     $(document).on("click", ".confirm-order-btn", function (event) {
         event.stopPropagation();
         const orderId = $(this).data("order-id");
-        if (confirm(`Are you sure you want to confirm order ${orderId}?`)) {
-            console.log(`Order ${orderId} confirmed.`);
+
+        socket.emit("processOrder", orderId);
+
+        socket.on("orderAlreadyProcessing", (orderId) => {
+            alert(
+                `Order ${orderId} is already being processed by another seller.`
+            );
+        });
+
+        socket.on("orderProcessingStarted", (orderId) => {
+            if (confirm(`Are you sure you want to confirm order ${orderId}?`)) {
+                console.log(`Order ${orderId} confirmed.`);
+                socket.emit("completeOrder", orderId); 
+            }
+        });
+    });
+
+    const socket = io();
+
+    socket.on("lockedOrders", (lockedOrders) => {
+        lockedOrders.forEach(([orderId, lockerId]) => {
+            if (socket.id !== lockerId) {
+                const $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
+                $orderCard.addClass("locked");
+                $orderCard.find(".confirm-order-btn, .delete-order-btn").prop(
+                    "disabled",
+                    true
+                );
+                $orderCard.append(`<div class="lock-overlay">Processing <i class='bx bx-loader-circle bx-spin'></i></div>`);
+            }
+        });
+    });
+
+    socket.on("orderLocked", ({ orderId, lockerId }) => {
+        if (socket.id !== lockerId) {
+            const $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
+            $orderCard.addClass("locked");
+            $orderCard.find(".confirm-order-btn, .delete-order-btn").prop(
+                "disabled",
+                true
+            );
+            $orderCard.append(`<div class="lock-overlay">Processing <i class='bx bx-loader-circle bx-spin'></i></div>`);
         }
+    });
+
+    socket.on("orderUnlocked", (orderId) => {
+        const $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
+        $orderCard.removeClass("locked");
+        $orderCard.find(".confirm-order-btn, .delete-order-btn").prop(
+            "disabled",
+            false
+        );
+        $orderCard.find(".lock-overlay").remove();
+    });
+
+    socket.on("orderAlreadyLocked", (orderId) => {
+        alert(`Order ${orderId} is already locked by another seller.`);
+    });
+
+    socket.on("orderCompleted", (orderId) => {
+        $(`.order-card[data-order-id="${orderId}"]`).remove(); 
+        alert(`Order ${orderId} has been completed.`);
     });
 });
 

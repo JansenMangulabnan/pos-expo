@@ -10,6 +10,8 @@ import session from 'express-session';
 import sql from 'mssql';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import { Server } from 'socket.io';
+import http from 'http';
 
 dotenv.config();
 
@@ -391,6 +393,7 @@ app.get('/shop', isSeller, async (req, res) => {
             scripts: [
                 'https://code.jquery.com/jquery-3.6.0.min.js',
                 'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
+                '/socket.io/socket.io.js',
                 'js/BASE.js',
                 'js/shop_nav.js',
                 'js/profile.js',
@@ -708,6 +711,51 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
+// Create an HTTP server
+const server = http.createServer(app);
+
+// Initialize socket.io
+const io = new Server(server);
+
+// Store active orders being processed
+const activeOrders = new Map(); // Store locked orders and their locker IDs
+
+io.on('connection', (socket) => {
+    console.log('A user connected:', socket.id);
+
+    // Send the current state of locked orders to the newly connected client
+    socket.emit('lockedOrders', Array.from(activeOrders.entries()));
+
+    // Handle order card click to lock it
+    socket.on('lockOrder', (orderId) => {
+        if (activeOrders.has(orderId)) {
+            socket.emit('orderAlreadyLocked', orderId);
+        } else {
+            activeOrders.set(orderId, socket.id);
+            socket.broadcast.emit('orderLocked', { orderId, lockerId: socket.id });
+        }
+    });
+
+    // Handle order card click to unlock it
+    socket.on('unlockOrder', (orderId) => {
+        if (activeOrders.get(orderId) === socket.id) {
+            activeOrders.delete(orderId);
+            socket.broadcast.emit('orderUnlocked', orderId);
+        }
+    });
+
+    // Handle disconnection
+    socket.on('disconnect', () => {
+        for (const [orderId, lockerId] of activeOrders.entries()) {
+            if (lockerId === socket.id) {
+                activeOrders.delete(orderId);
+                io.emit('orderUnlocked', orderId);
+            }
+        }
+    });
+});
+
+// Start the server
+server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });

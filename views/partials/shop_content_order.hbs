@@ -1,7 +1,7 @@
 {{> search_bar}}
 <div class="orders-container">
     {{#each orders}}
-    <div class="order-card">
+    <div class="order-card" data-order-id="{{order_id}}">
         <div class="left-content">
             <h2>Order ID: {{order_id}}</h2>
             <p><strong>Product:</strong> {{product_name}}</p>
@@ -18,9 +18,6 @@
         <div class="order-options" style="display: none;">
             <button class="delete-order-btn" data-order-id="{{order_id}}">Delete Order</button>
             <button class="confirm-order-btn" data-order-id="{{order_id}}">Confirm</button>
-        </div>
-        <div class="order-processing">
-            <i class='bx bx-loader-circle bx-spin'></i>
         </div>
     </div>
     {{/each}}
