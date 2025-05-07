@@ -31,7 +31,7 @@ $(document).ready(function () {
         let section = "content-menu"; // Default section
         if ($(this).text().trim() === "Menu") {
             section = "content-menu";
-        } else if ($(this).text().trim() === "Sales") {
+        } else if ($(this).text().trim() === "POS") {
             section = "content-sales";
         } else if ($(this).text().trim() === "Inventory") {
             section = "content-inventory";
