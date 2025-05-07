@@ -666,6 +666,188 @@ app.post('/sellerCheckout', async (req, res) => {
     }
 });
 
+app.post('/archiveOrder', async (req, res) => {
+    try {
+        const { order_id } = req.body;
+
+        const sellerShopId = req.session?.login?.seller_shop_id;
+        if (!sellerShopId) {
+            return res.status(401).json({
+                success: false,
+                message: 'Unauthorized: Seller shop ID not found.',
+            });
+        }
+
+        const db = await dbPromise;
+
+        // Fetch the order details
+        const orderRecord = await db
+            .request()
+            .input('order_id', sql.Int, order_id)
+            .query(`
+                SELECT 
+                    o.order_id AS archive_product_id,
+                    p.product_name AS archive_product_name,
+                    p.product_price AS archive_product_price,
+                    o.order_user_id AS archive_user_id,
+                    o.order_seller_id AS archive_seller_id,
+                    o.order_date AS archive_order_date,
+                    o.order_quantity AS archive_order_quantity,
+                    o.order_type AS archive_order_type
+                FROM [Order] o
+                LEFT JOIN [Product] p ON o.order_product_id = p.product_id
+                WHERE o.order_id = @order_id
+            `);
+
+        const order = orderRecord.recordset[0];
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found.' });
+        }
+
+        // Insert the order into the Archive table
+        await db
+            .request()
+            .input('archive_product_id', sql.Int, order.archive_product_id)
+            .input('archive_product_name', sql.VarChar, order.archive_product_name)
+            .input('archive_product_price', sql.Decimal(10, 2), order.archive_product_price)
+            .input('archive_user_id', sql.Int, order.archive_user_id)
+            .input('archive_seller_id', sql.Int, order.archive_seller_id)
+            .input('archive_order_date', sql.DateTime, order.archive_order_date)
+            .input('archive_order_quantity', sql.Int, order.archive_order_quantity)
+            .input('archive_order_type', sql.Int, order.archive_order_type)
+            .input('archive_shop_id', sql.Int, sellerShopId)
+            .query(`
+                INSERT INTO Archive (
+                    archive_product_id,
+                    archive_product_name,
+                    archive_product_price,
+                    archive_user_id,
+                    archive_seller_id,
+                    archive_order_date,
+                    archive_order_quantity,
+                    archive_order_type,
+                    archive_shop_id
+                )
+                VALUES (
+                    @archive_product_id,
+                    @archive_product_name,
+                    @archive_product_price,
+                    @archive_user_id,
+                    @archive_seller_id,
+                    @archive_order_date,
+                    @archive_order_quantity,
+                    @archive_order_type,
+                    @archive_shop_id
+                )
+            `);
+
+        // Delete the order from the Order table
+        await db
+            .request()
+            .input('order_id', sql.Int, order_id)
+            .query(`
+                DELETE FROM [Order]
+                WHERE order_id = @order_id
+            `);
+
+        res.status(200).json({ success: true, message: 'Order archived successfully.' });
+    } catch (error) {
+        console.error('Error archiving order:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
+app.post('/confirmOrder', async (req, res) => {
+    try {
+        const { order_id } = req.body;
+
+        const sellerShopId = req.session?.login?.seller_shop_id;
+        if (!sellerShopId) {
+            return res.status(401).json({
+                success: false,
+                message: 'Unauthorized: Seller shop ID not found.',
+            });
+        }
+
+        const db = await dbPromise;
+
+        // Fetch the order details
+        const orderRecord = await db
+            .request()
+            .input('order_id', sql.Int, order_id)
+            .query(`
+                SELECT 
+                    o.order_id AS history_product_id,
+                    p.product_name AS history_product_name,
+                    p.product_price AS history_product_price,
+                    o.order_user_id AS history_user_id,
+                    o.order_seller_id AS history_seller_id,
+                    o.order_date AS history_order_date,
+                    o.order_quantity AS history_order_quantity,
+                    o.order_type AS history_order_type
+                FROM [Order] o
+                LEFT JOIN [Product] p ON o.order_product_id = p.product_id
+                WHERE o.order_id = @order_id
+            `);
+
+        const order = orderRecord.recordset[0];
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found.' });
+        }
+
+        // Insert the order into the History table
+        await db
+            .request()
+            .input('history_product_id', sql.Int, order.history_product_id)
+            .input('history_product_name', sql.VarChar, order.history_product_name)
+            .input('history_product_price', sql.Decimal(10, 2), order.history_product_price)
+            .input('history_user_id', sql.Int, order.history_user_id)
+            .input('history_seller_id', sql.Int, order.history_seller_id)
+            .input('history_order_date', sql.DateTime, order.history_order_date)
+            .input('history_order_quantity', sql.Int, order.history_order_quantity)
+            .input('history_order_type', sql.Int, order.history_order_type)
+            .input('history_shop_id', sql.Int, sellerShopId)
+            .query(`
+                INSERT INTO History (
+                    history_product_id,
+                    history_product_name,
+                    history_product_price,
+                    history_user_id,
+                    history_seller_id,
+                    history_order_date,
+                    history_order_quantity,
+                    history_order_type,
+                    history_shop_id
+                )
+                VALUES (
+                    @history_product_id,
+                    @history_product_name,
+                    @history_product_price,
+                    @history_user_id,
+                    @history_seller_id,
+                    @history_order_date,
+                    @history_order_quantity,
+                    @history_order_type,
+                    @history_shop_id
+                )
+            `);
+
+        // Delete the order from the Order table
+        await db
+            .request()
+            .input('order_id', sql.Int, order_id)
+            .query(`
+                DELETE FROM [Order]
+                WHERE order_id = @order_id
+            `);
+
+        res.status(200).json({ success: true, message: 'Order confirmed successfully.' });
+    } catch (error) {
+        console.error('Error confirming order:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
 // home hbs renderer
 app.get('/', async (req, res) => {
     try {

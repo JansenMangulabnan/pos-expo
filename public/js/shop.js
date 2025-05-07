@@ -228,29 +228,43 @@ $(document).ready(function () {
     $(document).on("click", ".delete-order-btn", function (event) {
         event.stopPropagation();
         const orderId = $(this).data("order-id");
+
         if (confirm(`Are you sure you want to delete order ${orderId}?`)) {
-            console.log(`Order ${orderId} deleted.`);
+            $.ajax({
+                url: '/archiveOrder',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ order_id: orderId }),
+                success: function (response) {
+                    alert(response.message);
+                    $(`.order-card[data-order-id="${orderId}"]`).remove();
+                },
+                error: function (xhr) {
+                    alert('Error archiving order: ' + xhr.responseText);
+                },
+            });
         }
     });
 
-    $(document).on("click", ".confirm-order-btn", function (event) {
+    $(document).on('click', '.confirm-order-btn', function (event) {
         event.stopPropagation();
-        const orderId = $(this).data("order-id");
+        const orderId = $(this).data('order-id');
 
-        socket.emit("processOrder", orderId);
-
-        socket.on("orderAlreadyProcessing", (orderId) => {
-            alert(
-                `Order ${orderId} is already being processed by another seller.`
-            );
-        });
-
-        socket.on("orderProcessingStarted", (orderId) => {
-            if (confirm(`Are you sure you want to confirm order ${orderId}?`)) {
-                console.log(`Order ${orderId} confirmed.`);
-                socket.emit("completeOrder", orderId); 
-            }
-        });
+        if (confirm(`Are you sure you want to confirm order ${orderId}?`)) {
+            $.ajax({
+                url: '/confirmOrder',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ order_id: orderId }),
+                success: function (response) {
+                    alert(response.message);
+                    $(`.order-card[data-order-id="${orderId}"]`).remove();
+                },
+                error: function (xhr) {
+                    alert('Error confirming order: ' + xhr.responseText);
+                },
+            });
+        }
     });
 
     const socket = io();
