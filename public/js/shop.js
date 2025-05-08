@@ -144,10 +144,22 @@ $(document).ready(function () {
     // Update the orders table and summary
     function updateOrders() {
         const $orderItems = $("#pos-order-items");
+
+        // Save the currently focused element and caret position
+        const $focusedElement = $(document.activeElement);
+        const isContentEditable = $focusedElement.is(".pos-quantity");
+        let caretPosition = 0;
+
+        if (isContentEditable) {
+            const range = window.getSelection().getRangeAt(0);
+            caretPosition = range.startOffset;
+        }
+
         $orderItems.empty(); // Clear the table
 
         let total = 0;
 
+        // Calculate the total price and render the order items
         Object.keys(orders).forEach((productId) => {
             const order = orders[productId];
             const orderTotal = order.price * order.quantity;
@@ -159,7 +171,7 @@ $(document).ready(function () {
                     <td>
                         <div class="pos-quantity-container">
                             <button class="pos-decrease-qty">-</button>
-                            <div class="pos-quantity">${order.quantity}</div>
+                            <div class="pos-quantity" contenteditable="true">${order.quantity}</div>
                             <button class="pos-increase-qty">+</button>
                         </div>
                     </td>
@@ -172,9 +184,66 @@ $(document).ready(function () {
             $orderItems.append($row);
         });
 
-        // Update the total
+        // Update the total price
         $("#pos-order-total").text(total.toFixed(2));
+
+        // If a discount is applied, recalculate the final price
+        if (discountApplied) {
+            const discount = total * 0.2; // 20% discount
+            const final = total - discount;
+
+            $("#pos-discount-amount").text(discount.toFixed(2));
+            $("#pos-final-total-amount").text(final.toFixed(2));
+            $("#pos-discount-indicator, #pos-final-total").show();
+        } else {
+            // Hide the discount indicator if no discount is applied
+            $("#pos-discount-indicator, #pos-final-total").hide();
+            $("#pos-final-total-amount").text(total.toFixed(2));
+        }
+
+        // Restore focus and caret position
+        if (isContentEditable) {
+            const $newFocusedElement = $orderItems.find(`[data-id="${$focusedElement.closest("tr").data("id")}"] .pos-quantity`);
+            $newFocusedElement.focus();
+
+            const range = document.createRange();
+            const selection = window.getSelection();
+            range.setStart($newFocusedElement[0].childNodes[0], caretPosition);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
+
+    // Handle quantity changes in the editable div
+    $(document).on("input", ".pos-quantity", function () {
+        const $quantityDiv = $(this);
+        const productId = $quantityDiv.closest("tr").data("id");
+
+        // Get the current value and validate it
+        let quantity = parseInt($quantityDiv.text(), 10);
+
+        if (isNaN(quantity) || quantity <= 0) {
+            quantity = 1; // Default to 1 if invalid
+        }
+
+        // Update the quantity in the orders object
+        if (orders[productId]) {
+            orders[productId].quantity = quantity;
+            updateOrders(); // Recalculate totals and update the UI
+        }
+
+        // Set the validated quantity back to the div
+        $quantityDiv.text(quantity);
+    });
+
+    // Prevent non-numeric input
+    $(document).on("keypress", ".pos-quantity", function (e) {
+        const charCode = e.which ? e.which : e.keyCode;
+        if (charCode < 48 || charCode > 57) {
+            e.preventDefault(); // Allow only numeric input
+        }
+    });
 
     // Increase quantity
     $(document).on("click", ".pos-increase-qty", function () {

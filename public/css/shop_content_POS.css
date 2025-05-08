@@ -169,9 +169,8 @@
 }
 
 #pos-final-total {
-    font-weight: bold;
-    font-size: 1.2em;
     color: var(--text_highlight);
+    font-size: 1em;
 }
 
 button {
