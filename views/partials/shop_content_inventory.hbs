@@ -1,1 +1,28 @@
-<h1>INVENTORY PARTIALS</h1>
+<div class="inventory-container">
+    <table class="inventory-table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+            <tr data-id="{{product_id}}">
+                <td>{{product_name}}</td>
+                <td>{{product_category}}</td>
+                <td>₱{{product_price}}</td>
+                <td>
+                    <input type="number" class="product-stock" value="{{product_stock}}" min="0" />
+                </td>
+                <td>
+                    <button class="update-stock-btn">Update</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

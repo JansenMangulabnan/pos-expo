@@ -26,7 +26,6 @@ $(document).ready(function () {
         const imgDisplay = currentProductCard.find(".img-display img");
         const productName = currentProductCard.find(".product-name");
         const productDesc = currentProductCard.find(".product-desc");
-        const productQty = currentProductCard.find(".qty-edit-lable");
         const productCategory = currentProductCard.find(".category-edit-lable");
         const productPrice = currentProductCard.find(".price-edit-lable");
 
@@ -80,11 +79,6 @@ $(document).ready(function () {
                 .find(".product-desc")
                 .text()}</div>`
         );
-        productQty.replaceWith(
-            `<div class="qty-edit-lable" contenteditable="true">${parseInt(
-                currentProductCard.find(".qty-edit-lable").text()
-            )}</div>`
-        );
         productCategory.replaceWith(
             `<div class="category-edit-lable" contenteditable="true">${currentProductCard
                 .find(".category-edit-lable")
@@ -96,7 +90,7 @@ $(document).ready(function () {
                 currentProductCard
                     .find(".price-edit-lable")
                     .text()
-                    .replace("$", "")
+                    .replace("₱", "")
             )}</div>`
         );
 
@@ -138,7 +132,6 @@ $(document).ready(function () {
         formData.append("product_id", productId);
         formData.append("product_name", currentProductCard.find(".product-name").text().trim());
         formData.append("product_description", currentProductCard.find(".product-desc").text().trim());
-        formData.append("product_stock", currentProductCard.find(".qty-edit-lable").text().trim());
         formData.append("product_category", currentProductCard.find(".category-edit-lable").text().trim());
         formData.append("product_price", currentProductCard.find(".price-edit-lable").text().trim());
 

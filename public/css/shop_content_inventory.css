@@ -1,0 +1,83 @@
+.content-inventory {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    height: 85vh;
+    overflow-y: auto;
+}
+
+.inventory-container {
+    padding: 20px;
+    background-color: var(--div); /* Use the div background color */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--div); /* Table background */
+    border-radius: 8px;
+    overflow: hidden; /* Ensure rounded corners */
+}
+
+.inventory-table th,
+.inventory-table td {
+    border: 1px solid var(--div_highlight); /* Use highlight color for borders */
+    padding: 12px;
+    text-align: center;
+    color: var(--text); /* Use text color */
+}
+
+.inventory-table th {
+    background-color: var(--div_hover); /* Slightly darker background for headers */
+    font-weight: bold;
+    color: var(--text_highlight); /* Highlighted text color for headers */
+    text-transform: uppercase; /* Make headers uppercase */
+}
+
+.inventory-table td {
+    background-color: var(--div); /* Table cell background */
+}
+
+.inventory-table td input[type="number"] {
+    width: 60px;
+    text-align: center;
+    background-color: var(--input); /* Input background */
+    color: var(--text); /* Input text color */
+    border: 1px solid var(--input_light); /* Input border */
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.inventory-table td input[type="number"]:focus {
+    outline: none;
+    border-color: var(--text_highlight); /* Highlight border on focus */
+}
+
+.inventory-table td button {
+    padding: 8px 12px;
+    background-color: var(--button); /* Button background */
+    color: var(--button_text); /* Button text color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.inventory-table td button:hover {
+    background-color: var(--button_hover); /* Button hover background */
+    color: var(--button_text_hover); /* Button hover text color */
+}
+
+.inventory-table tr:nth-child(even) {
+    background-color: var(--div_hover); /* Alternate row background */
+}
+
+.inventory-table tr:hover {
+    background-color: var(--div_highlight); /* Highlight row on hover */
+    color: var(--text_highlight); /* Highlight text on hover */
+}

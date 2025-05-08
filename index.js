@@ -395,7 +395,8 @@ app.get('/shop', isSeller, async (req, res) => {
                 'css/shop_content_menu.css',
                 'css/shop_content_POS.css',
                 'css/shop_content_order.css',
-                'css/shop_content_report.css'
+                'css/shop_content_report.css',
+                'css/shop_content_inventory.css'
             ],
             beforeBody: [],
             afterbody: [],
@@ -482,7 +483,6 @@ app.post('/sellerUpdate', async (req, res) => {
             product_img,
             product_name,
             product_description,
-            product_stock,
             product_category,
             product_price,
         } = req.body;
@@ -495,7 +495,6 @@ app.post('/sellerUpdate', async (req, res) => {
             .input('product_img', sql.VarChar, product_img)
             .input('product_name', sql.VarChar, product_name)
             .input('product_description', sql.VarChar, product_description)
-            .input('product_stock', sql.Int, product_stock)
             .input('product_category', sql.VarChar, product_category)
             .input('product_price', sql.Decimal(10, 2), product_price)
             .query(`
@@ -504,7 +503,6 @@ app.post('/sellerUpdate', async (req, res) => {
                     product_img = @product_img,
                     product_name = @product_name,
                     product_description = @product_description,
-                    product_stock = @product_stock,
                     product_category = @product_category,
                     product_price = @product_price
                 WHERE product_id = @product_id
@@ -951,6 +949,32 @@ app.get('/api/orderHistory', isSeller, async (req, res) => {
     } catch (error) {
         console.error('Error fetching order history:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
+app.post('/api/updateStock', async (req, res) => {
+    try {
+        const { product_id, product_stock } = req.body;
+
+        if (!product_id || product_stock === undefined) {
+            return res.status(400).json({ success: false, message: "Invalid input." });
+        }
+
+        const db = await dbPromise;
+        await db
+            .request()
+            .input('product_id', sql.Int, product_id)
+            .input('product_stock', sql.Int, product_stock)
+            .query(`
+                UPDATE Product
+                SET product_stock = @product_stock
+                WHERE product_id = @product_id
+            `);
+
+        res.json({ success: true, message: "Stock updated successfully." });
+    } catch (error) {
+        console.error("Error updating stock:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 });
 

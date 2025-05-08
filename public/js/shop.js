@@ -646,6 +646,31 @@ $(document).ready(function () {
             console.error("Error fetching order history:", xhr.responseText);
         },
     });
+
+    // Handle stock updates
+    $(document).on("click", ".update-stock-btn", function () {
+        const $row = $(this).closest("tr");
+        const productId = $row.data("id");
+        const newStock = parseInt($row.find(".product-stock").val(), 10);
+
+        if (isNaN(newStock) || newStock < 0) {
+            alert("Invalid stock value.");
+            return;
+        }
+
+        $.ajax({
+            url: '/api/updateStock', // Backend endpoint to update stock
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ product_id: productId, product_stock: newStock }),
+            success: function (response) {
+                alert(response.message);
+            },
+            error: function (xhr) {
+                alert("Error updating stock: " + xhr.responseText);
+            },
+        });
+    });
 });
 
 function showPopup(message) {
