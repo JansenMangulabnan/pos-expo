@@ -1,0 +1,44 @@
+{{> header}}
+
+<div class="cart-container">
+    <div class="cart-main">
+        <!-- Product List -->
+        <div class="cart-product-list">
+            <div class="cart-product-grid">
+                {{#each cart}}
+                <div class="cart-product-card" data-id="{{product_id}}" data-price="{{product_price}}">
+                    <div class="img-display">
+                        <img src="{{product_img}}" alt="{{product_name}}" class="product-img" />
+                    </div>
+                    <div class="cart-product-info">
+                        <h3 class="cart-product-name">{{product_name}}</h3>
+                        <p class="cart-product-price">₱{{product_price}}</p>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div class="cart-checkout-section">
+            <h2>Orders</h2>
+            <table class="cart-checkout-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-checkout-items">
+                </tbody>
+            </table>
+            <div class="cart-checkout-summary">
+                <p>Total: ₱<span id="cart-checkout-total">0.00</span></p>
+                <button id="order-checkout-btn">Checkout</button>
+            </div>
+        </div>
+    </div>
+</div>

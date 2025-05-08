@@ -978,6 +978,108 @@ app.post('/api/updateStock', async (req, res) => {
     }
 });
 
+//cart hbs renderer
+app.get('/cart', async (req, res) => {
+    try {
+        const user_id = req.session?.login?.id;
+        const db = await dbPromise;
+        const cartRecord = await db
+            .request()
+            .input('user_id', sql.Int, user_id)
+            .query(`
+            SELECT c.cart_quantity, p.*
+            FROM Cart c
+            JOIN Product p ON c.cart_product_id = p.product_id
+            WHERE c.cart_user_id = @user_id
+            `);
+        const cart = cartRecord.recordset;
+        
+        res.render('cart', {
+            title: 'Cart',
+            styles: [
+                'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
+                'css/BASE.css',
+                'css/header.css',
+                'css/profile.css',
+                'css/cart.css',
+            ],
+            beforeBody: [],
+            afterbody: [],
+            nodeModules: [
+                '/node_modules/jquery/dist/jquery.min.js',
+            ],
+            scripts: [
+                'https://code.jquery.com/jquery-3.6.0.min.js',
+                'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
+                'js/BASE.js',
+                'js/header.js',
+                'js/profile.js',
+                'js/cart.js',
+            ],
+            cart,
+            isLoggedIn: !!req.session?.login,
+            loginData: req.session?.login || null
+        });
+    } catch (error) {
+        console.error('Error fetching cart:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+app.post('/cart/add', async (req, res) => {
+    try {
+        const { product_id, quantity } = req.body;
+        const user_id = req.session?.login?.id; // Get user_id from session
+
+        if (!user_id) {
+            return res.status(401).json({ success: false, message: 'User not logged in.' });
+        }
+
+        const db = await dbPromise;
+
+        // Check if the product already exists in the user's cart
+        const existingCartItem = await db
+            .request()
+            .input('user_id', sql.Int, user_id)
+            .input('product_id', sql.Int, product_id)
+            .query(`
+                SELECT cart_quantity 
+                FROM Cart 
+                WHERE cart_user_id = @user_id AND cart_product_id = @product_id
+            `);
+
+        if (existingCartItem.recordset.length > 0) {
+            // Update quantity if the product is already in the cart
+            await db
+                .request()
+                .input('user_id', sql.Int, user_id)
+                .input('product_id', sql.Int, product_id)
+                .input('quantity', sql.Int, quantity)
+                .query(`
+                    UPDATE Cart 
+                    SET cart_quantity = cart_quantity + @quantity 
+                    WHERE cart_user_id = @user_id AND cart_product_id = @product_id
+                `);
+        } else {
+            // Insert new product into the cart
+            await db
+                .request()
+                .input('user_id', sql.Int, user_id)
+                .input('product_id', sql.Int, product_id)
+                .input('quantity', sql.Int, quantity)
+                .query(`
+                    INSERT INTO Cart (cart_user_id, cart_product_id, cart_quantity) 
+                    VALUES (@user_id, @product_id, @quantity)
+                `);
+        }
+
+        res.status(200).json({ success: true, message: 'Product added to cart successfully.' });
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
 const server = http.createServer(app);
 
 const io = new Server(server);
