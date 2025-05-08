@@ -923,6 +923,7 @@ app.get('/api/orderHistory', isSeller, async (req, res) => {
         const sellerId = req.session.login.id;
         const db = await dbPromise;
 
+        // Fetch the seller's shop ID
         const sellerRecord = await db
             .request()
             .input('sellerId', sql.Int, sellerId)
@@ -938,27 +939,34 @@ app.get('/api/orderHistory', isSeller, async (req, res) => {
         }
         const shopId = seller.seller_shop_id;
 
+        // Fetch order history from the History table
         const orderHistoryRecord = await db
             .request()
             .input('shopId', sql.Int, shopId)
             .query(`
                 SELECT 
-                    o.order_id,
-                    p.product_name,
-                    s.seller_name,
-                    u.user_name,
-                    o.order_date,
-                    o.order_quantity,
-                    o.order_final_price
-                FROM [Order] o
-                LEFT JOIN [Product] p ON o.order_product_id = p.product_id
-                LEFT JOIN [Seller] s ON o.order_seller_id = s.seller_id
-                LEFT JOIN [User] u ON o.order_user_id = u.user_id
-                WHERE o.order_seller_id = @shopId AND o.order_type = 1
+                    h.history_id,
+                    h.history_product_name,
+                    h.history_product_price,
+                    h.history_order_quantity,
+                    h.history_order_date,
+                    h.history_user_id,
+                    u.user_name AS user_name,
+                    h.history_seller_id,
+                    s.seller_name AS seller_name,
+                    (h.history_product_price * h.history_order_quantity) AS actual_price
+                FROM History h
+                LEFT JOIN [User] u ON h.history_user_id = u.user_id
+                LEFT JOIN [Seller] s ON h.history_seller_id = s.seller_id
+                WHERE h.history_shop_id = @shopId
             `);
 
         const orderHistory = orderHistoryRecord.recordset;
-        res.json({ success: true, orderHistory });
+
+        // Calculate total revenue
+        const totalRevenue = orderHistory.reduce((sum, order) => sum + order.actual_price, 0);
+
+        res.json({ success: true, orderHistory, totalRevenue });
     } catch (error) {
         console.error('Error fetching order history:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });

@@ -490,7 +490,7 @@ $(document).ready(function () {
             if (response.success) {
                 const orderHistory = response.orderHistory;
 
-                // Prepare data for the chart
+                // Prepare data for the charts
                 const dailyLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                 const dailyData = new Array(7).fill(0); // Initialize data for 7 days
                 const monthlyLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -498,14 +498,20 @@ $(document).ready(function () {
                 const annualData = {};
                 const weeklyLabels = ["Week 1", "Week 2", "Week 3", "Week 4"];
                 const weeklyData = new Array(4).fill(0); // Initialize data for 4 weeks
+                const shopRevenue = {}; // Revenue grouped by shop
                 let totalRevenue = 0;
 
+                // Process order history for graphs
                 orderHistory.forEach((order) => {
-                    const date = new Date(order.order_date);
-                    const revenue = order.order_final_price * order.order_quantity;
+                    const date = new Date(order.history_order_date);
+                    const revenue = order.history_product_price * order.history_order_quantity; // Multiply price by quantity
+                    const shopId = order.history_shop_id; // Use history_shop_id to group revenue by shop
 
-                    // Add to total revenue
-                    totalRevenue += revenue;
+                    // Group revenue by shop
+                    if (!shopRevenue[shopId]) {
+                        shopRevenue[shopId] = 0;
+                    }
+                    shopRevenue[shopId] += revenue;
 
                     // Group by day of the week
                     const dayIndex = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
@@ -529,19 +535,12 @@ $(document).ready(function () {
                     }
                 });
 
-                // Update total revenue in the UI
-                $("#total-revenue").text(totalRevenue.toFixed(2));
-
-                // Calculate annual totals
-                const annualLabels = Object.keys(annualData).sort();
-                const annualValues = annualLabels.map((label) => annualData[label]);
-
-                // Render the daily income chart as a line chart
+                // Render the daily income chart
                 const dailyCtx = document.getElementById("dailyIncomeChart").getContext("2d");
                 new Chart(dailyCtx, {
                     type: "line",
                     data: {
-                        labels: dailyLabels, // Weekdays only
+                        labels: dailyLabels,
                         datasets: [
                             {
                                 label: "Daily Income",
@@ -573,12 +572,12 @@ $(document).ready(function () {
                     },
                 });
 
-                // Render the monthly income chart as a line chart
+                // Render the monthly income chart
                 const monthlyCtx = document.getElementById("monthlyIncomeChart").getContext("2d");
                 new Chart(monthlyCtx, {
                     type: "line",
                     data: {
-                        labels: monthlyLabels, // 12 months only
+                        labels: monthlyLabels,
                         datasets: [
                             {
                                 label: "Monthly Income",
@@ -610,8 +609,10 @@ $(document).ready(function () {
                     },
                 });
 
-                // Render the annual income chart as a line chart
+                // Render the annual income chart
                 const annualCtx = document.getElementById("annualIncomeChart").getContext("2d");
+                const annualLabels = Object.keys(annualData).sort();
+                const annualValues = annualLabels.map((label) => annualData[label]);
                 new Chart(annualCtx, {
                     type: "line",
                     data: {
@@ -647,41 +648,77 @@ $(document).ready(function () {
                     },
                 });
 
-                // Render the weekly income chart
-                const weeklyCtx = document.getElementById("weeklyIncomeChart").getContext("2d");
-                new Chart(weeklyCtx, {
-                    type: "line",
-                    data: {
-                        labels: weeklyLabels, // Week 1 to Week 4
-                        datasets: [
-                            {
-                                label: "Weekly Income",
-                                data: weeklyData,
-                                backgroundColor: "rgba(153, 102, 255, 0.2)", // Optional fill under the line
-                                borderColor: "rgba(153, 102, 255, 1)", // Line color
-                                borderWidth: 2,
-                                tension: 0.2, // Smooth curve
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: "Revenue (₱)",
-                                },
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: "Week of the Month",
-                                },
-                            },
-                        },
-                    },
+                // Calculate total revenue after rendering graphs
+                totalRevenue = Object.values(shopRevenue).reduce((sum, revenue) => sum + revenue, 0);
+
+                // Update total revenue in the UI
+                $("#total-revenue").text(`₱${totalRevenue.toFixed(2)}`);
+
+                // Display revenue per shop
+                const $shopRevenueContainer = $("#shop-revenue-container");
+                $shopRevenueContainer.empty(); // Clear previous data
+                Object.keys(shopRevenue).forEach((shopId) => {
+                    const revenue = shopRevenue[shopId];
+                    $shopRevenueContainer.append(`
+                        <div class="shop-revenue">
+                            <span>Shop ID: ${shopId}</span>
+                            <span>Revenue: ₱${revenue.toFixed(2)}</span>
+                        </div>
+                    `);
+                });
+            } else {
+                console.error("Failed to fetch order history:", response.message);
+            }
+        },
+        error: function (xhr) {
+            console.error("Error fetching order history:", xhr.responseText);
+        },
+    });
+
+    $.ajax({
+        url: '/api/orderHistory',
+        method: 'GET',
+        success: function (response) {
+            if (response.success) {
+                const orderHistory = response.orderHistory;
+                const totalRevenue = response.totalRevenue;
+
+                // Update total revenue in the UI
+                $("#total-revenue").text(`₱${totalRevenue.toFixed(2)}`);
+
+                // Clear the container before appending new data
+                const $orderHistoryContainer = $("#order-history-container");
+                $orderHistoryContainer.empty();
+
+                // Loop through the order history and display it
+                orderHistory.forEach((order) => {
+                    const {
+                        history_id,
+                        history_product_name,
+                        history_product_price,
+                        history_order_quantity,
+                        history_order_date,
+                        user_name,
+                        seller_name,
+                        actual_price,
+                    } = order;
+
+                    // Format the date
+                    const formattedDate = new Date(history_order_date).toLocaleDateString();
+
+                    // Append the order details to the container
+                    $orderHistoryContainer.append(`
+                        <div class="order-history-item">
+                            <div><strong>Order ID:</strong> ${history_id}</div>
+                            <div><strong>Product Name:</strong> ${history_product_name}</div>
+                            <div><strong>Price:</strong> ₱${history_product_price.toFixed(2)}</div>
+                            <div><strong>Quantity:</strong> ${history_order_quantity}</div>
+                            <div><strong>Total:</strong> ₱${actual_price.toFixed(2)}</div>
+                            <div><strong>Date:</strong> ${formattedDate}</div>
+                            <div><strong>User:</strong> ${user_name || 'N/A'}</div>
+                            <div><strong>Seller:</strong> ${seller_name || 'N/A'}</div>
+                        </div>
+                    `);
                 });
             } else {
                 console.error("Failed to fetch order history:", response.message);
