@@ -3,172 +3,124 @@ $(document).ready(function () {
         window.location.href = "/";
     });
 
-    const cartOrders = {};
+    // Handle click on cart-product-card
+    $(".cart-product-card").on("click", function () {
+        const productId = $(this).data("id");
+        const productName = $(this).find(".cart-product-name").text();
+        const productPrice = parseFloat($(this).find(".cart-product-price").text().replace("₱", ""));
+        const existingRow = $(`#cart-checkout-items tr[data-id="${productId}"]`);
 
-    // Add product to cartOrders
-    $(document).on("click", ".cart-product-card", function () {
-        const $card = $(this);
-        const productId = $card.data("id");
-        const productName = $card.find(".cart-product-name").text();
-        const productPrice = parseFloat($card.data("price"));
-
-        if (!cartOrders[productId]) {
-            cartOrders[productId] = {
-                name: productName,
-                price: productPrice,
-                quantity: 1,
-            };
+        if (existingRow.length > 0) {
+            // If the product is already in the checkout list, remove it
+            existingRow.remove();
+            $(this).removeClass("in-checkout");
+            updateTotal();
         } else {
-            cartOrders[productId].quantity++;
-        }
+            // If the product is not in the checkout list, add it
+            $(this).addClass("in-checkout");
 
-        updateCartOrders();
-    });
-
-    // Update the cart orders table and summary
-    function updateCartOrders() {
-        const $cartItems = $("#cart-checkout-items");
-
-        $cartItems.empty(); // Clear the table
-
-        let total = 0;
-
-        // Calculate the total price and render the cart items
-        Object.keys(cartOrders).forEach((productId) => {
-            const order = cartOrders[productId];
-            const orderTotal = order.price * order.quantity;
-            total += orderTotal;
-
-            const $row = $(`
+            $("#cart-checkout-items").append(`
                 <tr data-id="${productId}">
-                    <td>${order.name}</td>
+                    <td>${productName}</td>
                     <td>
-                        <div class="cart-quantity-container">
-                            <button class="cart-decrease-qty">-</button>
-                            <div class="cart-quantity" contenteditable="true">${order.quantity}</div>
-                            <button class="cart-increase-qty">+</button>
-                        </div>
+                        <button class="decrease-qty">-</button>
+                        <span class="quantity">1</span>
+                        <button class="increase-qty">+</button>
                     </td>
-                    <td>₱${order.price.toFixed(2)}</td>
-                    <td>₱${orderTotal.toFixed(2)}</td>
-                    <td><button class="cart-remove-item">Remove</button></td>
+                    <td>₱${productPrice.toFixed(2)}</td>
+                    <td class="total-price">₱${productPrice.toFixed(2)}</td>
+                    <td><button class="remove-item">Remove</button></td>
                 </tr>
             `);
 
-            $cartItems.append($row);
+            updateTotal();
+        }
+    });
+
+    // Handle quantity increase
+    $(document).on("click", ".increase-qty", function () {
+        const row = $(this).closest("tr");
+        const quantityElem = row.find(".quantity");
+        const quantity = parseInt(quantityElem.text()) + 1;
+        const price = parseFloat(row.find("td:nth-child(3)").text().replace("₱", ""));
+        quantityElem.text(quantity);
+        row.find(".total-price").text(`₱${(quantity * price).toFixed(2)}`);
+        updateTotal();
+    });
+
+    // Handle quantity decrease
+    $(document).on("click", ".decrease-qty", function () {
+        const row = $(this).closest("tr");
+        const quantityElem = row.find(".quantity");
+        let quantity = parseInt(quantityElem.text());
+        if (quantity > 1) {
+            quantity -= 1;
+            const price = parseFloat(row.find("td:nth-child(3)").text().replace("₱", ""));
+            quantityElem.text(quantity);
+            row.find(".total-price").text(`₱${(quantity * price).toFixed(2)}`);
+            updateTotal();
+        }
+    });
+
+    // Handle item removal
+    $(document).on("click", ".remove-item", function () {
+        const row = $(this).closest("tr");
+        const productId = row.data("id");
+        row.remove();
+
+        // Remove the highlight from the card
+        $(`.cart-product-card[data-id="${productId}"]`).removeClass("in-checkout");
+
+        updateTotal();
+    });
+
+    // Handle checkout button click
+    $("#order-checkout-btn").on("click", function () {
+        const orders = [];
+        $("#cart-checkout-items tr").each(function () {
+            const productId = $(this).data("id");
+            const quantity = parseInt($(this).find(".quantity").text());
+            const price = parseFloat($(this).find("td:nth-child(3)").text().replace("₱", ""));
+            const totalPrice = parseFloat($(this).find(".total-price").text().replace("₱", ""));
+
+            orders.push({
+                product_id: productId,
+                quantity: quantity,
+                price: price,
+                total_price: totalPrice,
+            });
         });
 
-        // Update the total price
-        $("#cart-checkout-total").text(total.toFixed(2));
-    }
-
-    // Handle quantity changes in the editable div
-    $(document).on("input", ".cart-quantity", function () {
-        const $quantityDiv = $(this);
-        const productId = $quantityDiv.closest("tr").data("id");
-
-        // Get the current value and validate it
-        let quantity = parseInt($quantityDiv.text(), 10);
-
-        if (isNaN(quantity) || quantity <= 0) {
-            quantity = 1; // Default to 1 if invalid
-        }
-
-        // Update the quantity in the cartOrders object
-        if (cartOrders[productId]) {
-            cartOrders[productId].quantity = quantity;
-            updateCartOrders(); // Recalculate totals and update the UI
-        }
-
-        // Set the validated quantity back to the div
-        $quantityDiv.text(quantity);
-    });
-
-    // Prevent non-numeric input
-    $(document).on("keypress", ".cart-quantity", function (e) {
-        const charCode = e.which ? e.which : e.keyCode;
-        if (charCode < 48 || charCode > 57) {
-            e.preventDefault(); // Allow only numeric input
-        }
-    });
-
-    // Increase quantity
-    $(document).on("click", ".cart-increase-qty", function () {
-        const $row = $(this).closest("tr");
-        const productId = $row.data("id");
-
-        if (cartOrders[productId]) {
-            cartOrders[productId].quantity++;
-            updateCartOrders();
-        }
-    });
-
-    // Decrease quantity
-    $(document).on("click", ".cart-decrease-qty", function () {
-        const $row = $(this).closest("tr");
-        const productId = $row.data("id");
-
-        if (cartOrders[productId] && cartOrders[productId].quantity > 1) {
-            cartOrders[productId].quantity--;
-        } else {
-            delete cartOrders[productId];
-        }
-
-        updateCartOrders();
-    });
-
-    // Remove item from cartOrders
-    $(document).on("click", ".cart-remove-item", function () {
-        const $row = $(this).closest("tr");
-        const productId = $row.data("id");
-
-        if (cartOrders[productId]) {
-            delete cartOrders[productId];
-            updateCartOrders();
-        }
-    });
-
-    // Checkout button
-    $("#cart-checkout-btn").on("click", function () {
-        if (!Object.keys(cartOrders).length) {
-            alert("No items in the cart.");
+        if (orders.length === 0) {
+            alert("Your checkout list is empty.");
             return;
         }
 
-        // Prepare the cart orders array
-        const cartOrdersArray = Object.keys(cartOrders).map((productId) => {
-            const order = cartOrders[productId];
-            return {
-                id: productId,
-                name: order.name,
-                price: order.price.toFixed(2),
-                quantity: order.quantity,
-            };
-        });
-
-        // Log the cart orders array for debugging
-        console.log("Checkout cart orders:", cartOrdersArray);
-
-        // Send the cart orders to the server
+        // Send the orders to the server
         $.ajax({
-            url: "/cart/checkout", // Endpoint to handle saving the cart order
+            url: "/cart/checkout",
             method: "POST",
             contentType: "application/json",
-            data: JSON.stringify({ orders: cartOrdersArray }),
+            data: JSON.stringify({ orders }),
             success: function (response) {
                 alert(response.message);
-
-                // Clear the cartOrders object
-                for (let key in cartOrders) {
-                    if (cartOrders.hasOwnProperty(key)) delete cartOrders[key];
-                }
-
-                // Update the UI
-                updateCartOrders();
+                // Clear the checkout list and remove highlights
+                $("#cart-checkout-items").empty();
+                $(".cart-product-card").removeClass("in-checkout");
+                updateTotal();
             },
             error: function (xhr) {
-                alert("Error processing checkout: " + xhr.responseText);
+                alert(xhr.responseJSON?.message || "An error occurred during checkout.");
             },
         });
     });
+
+    // Update total price
+    function updateTotal() {
+        let total = 0;
+        $("#cart-checkout-items .total-price").each(function () {
+            total += parseFloat($(this).text().replace("₱", ""));
+        });
+        $("#cart-checkout-total").text(total.toFixed(2));
+    }
 });

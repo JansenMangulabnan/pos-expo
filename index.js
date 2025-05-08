@@ -358,7 +358,7 @@ app.get('/shop', isSeller, async (req, res) => {
                 LEFT JOIN [Product] p ON o.order_product_id = p.product_id
                 LEFT JOIN [Seller] s ON o.order_seller_id = s.seller_id
                 LEFT JOIN [User] u ON o.order_user_id = u.user_id
-                WHERE o.order_seller_id = @shopId
+                WHERE o.order_shop_id = @shopId
             `);
         const orders = ordersRecord.recordset;
 
@@ -616,11 +616,6 @@ app.post('/sellerCheckout', async (req, res) => {
     try {
         const { orders } = req.body;
 
-        console.log("Received orders:", orders); // Debugging: Log received orders
-
-        console.log("Session login:", JSON.stringify(req.session.login, null, 2));
-
-
         if (!orders || !Array.isArray(orders) || orders.length === 0) {
             return res.status(400).json({
                 success: false,
@@ -632,7 +627,7 @@ app.post('/sellerCheckout', async (req, res) => {
         if (!sellerId) {
             return res.status(401).json({
                 success: false,
-                message: `Unauthorized: Seller ID not found. ${sellerId}`,
+                message: 'Unauthorized: Seller ID not found.',
             });
         }
 
@@ -650,7 +645,24 @@ app.post('/sellerCheckout', async (req, res) => {
                 });
             }
 
-            console.log(`Processing order for product ID: ${productId}, Name: ${name}, Quantity: ${quantity}`);
+            // Fetch the product_shop_id for the product
+            const productResult = await db
+                .request()
+                .input('product_id', sql.Int, productId)
+                .query(`
+                    SELECT product_shop_id 
+                    FROM [Product] 
+                    WHERE product_id = @product_id
+                `);
+
+            if (productResult.recordset.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Product with ID ${productId} not found.`,
+                });
+            }
+
+            const product_shop_id = productResult.recordset[0].product_shop_id;
 
             // Log the order in the database as "pending"
             await db
@@ -659,9 +671,10 @@ app.post('/sellerCheckout', async (req, res) => {
                 .input('quantity', sql.Int, quantity)
                 .input('totalPrice', sql.Decimal(10, 2), price)
                 .input('sellerId', sql.Int, sellerId)
+                .input('shopId', sql.Int, product_shop_id)
                 .query(`
-                    INSERT INTO [Order] (order_product_id, order_user_id, order_type, order_seller_id, order_quantity, order_final_price)
-                    VALUES (@productId, NULL, 1, @sellerId, @quantity, @totalPrice)
+                    INSERT INTO [Order] (order_product_id, order_user_id, order_type, order_seller_id, order_quantity, order_final_price, order_shop_id)
+                    VALUES (@productId, NULL, 1, @sellerId, @quantity, @totalPrice, @shopId)
                 `);
         }
 
@@ -978,6 +991,31 @@ app.post('/api/updateStock', async (req, res) => {
     }
 });
 
+app.get('/api/productStock/:productId', async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const db = await dbPromise;
+
+        const productRecord = await db
+            .request()
+            .input('product_id', sql.Int, productId)
+            .query(`
+                SELECT product_stock 
+                FROM Product 
+                WHERE product_id = @product_id
+            `);
+
+        if (productRecord.recordset.length === 0) {
+            return res.status(404).json({ success: false, message: 'Product not found.' });
+        }
+
+        res.json({ success: true, stock: productRecord.recordset[0].product_stock });
+    } catch (error) {
+        console.error('Error fetching product stock:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
 //cart hbs renderer
 app.get('/cart', async (req, res) => {
     try {
@@ -1076,6 +1114,76 @@ app.post('/cart/add', async (req, res) => {
         res.status(200).json({ success: true, message: 'Product added to cart successfully.' });
     } catch (error) {
         console.error('Error adding to cart:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
+app.post('/cart/checkout', async (req, res) => {
+    try {
+        const { orders } = req.body;
+        const user_id = req.session?.login?.id; // Get user_id from session
+
+        if (!user_id) {
+            return res.status(401).json({ success: false, message: 'User not logged in.' });
+        }
+
+        if (!orders || !Array.isArray(orders) || orders.length === 0) {
+            return res.status(400).json({ success: false, message: 'No orders provided or invalid format.' });
+        }
+
+        const db = await dbPromise;
+
+        // Insert each order into the Order table
+        for (const order of orders) {
+            const { product_id, quantity, price } = order;
+
+            // Fetch the product_shop_id for the product
+            const productResult = await db
+                .request()
+                .input('product_id', sql.Int, product_id)
+                .query(`
+                    SELECT product_shop_id 
+                    FROM [Product] 
+                    WHERE product_id = @product_id
+                `);
+
+            if (productResult.recordset.length === 0) {
+                return res.status(404).json({ success: false, message: `Product with ID ${product_id} not found.` });
+            }
+
+            const product_shop_id = productResult.recordset[0].product_shop_id;
+
+            // Insert the order into the Order table
+            await db
+                .request()
+                .input('user_id', sql.Int, user_id)
+                .input('product_id', sql.Int, product_id)
+                .input('quantity', sql.Int, quantity)
+                .input('price', sql.Decimal(10, 2), price)
+                .input('shop_id', sql.Int, product_shop_id)
+                .query(`
+                    INSERT INTO [Order] (order_user_id, order_product_id, order_quantity, order_final_price, order_type, order_shop_id)
+                    VALUES (@user_id, @product_id, @quantity, @price, 2, @shop_id)
+                `);
+        }
+
+        // Remove only the specific items from the Cart table
+        for (const order of orders) {
+            const { product_id } = order;
+
+            await db
+                .request()
+                .input('user_id', sql.Int, user_id)
+                .input('product_id', sql.Int, product_id)
+                .query(`
+                    DELETE FROM Cart 
+                    WHERE cart_user_id = @user_id AND cart_product_id = @product_id
+                `);
+        }
+
+        res.status(200).json({ success: true, message: 'Checkout successful. Your orders have been placed.' });
+    } catch (error) {
+        console.error('Error during checkout:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });

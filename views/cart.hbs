@@ -2,11 +2,12 @@
 
 <div class="cart-container">
     <div class="cart-main">
-        <!-- Product List -->
+        <!-- Product List Section -->
         <div class="cart-product-list">
+            <h2>Your Cart</h2>
             <div class="cart-product-grid">
                 {{#each cart}}
-                <div class="cart-product-card" data-id="{{product_id}}" data-price="{{product_price}}">
+                <div class="cart-product-card" data-id="{{product_id}}">
                     <div class="img-display">
                         <img src="{{product_img}}" alt="{{product_name}}" class="product-img" />
                     </div>
@@ -19,25 +20,29 @@
             </div>
         </div>
 
-        <!-- Orders Section -->
+        <!-- Checkout Section -->
         <div class="cart-checkout-section">
-            <h2>Orders</h2>
-            <table class="cart-checkout-table">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="cart-checkout-items">
-                </tbody>
-            </table>
+            <h2>Checkout</h2>
+            <div class="cart-checkout-table-wrapper">
+                <table class="cart-checkout-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-checkout-items"></tbody>
+                </table>
+            </div>
             <div class="cart-checkout-summary">
-                <p>Total: ₱<span id="cart-checkout-total">0.00</span></p>
-                <button id="order-checkout-btn">Checkout</button>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>₱<span id="cart-checkout-total">0.00</span></span>
+                </div>
+                <button id="order-checkout-btn" class="checkout-btn">Proceed to Checkout</button>
             </div>
         </div>
     </div>
