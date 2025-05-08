@@ -219,18 +219,26 @@ $(document).ready(function () {
             return;
         }
 
+        // Get the total and final total
+        const total = parseFloat($("#pos-order-total").text());
+        const finalTotal = parseFloat($("#pos-final-total-amount").text());
+        const isDiscountApplied = discountApplied; // Check if the discount is applied
+
         // Prepare the orders array with product_id included
         const ordersArray = Object.keys(orders).map((productId) => {
+            const order = orders[productId];
+            const orderTotal = order.price * order.quantity;
+
             return {
                 id: productId, // Include product_id
-                name: orders[productId].name,
-                price: orders[productId].price,
-                quantity: orders[productId].quantity,
+                name: order.name,
+                price: isDiscountApplied ? (finalTotal / total) * order.price : order.price, // Adjust price proportionally if discounted
+                quantity: order.quantity,
             };
         });
 
         // Log the orders array for debugging
-        console.log("Checkout orders:", ordersArray);
+        console.log("Checkout orders:", ordersArray);   
 
         // Send the orders to the server
         $.ajax({

@@ -352,11 +352,11 @@ app.get('/shop', isSeller, async (req, res) => {
                 SELECT 
                     o.order_id,
                     p.product_name,
-                    p.product_price,
                     s.seller_name,
                     u.user_name,
                     o.order_date,
-                    o.order_quantity
+                    o.order_quantity,
+                    o.order_final_price
                 FROM [Order] o
                 LEFT JOIN [Product] p ON o.order_product_id = p.product_id
                 LEFT JOIN [Seller] s ON o.order_seller_id = s.seller_id
@@ -364,12 +364,7 @@ app.get('/shop', isSeller, async (req, res) => {
                 WHERE o.order_seller_id = @shopId
             `);
 
-        const orders = ordersRecord.recordset.map((order) => {
-            return {
-                ...order,
-                order_price: order.product_price * order.order_quantity,
-            };
-        });
+        const orders = ordersRecord.recordset;
 
         res.render('shop', {
             title: 'Shop',
