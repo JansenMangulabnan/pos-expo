@@ -382,7 +382,7 @@ app.get('/shop', isSeller, async (req, res) => {
                 'css/shop_modal.css',
                 'css/profile.css',
                 'css/shop_content_menu.css',
-                'css/shop_content_sales.css',
+                'css/shop_content_POS.css',
                 'css/shop_content_order.css'
             ],
             beforeBody: [],

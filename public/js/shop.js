@@ -101,103 +101,160 @@ $(document).ready(function () {
 
     const orders = {};
 
-    // POS
+    // Add product to orders
     $(".pos-add-to-order-btn").on("click", function () {
-        const productItem = $(this).closest(".pos-product-item");
-        const productId = productItem.data("id");
-        const productName = productItem.find(".pos-product-name").text();
-        const productPrice = parseFloat(productItem.data("price"));
+        const $card = $(this).closest(".pos-product-card");
+        const productId = $card.data("id");
+        const productName = $card.find(".pos-product-name").text();
+        const productPrice = parseFloat($card.data("price"));
 
-        if (orders[productId]) {
-            orders[productId].quantity += 1;
-        } else {
+        if (!orders[productId]) {
             orders[productId] = {
                 name: productName,
                 price: productPrice,
                 quantity: 1,
             };
+        } else {
+            orders[productId].quantity++;
         }
 
         updateOrders();
     });
 
+    // Add product to orders when clicking on the product card
+    $(document).on("click", ".pos-product-card", function () {
+        const $card = $(this);
+        const productId = $card.data("id");
+        const productName = $card.find(".pos-product-name").text();
+        const productPrice = parseFloat($card.data("price"));
+
+        if (!orders[productId]) {
+            orders[productId] = {
+                name: productName,
+                price: productPrice,
+                quantity: 1,
+            };
+        } else {
+            orders[productId].quantity++;
+        }
+
+        updateOrders();
+    });
+
+    // Update the orders table and summary
     function updateOrders() {
         const $orderItems = $("#pos-order-items");
-        $orderItems.empty();
+        $orderItems.empty(); // Clear the table
 
         let total = 0;
 
         Object.keys(orders).forEach((productId) => {
-            const item = orders[productId];
-            const itemTotal = item.price * item.quantity;
-            total += itemTotal;
+            const order = orders[productId];
+            const orderTotal = order.price * order.quantity;
+            total += orderTotal;
 
-            $orderItems.append(`
+            const $row = $(`
                 <tr data-id="${productId}">
-                    <td>${item.name}</td>
+                    <td>${order.name}</td>
                     <td>
-                        <button class="pos-decrease-qty">-</button>
-                        <span class="pos-quantity">${item.quantity}</span>
-                        <button class="pos-increase-qty">+</button>
+                        <div class="pos-quantity-container">
+                            <button class="pos-decrease-qty">-</button>
+                            <div class="pos-quantity">${order.quantity}</div>
+                            <button class="pos-increase-qty">+</button>
+                        </div>
                     </td>
-                    <td>$${item.price.toFixed(2)}</td>
-                    <td>$${itemTotal.toLocaleString()}</td>
+                    <td>$${order.price.toFixed(2)}</td>
+                    <td>$${orderTotal.toFixed(2)}</td>
                     <td><button class="pos-remove-item">Remove</button></td>
                 </tr>
             `);
+
+            $orderItems.append($row);
         });
 
-        $("#pos-order-total").text(total.toLocaleString());
+        // Update the total
+        $("#pos-order-total").text(total.toFixed(2));
     }
 
+    // Increase quantity
     $(document).on("click", ".pos-increase-qty", function () {
-        const productId = $(this).closest("tr").data("id");
-        orders[productId].quantity += 1;
-        updateOrders();
+        const $row = $(this).closest("tr");
+        const productId = $row.data("id");
+
+        if (orders[productId]) {
+            orders[productId].quantity++;
+            updateOrders();
+        }
     });
 
+    // Decrease quantity
     $(document).on("click", ".pos-decrease-qty", function () {
-        const productId = $(this).closest("tr").data("id");
-        if (orders[productId].quantity > 1) {
-            orders[productId].quantity -= 1;
+        const $row = $(this).closest("tr");
+        const productId = $row.data("id");
+
+        if (orders[productId] && orders[productId].quantity > 1) {
+            orders[productId].quantity--;
         } else {
             delete orders[productId];
         }
+
         updateOrders();
     });
 
+    // Remove item from orders
     $(document).on("click", ".pos-remove-item", function () {
-        const productId = $(this).closest("tr").data("id");
-        delete orders[productId];
-        updateOrders();
+        const $row = $(this).closest("tr");
+        const productId = $row.data("id");
+
+        if (orders[productId]) {
+            delete orders[productId];
+            updateOrders();
+        }
     });
 
+    // Checkout button
     $("#pos-checkout-btn").on("click", function () {
-        if (Object.keys(orders).length === 0) {
-            alert("Orders are empty!");
+        if (!Object.keys(orders).length) {
+            alert("No items in the order.");
             return;
         }
 
+        // Prepare the orders array with product_id included
+        const ordersArray = Object.keys(orders).map((productId) => {
+            return {
+                id: productId, // Include product_id
+                name: orders[productId].name,
+                price: orders[productId].price,
+                quantity: orders[productId].quantity,
+            };
+        });
+
+        // Log the orders array for debugging
+        console.log("Checkout orders:", ordersArray);
+
+        // Send the orders to the server
         $.ajax({
-            url: "/sellerCheckout",
+            url: "/sellerCheckout", // Endpoint to handle saving the order
             method: "POST",
             contentType: "application/json",
-            data: JSON.stringify({
-                orders: Object.entries(orders).map(([id, item]) => ({
-                    id: parseInt(id),
-                    ...item,
-                })),
-            }),
+            data: JSON.stringify({ orders: ordersArray }), // Send the orders array
             success: function (response) {
-                alert("Order placed successfully!");
-                location.reload();
+                alert(response.message);
+
+                // Clear the orders object
+                for (let key in orders) {
+                    if (orders.hasOwnProperty(key)) delete orders[key];
+                }
+
+                // Update the UI
+                updateOrders();
             },
             error: function (xhr) {
-                alert("Error during checkout: " + xhr.responseText);
+                alert("Error processing checkout: " + xhr.responseText);
             },
         });
     });
-    
+
     // orders
     let currentlyLockedOrderId = null; 
 

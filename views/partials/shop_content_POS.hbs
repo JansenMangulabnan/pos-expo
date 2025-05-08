@@ -1,40 +1,46 @@
 <div class="pos-container">
-    <h1></h1>
+    <h1>Point of Sale</h1>
 
-    <!-- Product List -->
-    <div class="pos-product-list">
-        <h2>Products</h2>
-        <ul>
-            {{#each products}}
-            <li class="pos-product-item" data-id="{{product_id}}" data-price="{{product_price}}">
-                <span class="pos-product-name">{{product_name}}</span>
-                <span class="pos-product-price">$ {{product_price}}</span>
-                <button class="pos-add-to-order-btn">Add to Orders</button>
-            </li>
-            {{/each}}
-        </ul>
-    </div>
+    <div class="pos-main">
+        <!-- Product List -->
+        <div class="pos-product-list">
+            <h2>Products</h2>
+            <div class="pos-product-grid">
+                {{#each products}}
+                <div class="pos-product-card" data-id="{{product_id}}" data-price="{{product_price}}">
+                    <div class="img-display">
+                        <img src="{{product_img}}" alt="{{product_name}}" class="product-img" />
+                    </div>
+                    <div class="pos-product-info">
+                        <h3 class="pos-product-name">{{product_name}}</h3>
+                        <p class="pos-product-price">$ {{product_price}}</p>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
 
-    <!-- Orders Section -->
-    <div class="pos-order-section">
-        <h2>Orders</h2>
-        <table class="pos-order-table">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="pos-order-items">
-                <!-- Order items will be dynamically added here -->
-            </tbody>
-        </table>
-        <div class="pos-order-summary">
-            <p>Total: $ <span id="pos-order-total">0.00</span></p>
-            <button id="pos-checkout-btn">Checkout</button>
+        <!-- Orders Section -->
+        <div class="pos-order-section">
+            <h2>Orders</h2>
+            <table class="pos-order-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="pos-order-items">
+                    <!-- Order items will be dynamically added here -->
+                </tbody>
+            </table>
+            <div class="pos-order-summary">
+                <p>Total: $ <span id="pos-order-total">0.00</span></p>
+                <button id="pos-checkout-btn">Checkout</button>
+            </div>
         </div>
     </div>
 </div>
