@@ -58,6 +58,17 @@
     position: relative;
 }
 
+.confirm-order-btn,
+.delete-order-btn {
+    background-color: var(--button_danger);
+    color: var(--button_text);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 5px 10px;
+}
+
 .lock-overlay {
     position: absolute;
     top: 0;

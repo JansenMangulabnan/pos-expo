@@ -263,19 +263,24 @@ $(document).ready(function () {
         const orderId = $orderCard.data("order-id");
 
         const $orderOptions = $orderCard.find(".order-options");
+        const $orderDescription = $orderCard.find(".right-content p"); // Select the <p> element inside the card
+
         if ($orderOptions.is(":visible")) {
             $orderOptions.hide();
+            $orderDescription.show(); // Show the <p> when options are hidden
 
             socket.emit("unlockOrder", orderId);
             currentlyLockedOrderId = null; 
         } else {
             $(".order-options").hide();
+            $(".right-content p").show(); // Show <p> for all cards
 
             if (currentlyLockedOrderId && currentlyLockedOrderId !== orderId) {
                 socket.emit("unlockOrder", currentlyLockedOrderId);
             }
 
             $orderOptions.show();
+            $orderDescription.hide(); // Hide the <p> when options are shown
 
             socket.emit("lockOrder", orderId);
             currentlyLockedOrderId = orderId; 
