@@ -496,6 +496,8 @@ $(document).ready(function () {
                 const monthlyLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 const monthlyData = new Array(12).fill(0); // Initialize data for 12 months
                 const annualData = {};
+                const weeklyLabels = ["Week 1", "Week 2", "Week 3", "Week 4"];
+                const weeklyData = new Array(4).fill(0); // Initialize data for 4 weeks
                 let totalRevenue = 0;
 
                 orderHistory.forEach((order) => {
@@ -519,6 +521,12 @@ $(document).ready(function () {
                         annualData[yearLabel] = 0;
                     }
                     annualData[yearLabel] += revenue;
+
+                    // Group by week of the month
+                    const weekIndex = getWeekOfMonth(date) - 1; // Week 1 = index 0
+                    if (weekIndex >= 0 && weekIndex < 4) {
+                        weeklyData[weekIndex] += revenue;
+                    }
                 });
 
                 // Update total revenue in the UI
@@ -638,6 +646,43 @@ $(document).ready(function () {
                         },
                     },
                 });
+
+                // Render the weekly income chart
+                const weeklyCtx = document.getElementById("weeklyIncomeChart").getContext("2d");
+                new Chart(weeklyCtx, {
+                    type: "line",
+                    data: {
+                        labels: weeklyLabels, // Week 1 to Week 4
+                        datasets: [
+                            {
+                                label: "Weekly Income",
+                                data: weeklyData,
+                                backgroundColor: "rgba(153, 102, 255, 0.2)", // Optional fill under the line
+                                borderColor: "rgba(153, 102, 255, 1)", // Line color
+                                borderWidth: 2,
+                                tension: 0.2, // Smooth curve
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Revenue (₱)",
+                                },
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Week of the Month",
+                                },
+                            },
+                        },
+                    },
+                });
             } else {
                 console.error("Failed to fetch order history:", response.message);
             }
@@ -692,4 +737,12 @@ function showPopup(message) {
     setTimeout(() => {
         $popup.fadeOut();
     }, 3000);
+}
+
+// Helper function to calculate the week of the month
+function getWeekOfMonth(date) {
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const dayOfMonth = date.getDate();
+    const adjustedDate = dayOfMonth + firstDayOfMonth.getDay(); // Adjust for the first day of the week
+    return Math.ceil(adjustedDate / 7); // Divide by 7 to get the week number
 }
