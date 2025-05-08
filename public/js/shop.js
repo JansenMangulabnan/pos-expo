@@ -175,8 +175,8 @@ $(document).ready(function () {
                             <button class="pos-increase-qty">+</button>
                         </div>
                     </td>
-                    <td>$${order.price.toFixed(2)}</td>
-                    <td>$${orderTotal.toFixed(2)}</td>
+                    <td>₱${order.price.toFixed(2)}</td>
+                    <td>₱${orderTotal.toFixed(2)}</td>
                     <td><button class="pos-remove-item">Remove</button></td>
                 </tr>
             `);
