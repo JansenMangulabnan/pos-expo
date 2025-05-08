@@ -491,9 +491,10 @@ $(document).ready(function () {
                 const orderHistory = response.orderHistory;
 
                 // Prepare data for the chart
-                const dailyLabels = [];
-                const dailyData = [];
-                const monthlyData = {};
+                const dailyLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                const dailyData = new Array(7).fill(0); // Initialize data for 7 days
+                const monthlyLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const monthlyData = new Array(12).fill(0); // Initialize data for 12 months
                 const annualData = {};
                 let totalRevenue = 0;
 
@@ -504,22 +505,13 @@ $(document).ready(function () {
                     // Add to total revenue
                     totalRevenue += revenue;
 
-                    // Group by day
-                    const dailyLabel = date.toLocaleDateString();
-                    const dailyIndex = dailyLabels.indexOf(dailyLabel);
-                    if (dailyIndex === -1) {
-                        dailyLabels.push(dailyLabel);
-                        dailyData.push(revenue);
-                    } else {
-                        dailyData[dailyIndex] += revenue;
-                    }
+                    // Group by day of the week
+                    const dayIndex = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+                    dailyData[dayIndex] += revenue;
 
                     // Group by month
-                    const monthLabel = `${date.getFullYear()}-${date.getMonth() + 1}`; // Format: YYYY-MM
-                    if (!monthlyData[monthLabel]) {
-                        monthlyData[monthLabel] = 0;
-                    }
-                    monthlyData[monthLabel] += revenue;
+                    const monthIndex = date.getMonth(); // 0 = January, 1 = February, ..., 11 = December
+                    monthlyData[monthIndex] += revenue;
 
                     // Group by year
                     const yearLabel = `${date.getFullYear()}`; // Format: YYYY
@@ -532,27 +524,24 @@ $(document).ready(function () {
                 // Update total revenue in the UI
                 $("#total-revenue").text(totalRevenue.toFixed(2));
 
-                // Calculate monthly and annual totals
-                const monthlyLabels = Object.keys(monthlyData).sort();
-                const monthlyValues = monthlyLabels.map((label) => monthlyData[label]);
-
+                // Calculate annual totals
                 const annualLabels = Object.keys(annualData).sort();
                 const annualValues = annualLabels.map((label) => annualData[label]);
 
                 // Render the daily income chart as a line chart
                 const dailyCtx = document.getElementById("dailyIncomeChart").getContext("2d");
                 new Chart(dailyCtx, {
-                    type: "line", // Change to "line" for a continuous graph
+                    type: "line",
                     data: {
-                        labels: dailyLabels,
+                        labels: dailyLabels, // Weekdays only
                         datasets: [
                             {
                                 label: "Daily Income",
                                 data: dailyData,
-                                backgroundColor: "rgba(75, 192, 192, 0.2)", // Optional fill under the line
-                                borderColor: "rgba(75, 192, 192, 0.49)", // Line color
-                                borderWidth: 2, // Line thickness
-                                tension: 0,
+                                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                                borderColor: "rgba(75, 192, 192, 1)",
+                                borderWidth: 2,
+                                tension: 0.2,
                             },
                         ],
                     },
@@ -569,7 +558,7 @@ $(document).ready(function () {
                             x: {
                                 title: {
                                     display: true,
-                                    text: "Date",
+                                    text: "Day of the Week",
                                 },
                             },
                         },
@@ -581,15 +570,15 @@ $(document).ready(function () {
                 new Chart(monthlyCtx, {
                     type: "line",
                     data: {
-                        labels: monthlyLabels,
+                        labels: monthlyLabels, // 12 months only
                         datasets: [
                             {
                                 label: "Monthly Income",
-                                data: monthlyValues,
-                                backgroundColor: "rgba(255, 159, 64, 0.2)", // Optional fill under the line
-                                borderColor: "rgba(255, 159, 64, 1)", // Line color
-                                borderWidth: 2, // Line thickness
-                                tension: 0.4, // Smooth curve
+                                data: monthlyData,
+                                backgroundColor: "rgba(255, 159, 64, 0.2)",
+                                borderColor: "rgba(255, 159, 64, 1)",
+                                borderWidth: 2,
+                                tension: 0.3,
                             },
                         ],
                     },
@@ -616,17 +605,17 @@ $(document).ready(function () {
                 // Render the annual income chart as a line chart
                 const annualCtx = document.getElementById("annualIncomeChart").getContext("2d");
                 new Chart(annualCtx, {
-                    type: "line", // Change to "line" for a continuous graph
+                    type: "line",
                     data: {
                         labels: annualLabels,
                         datasets: [
                             {
                                 label: "Annual Income",
                                 data: annualValues,
-                                backgroundColor: "rgba(54, 162, 235, 0.2)", // Optional fill under the line
-                                borderColor: "rgba(54, 162, 235, 1)", // Line color
-                                borderWidth: 2, // Line thickness
-                                tension: 0.4, // Smooth curve
+                                backgroundColor: "rgba(54, 162, 235, 0.2)",
+                                borderColor: "rgba(54, 162, 235, 1)",
+                                borderWidth: 2,
+                                tension: 0.4,
                             },
                         ],
                     },
