@@ -321,7 +321,6 @@ app.get('/shop', isSeller, async (req, res) => {
         if (!seller) {
             return res.status(401).send('Unauthorized access.');
         }
-
         const shopId = seller.seller_shop_id;
 
         const productRecord = await db
@@ -331,7 +330,6 @@ app.get('/shop', isSeller, async (req, res) => {
                 FROM Product 
                 WHERE product_shop_id = @shopId
             `);
-
         const products = productRecord.recordset;
 
         const shopRecord = await db
@@ -342,7 +340,6 @@ app.get('/shop', isSeller, async (req, res) => {
                 FROM Shop
                 WHERE shop_id = @shopId
             `);
-
         const shops = shopRecord.recordset;
 
         const ordersRecord = await db
@@ -363,8 +360,27 @@ app.get('/shop', isSeller, async (req, res) => {
                 LEFT JOIN [User] u ON o.order_user_id = u.user_id
                 WHERE o.order_seller_id = @shopId
             `);
-
         const orders = ordersRecord.recordset;
+
+        const orderHistoryRecord = await db
+            .request()
+            .input('shopId', sql.Int, shopId)
+            .query(`
+                SELECT 
+                    o.order_id,
+                    p.product_name,
+                    s.seller_name,
+                    u.user_name,
+                    o.order_date,
+                    o.order_quantity,
+                    o.order_final_price
+                FROM [Order] o
+                LEFT JOIN [Product] p ON o.order_product_id = p.product_id
+                LEFT JOIN [Seller] s ON o.order_seller_id = s.seller_id
+                LEFT JOIN [User] u ON o.order_user_id = u.user_id
+                WHERE o.order_seller_id = @shopId AND o.order_type = 1
+            `);
+        const orderHistory = orderHistoryRecord.recordset;
 
         res.render('shop', {
             title: 'Shop',
@@ -389,6 +405,7 @@ app.get('/shop', isSeller, async (req, res) => {
                 'https://code.jquery.com/jquery-3.6.0.min.js',
                 'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
                 '/socket.io/socket.io.js',
+                'https://cdn.jsdelivr.net/npm/chart.js',
                 'js/BASE.js',
                 'js/shop_nav.js',
                 'js/profile.js',
@@ -400,6 +417,7 @@ app.get('/shop', isSeller, async (req, res) => {
             ],
             products,
             orders,
+            orderHistory,
             sellerShopId: shopId,
             shops,
             isLoggedIn: !!req.session?.login,
@@ -640,11 +658,11 @@ app.post('/sellerCheckout', async (req, res) => {
                 .request()
                 .input('productId', sql.Int, productId)
                 .input('quantity', sql.Int, quantity)
-                .input('totalPrice', sql.Decimal(10, 2), price * quantity)
+                .input('totalPrice', sql.Decimal(10, 2), price)
                 .input('sellerId', sql.Int, sellerId)
                 .query(`
-                    INSERT INTO [Order] (order_product_id, order_user_id, order_type, order_seller_id, order_quantity)
-                    VALUES (@productId, NULL, 1, @sellerId, @quantity)
+                    INSERT INTO [Order] (order_product_id, order_user_id, order_type, order_seller_id, order_quantity, order_final_price)
+                    VALUES (@productId, NULL, 1, @sellerId, @quantity, @totalPrice)
                 `);
         }
 
@@ -885,6 +903,53 @@ app.get('/', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
+    }
+});
+
+app.get('/api/orderHistory', isSeller, async (req, res) => {
+    try {
+        const sellerId = req.session.login.id;
+        const db = await dbPromise;
+
+        const sellerRecord = await db
+            .request()
+            .input('sellerId', sql.Int, sellerId)
+            .query(`
+                SELECT seller_shop_id 
+                FROM Seller 
+                WHERE seller_id = @sellerId
+            `);
+
+        const seller = sellerRecord.recordset[0];
+        if (!seller) {
+            return res.status(401).json({ success: false, message: 'Unauthorized access.' });
+        }
+        const shopId = seller.seller_shop_id;
+
+        const orderHistoryRecord = await db
+            .request()
+            .input('shopId', sql.Int, shopId)
+            .query(`
+                SELECT 
+                    o.order_id,
+                    p.product_name,
+                    s.seller_name,
+                    u.user_name,
+                    o.order_date,
+                    o.order_quantity,
+                    o.order_final_price
+                FROM [Order] o
+                LEFT JOIN [Product] p ON o.order_product_id = p.product_id
+                LEFT JOIN [Seller] s ON o.order_seller_id = s.seller_id
+                LEFT JOIN [User] u ON o.order_user_id = u.user_id
+                WHERE o.order_seller_id = @shopId AND o.order_type = 1
+            `);
+
+        const orderHistory = orderHistoryRecord.recordset;
+        res.json({ success: true, orderHistory });
+    } catch (error) {
+        console.error('Error fetching order history:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 

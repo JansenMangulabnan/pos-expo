@@ -298,16 +298,21 @@ $(document).ready(function () {
             const order = orders[productId];
             const orderTotal = order.price * order.quantity;
 
+            // Adjust price proportionally if a discount is applied
+            const adjustedPrice = isDiscountApplied
+                ? (finalTotal / total) * order.price
+                : order.price;
+
             return {
                 id: productId, // Include product_id
                 name: order.name,
-                price: isDiscountApplied ? (finalTotal / total) * order.price : order.price, // Adjust price proportionally if discounted
+                price: adjustedPrice.toFixed(2), // Pass the adjusted price
                 quantity: order.quantity,
             };
         });
 
         // Log the orders array for debugging
-        console.log("Checkout orders:", ordersArray);   
+        console.log("Checkout orders:", ordersArray);
 
         // Send the orders to the server
         $.ajax({
@@ -475,6 +480,83 @@ $(document).ready(function () {
     socket.on("orderCompleted", (orderId) => {
         $(`.order-card[data-order-id="${orderId}"]`).remove();
         alert(`Order ${orderId} has been completed.`);
+    });
+
+    // Fetch order history data via AJAX
+    $.ajax({
+        url: '/api/orderHistory',
+        method: 'GET',
+        success: function (response) {
+            if (response.success) {
+                const orderHistory = response.orderHistory;
+
+                // Prepare data for the chart
+                const labels = [];
+                const data = [];
+                let totalRevenue = 0;
+
+                orderHistory.forEach((order) => {
+                    const date = new Date(order.order_date).toLocaleDateString(); // Format the date
+                    const revenue = order.order_final_price * order.order_quantity;
+
+                    // Add to total revenue
+                    totalRevenue += revenue;
+
+                    // Group by date
+                    const index = labels.indexOf(date);
+                    if (index === -1) {
+                        labels.push(date);
+                        data.push(revenue);
+                    } else {
+                        data[index] += revenue;
+                    }
+                });
+
+                // Update total revenue in the UI
+                $("#total-revenue").text(totalRevenue.toFixed(2));
+
+                // Render the chart
+                const ctx = document.getElementById("incomeChart").getContext("2d");
+                new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "Daily Income",
+                                data: data,
+                                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                                borderColor: "rgba(75, 192, 192, 1)",
+                                borderWidth: 1,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Revenue (₱)",
+                                },
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Date",
+                                },
+                            },
+                        },
+                    },
+                });
+            } else {
+                console.error("Failed to fetch order history:", response.message);
+            }
+        },
+        error: function (xhr) {
+            console.error("Error fetching order history:", xhr.responseText);
+        },
     });
 });
 
