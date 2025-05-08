@@ -491,43 +491,68 @@ $(document).ready(function () {
                 const orderHistory = response.orderHistory;
 
                 // Prepare data for the chart
-                const labels = [];
-                const data = [];
+                const dailyLabels = [];
+                const dailyData = [];
+                const monthlyData = {};
+                const annualData = {};
                 let totalRevenue = 0;
 
                 orderHistory.forEach((order) => {
-                    const date = new Date(order.order_date).toLocaleDateString(); // Format the date
+                    const date = new Date(order.order_date);
                     const revenue = order.order_final_price * order.order_quantity;
 
                     // Add to total revenue
                     totalRevenue += revenue;
 
-                    // Group by date
-                    const index = labels.indexOf(date);
-                    if (index === -1) {
-                        labels.push(date);
-                        data.push(revenue);
+                    // Group by day
+                    const dailyLabel = date.toLocaleDateString();
+                    const dailyIndex = dailyLabels.indexOf(dailyLabel);
+                    if (dailyIndex === -1) {
+                        dailyLabels.push(dailyLabel);
+                        dailyData.push(revenue);
                     } else {
-                        data[index] += revenue;
+                        dailyData[dailyIndex] += revenue;
                     }
+
+                    // Group by month
+                    const monthLabel = `${date.getFullYear()}-${date.getMonth() + 1}`; // Format: YYYY-MM
+                    if (!monthlyData[monthLabel]) {
+                        monthlyData[monthLabel] = 0;
+                    }
+                    monthlyData[monthLabel] += revenue;
+
+                    // Group by year
+                    const yearLabel = `${date.getFullYear()}`; // Format: YYYY
+                    if (!annualData[yearLabel]) {
+                        annualData[yearLabel] = 0;
+                    }
+                    annualData[yearLabel] += revenue;
                 });
 
                 // Update total revenue in the UI
                 $("#total-revenue").text(totalRevenue.toFixed(2));
 
-                // Render the chart
-                const ctx = document.getElementById("incomeChart").getContext("2d");
-                new Chart(ctx, {
-                    type: "bar",
+                // Calculate monthly and annual totals
+                const monthlyLabels = Object.keys(monthlyData).sort();
+                const monthlyValues = monthlyLabels.map((label) => monthlyData[label]);
+
+                const annualLabels = Object.keys(annualData).sort();
+                const annualValues = annualLabels.map((label) => annualData[label]);
+
+                // Render the daily income chart as a line chart
+                const dailyCtx = document.getElementById("dailyIncomeChart").getContext("2d");
+                new Chart(dailyCtx, {
+                    type: "line", // Change to "line" for a continuous graph
                     data: {
-                        labels: labels,
+                        labels: dailyLabels,
                         datasets: [
                             {
                                 label: "Daily Income",
-                                data: data,
-                                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                                borderColor: "rgba(75, 192, 192, 1)",
-                                borderWidth: 1,
+                                data: dailyData,
+                                backgroundColor: "rgba(75, 192, 192, 0.2)", // Optional fill under the line
+                                borderColor: "rgba(75, 192, 192, 0.49)", // Line color
+                                borderWidth: 2, // Line thickness
+                                tension: 0,
                             },
                         ],
                     },
@@ -545,6 +570,80 @@ $(document).ready(function () {
                                 title: {
                                     display: true,
                                     text: "Date",
+                                },
+                            },
+                        },
+                    },
+                });
+
+                // Render the monthly income chart as a line chart
+                const monthlyCtx = document.getElementById("monthlyIncomeChart").getContext("2d");
+                new Chart(monthlyCtx, {
+                    type: "line",
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [
+                            {
+                                label: "Monthly Income",
+                                data: monthlyValues,
+                                backgroundColor: "rgba(255, 159, 64, 0.2)", // Optional fill under the line
+                                borderColor: "rgba(255, 159, 64, 1)", // Line color
+                                borderWidth: 2, // Line thickness
+                                tension: 0.4, // Smooth curve
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Revenue (₱)",
+                                },
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Month",
+                                },
+                            },
+                        },
+                    },
+                });
+
+                // Render the annual income chart as a line chart
+                const annualCtx = document.getElementById("annualIncomeChart").getContext("2d");
+                new Chart(annualCtx, {
+                    type: "line", // Change to "line" for a continuous graph
+                    data: {
+                        labels: annualLabels,
+                        datasets: [
+                            {
+                                label: "Annual Income",
+                                data: annualValues,
+                                backgroundColor: "rgba(54, 162, 235, 0.2)", // Optional fill under the line
+                                borderColor: "rgba(54, 162, 235, 1)", // Line color
+                                borderWidth: 2, // Line thickness
+                                tension: 0.4, // Smooth curve
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Revenue (₱)",
+                                },
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Year",
                                 },
                             },
                         },

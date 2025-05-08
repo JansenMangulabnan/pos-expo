@@ -1,5 +1,16 @@
 <div class="reports-container">
-    <h2>Income Report</h2>
-    <canvas id="incomeChart" width="400" height="200"></canvas>
-    <p>Total Revenue: ₱<span id="total-revenue">0.00</span></p>
+    <div class="total-revenue-container">
+        <h3>Total Revenue</h3>
+        <p class="total-revenue-amount">₱<span id="total-revenue">0.00</span></p>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="dailyIncomeChart" width="400" height="150"></canvas>
+    </div>
+    <div class="canvas-container">
+        <canvas id="monthlyIncomeChart" width="400" height="150"></canvas>
+    </div>
+    <div class="canvas-container">
+        <canvas id="annualIncomeChart" width="400" height="150"></canvas>
+    </div>
 </div>
