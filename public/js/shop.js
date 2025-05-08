@@ -255,8 +255,31 @@ $(document).ready(function () {
         });
     });
 
+    let discountApplied = false;
+
+    $("#apply-discount-btn").on("click", function () {
+        const total = parseFloat($("#pos-order-total").text());
+        if (isNaN(total) || total <= 0) return alert("No items in the order to apply a discount.");
+    
+        discountApplied = !discountApplied;
+    
+        if (discountApplied) {
+            const discount = total * 0.2;
+            const final = total - discount;
+    
+            $("#pos-discount-amount").text(discount.toFixed(2));
+            $("#pos-final-total-amount").text(final.toFixed(2));
+    
+            $("#pos-discount-indicator, #pos-final-total").show();
+            $(this).text("Remove Senior/PWD Discount");
+        } else {
+            $("#pos-discount-indicator, #pos-final-total").hide();
+            $(this).text("Apply Senior/PWD Discount");
+        }
+    });
+
     // orders
-    let currentlyLockedOrderId = null; 
+    let currentlyLockedOrderId = null;
 
     $(document).on("click", ".order-card", function () {
         const $orderCard = $(this);
@@ -270,7 +293,7 @@ $(document).ready(function () {
             $orderDescription.show(); // Show the <p> when options are hidden
 
             socket.emit("unlockOrder", orderId);
-            currentlyLockedOrderId = null; 
+            currentlyLockedOrderId = null;
         } else {
             $(".order-options").hide();
             $(".right-content p").show(); // Show <p> for all cards
@@ -283,7 +306,7 @@ $(document).ready(function () {
             $orderDescription.hide(); // Hide the <p> when options are shown
 
             socket.emit("lockOrder", orderId);
-            currentlyLockedOrderId = orderId; 
+            currentlyLockedOrderId = orderId;
         }
     });
 
@@ -293,37 +316,37 @@ $(document).ready(function () {
 
         if (confirm(`Are you sure you want to delete order ${orderId}?`)) {
             $.ajax({
-                url: '/archiveOrder',
-                method: 'POST',
-                contentType: 'application/json',
+                url: "/archiveOrder",
+                method: "POST",
+                contentType: "application/json",
                 data: JSON.stringify({ order_id: orderId }),
                 success: function (response) {
                     alert(response.message);
                     $(`.order-card[data-order-id="${orderId}"]`).remove();
                 },
                 error: function (xhr) {
-                    alert('Error archiving order: ' + xhr.responseText);
+                    alert("Error archiving order: " + xhr.responseText);
                 },
             });
         }
     });
 
-    $(document).on('click', '.confirm-order-btn', function (event) {
+    $(document).on("click", ".confirm-order-btn", function (event) {
         event.stopPropagation();
-        const orderId = $(this).data('order-id');
+        const orderId = $(this).data("order-id");
 
         if (confirm(`Are you sure you want to confirm order ${orderId}?`)) {
             $.ajax({
-                url: '/confirmOrder',
-                method: 'POST',
-                contentType: 'application/json',
+                url: "/confirmOrder",
+                method: "POST",
+                contentType: "application/json",
                 data: JSON.stringify({ order_id: orderId }),
                 success: function (response) {
                     alert(response.message);
                     $(`.order-card[data-order-id="${orderId}"]`).remove();
                 },
                 error: function (xhr) {
-                    alert('Error confirming order: ' + xhr.responseText);
+                    alert("Error confirming order: " + xhr.responseText);
                 },
             });
         }
@@ -336,11 +359,12 @@ $(document).ready(function () {
             if (socket.id !== lockerId) {
                 const $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
                 $orderCard.addClass("locked");
-                $orderCard.find(".confirm-order-btn, .delete-order-btn").prop(
-                    "disabled",
-                    true
+                $orderCard
+                    .find(".confirm-order-btn, .delete-order-btn")
+                    .prop("disabled", true);
+                $orderCard.append(
+                    `<div class="lock-overlay">Processing <i class='bx bx-loader-circle bx-spin'></i></div>`
                 );
-                $orderCard.append(`<div class="lock-overlay">Processing <i class='bx bx-loader-circle bx-spin'></i></div>`);
             }
         });
     });
@@ -349,21 +373,21 @@ $(document).ready(function () {
         if (socket.id !== lockerId) {
             const $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
             $orderCard.addClass("locked");
-            $orderCard.find(".confirm-order-btn, .delete-order-btn").prop(
-                "disabled",
-                true
+            $orderCard
+                .find(".confirm-order-btn, .delete-order-btn")
+                .prop("disabled", true);
+            $orderCard.append(
+                `<div class="lock-overlay">Processing <i class='bx bx-loader-circle bx-spin'></i></div>`
             );
-            $orderCard.append(`<div class="lock-overlay">Processing <i class='bx bx-loader-circle bx-spin'></i></div>`);
         }
     });
 
     socket.on("orderUnlocked", (orderId) => {
         const $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
         $orderCard.removeClass("locked");
-        $orderCard.find(".confirm-order-btn, .delete-order-btn").prop(
-            "disabled",
-            false
-        );
+        $orderCard
+            .find(".confirm-order-btn, .delete-order-btn")
+            .prop("disabled", false);
         $orderCard.find(".lock-overlay").remove();
     });
 
@@ -372,7 +396,7 @@ $(document).ready(function () {
     });
 
     socket.on("orderCompleted", (orderId) => {
-        $(`.order-card[data-order-id="${orderId}"]`).remove(); 
+        $(`.order-card[data-order-id="${orderId}"]`).remove();
         alert(`Order ${orderId} has been completed.`);
     });
 });

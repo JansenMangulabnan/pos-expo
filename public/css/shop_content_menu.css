@@ -67,8 +67,8 @@
 
 .img-display {
     display: flex;
-    width: 80px;
-    height: 80px; 
+    width: 100px;
+    height: 100px; 
     overflow: hidden; 
     border-radius: 10px; 
     background-color: var(--input);
