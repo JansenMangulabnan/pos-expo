@@ -949,6 +949,7 @@ app.get('/', async (req, res) => {
                 'css/profile.css',
                 'css/searchbar.css',
                 'css/home.css',
+                'css/theme_toggle.css'
             ],
             beforeBody: [],
             afterbody: [],
@@ -962,6 +963,7 @@ app.get('/', async (req, res) => {
                 'js/header.js',
                 'js/profile.js',
                 'js/home.js',
+                'js/theme_toggle.js'
             ],
             Product,
             isLoggedIn: !!req.session?.login,

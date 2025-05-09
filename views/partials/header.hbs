@@ -3,21 +3,16 @@
         <nav class="header-nav">
             <div class="left-nav-content">
                 <a href="/" class="brand">POSSIE</a>
-                <ul class="nav-links">
-                    {{!-- <li><a href="#">Home</a></li>
+                {{> search_bar}}
+                {{!-- <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
                     <li><a href="#">Products</a></li>
                     <li><a href="#">About Us</a></li>
-                    <li><a href="#">Contact</a></li> --}}
-                </ul>
+                    <li><a href="#">Contact</a></li>
+                </ul> --}}
             </div>
             <div class="right-nav-content">
-                {{> search_bar}}
-                <div class="cart-icon">
-                    <i class='bx bx-cart'></i>
-                </div>
-                <div class="notification-icon">
-                    <i class='bx bx-bell'></i>
-                </div>
+                {{> theme_toggle}}
                 {{> profile}}
             </div>
         </nav>

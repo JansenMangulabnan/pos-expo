@@ -1,4 +1,5 @@
 :root {
+    /* Dark Mode Variables */
     --bg: #2c2c2c;
     --background: #111111;
     --body: #111111;
@@ -24,6 +25,35 @@
     --button_fade_hover: rgb(86, 86, 86);
 }
 
+body.light-mode {
+    /* Light Mode Variables */
+    --bg: #f9f9f9;
+    --background: #ffffff;
+    --body: #ffffff;
+
+    --div: #e0e0e0;
+    --div_hover: #d6d6d6;
+    --div_highlight: #c0c0c0;
+
+    --text_highlight: #333333;
+    --text: #444444;
+    --text_fade: #888888;
+
+    --input_element: #cccccc;
+    --input_light: #f0f0f0;
+    --input: #e8e8e8;
+
+    --button: #666666;
+    --button_hover: #444444;
+    --button_text_hover: #ffffff;
+    --button_text: #ffffff;
+
+    --button_fade: #bbbbbb;
+    --button_fade_hover: #999999;
+
+}
+
+/* General Reset and Styling */
 * {
     margin: 0;
     padding: 0;
