@@ -113,6 +113,7 @@ $(document).ready(function () {
                 alert(xhr.responseJSON?.message || "An error occurred during checkout.");
             },
         });
+        location.reload();
     });
 
     // Update total price

@@ -873,6 +873,61 @@ app.post('/confirmOrder', async (req, res) => {
     }
 });
 
+app.get('/notif', async (req, res) => {
+    try {
+        const userId = req.session?.login?.id; 
+        if (!userId) {
+            return res.redirect("/login?error=unauthorized")
+        }
+        
+
+        const db = await dbPromise;
+
+        // Fetch user-specific history
+        const historyRecord = await db.request()
+            .input('userId', userId)
+            .query(`
+                SELECT history_id, history_product_name, history_order_date
+                FROM History 
+                WHERE history_user_id = @userId
+            `);
+        const history = historyRecord.recordset;
+        console.log(history)
+
+        res.render('notification', {
+            title: 'Notif',
+            styles: [
+                'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
+                'css/BASE.css',
+                'css/header.css',
+                'css/profile.css',
+                'css/searchbar.css',
+                'css/home.css',
+                'css/notif.css'
+            ],
+            beforeBody: [],
+            afterbody: [],
+            nodeModules: [
+                '/node_modules/jquery/dist/jquery.min.js',
+            ],
+            scripts: [
+                'https://code.jquery.com/jquery-3.6.0.min.js',
+                'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
+                'js/BASE.js',
+                'js/header.js',
+                'js/profile.js',
+                'js/home.js',
+            ],
+            history,
+            isLoggedIn: !!req.session?.login,
+            loginData: req.session?.login || null,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 // home hbs renderer
 app.get('/', async (req, res) => {
     try {
@@ -1028,6 +1083,11 @@ app.get('/api/productStock/:productId', async (req, res) => {
 app.get('/cart', async (req, res) => {
     try {
         const user_id = req.session?.login?.id;
+
+        if (!user_id) {
+            return res.redirect("/login?error=unauthorized");
+        }
+        
         const db = await dbPromise;
         const cartRecord = await db
             .request()

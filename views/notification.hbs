@@ -1,0 +1,17 @@
+{{> header}}
+
+<div class="notification-container">
+    <h1>Notifications</h1>
+    {{#each history}}
+    <div class="notification-item">
+        <p>#{{history_id}}</p>
+        <p>{{history_product_name}}</p>
+        <p>
+            <strong>
+                Process on:
+            </strong>
+            {{history_order_date}}
+        </p>
+    </div>
+    {{/each}}
+</div>
