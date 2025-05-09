@@ -335,6 +335,7 @@ $(document).ready(function () {
                 alert("Error processing checkout: " + xhr.responseText);
             },
         });
+        window.location.href = "/shop";
     });
 
     let discountApplied = false;
@@ -411,6 +412,7 @@ $(document).ready(function () {
                 },
             });
         }
+        location.reload();
     });
 
     $(document).on("click", ".confirm-order-btn", function (event) {
@@ -432,6 +434,7 @@ $(document).ready(function () {
                 },
             });
         }
+        window.location.href = "/shop"
     });
 
     const socket = io();
