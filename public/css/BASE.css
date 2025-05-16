@@ -1,5 +1,29 @@
 :root {
-    /* Dark Mode Variables */
+    --background: #131313;
+
+    --div: #2B2B2B;
+    --div-hover: #323232;
+
+    --text-primary: #FFFFFF;
+    --text-secondary: #CFCFCF;
+
+    --input-text: #848484;
+    --input-element: #1F1F1F;
+    --input-border: #303030;
+    --input: #424242;
+
+    --button-primary: #BDB9B8;
+    --button-primary-hover: #AFABAA;
+    --button-secondary: #373737;
+    --button-secondary-hover: #434343;
+
+    --button-text-primary: #111111;
+    --button-text-secondary: #FFFFFF;
+}
+
+
+/* 
+:root {
     --bg: #2c2c2c;
     --background: #111111;
     --body: #111111;
@@ -8,9 +32,9 @@
     --div_hover: #3d3d3d;
     --div_highlight: #9a9a9a;
 
-    --text_highlight: #b6b6b6;
-    --text: #adadad;
-    --text_fade: #757575;
+    --text_highlight: #ffffff;
+    --text: #ffffff;
+    --text_fade: #cecece;
 
     --input_element: #a7a7a7;
     --input_light: #585858;
@@ -23,13 +47,13 @@
 
     --button_fade: rgb(66, 66, 66);
     --button_fade_hover: rgb(86, 86, 86);
-}
-
+} */
+/* 
 body.light-mode {
-    /* Light Mode Variables */
+
     --bg: #f9f9f9;
-    --background: #ffffff;
-    --body: #ffffff;
+    --background: #a0a0a0;
+    --body: #a0a0a0;
 
     --div: #e0e0e0;
     --div_hover: #d6d6d6;
@@ -50,8 +74,7 @@ body.light-mode {
 
     --button_fade: #bbbbbb;
     --button_fade_hover: #999999;
-
-}
+} */
 
 /* General Reset and Styling */
 * {
@@ -63,8 +86,8 @@ body.light-mode {
 html,
 body {
     user-select: none;
-    height: 100%;
     background-color: var(--background);
+    color: var(--text);
 }
 
 html {

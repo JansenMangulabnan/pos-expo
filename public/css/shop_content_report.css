@@ -38,5 +38,5 @@
 .total-revenue-amount {
     font-size: 2em; /* Larger font size for prominence */
     font-weight: bold;
-    color: var(--button_hover); /* Green color to indicate positive revenue */
+    color: var(--text-primary); /* Green color to indicate positive revenue */
 }

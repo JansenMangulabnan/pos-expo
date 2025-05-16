@@ -30,7 +30,7 @@
 }
 .add-product-btn:hover {
     transition: all 0.3s;
-    background-color: var(--div_hover);
+    background-color: var(--div-hover);
 }
 
 
@@ -95,7 +95,7 @@
 }
 
 .product-desc {
-    color: var(--text_fade);
+    color: var(--text-secondary);
     margin: 0;
     font-size: 12px;
 }
@@ -136,7 +136,7 @@
 .price-edit-lable:focus {
     outline: none;
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
-    border: 1px solid var(--input_element);
+    border: 1px solid var(--input-element) !important;
     border-radius: 5px;
     width: fit-content;
     padding: 10px;
@@ -145,7 +145,7 @@
 
 .edit-img-dropzone {
     display: flex;
-    border: 2px dashed var(--input_element);
+    border: 2px dashed var(--input-text);
     border-radius: 8px;
     color: var(--text);
     background-color: var(--input);
@@ -155,11 +155,12 @@
     justify-content: center;
     align-items: center;
     padding: 12px 0 0 7px;
+    color: var(--input-text);
 }
 
 .dropzone:-moz-drag-over {
-    background-color: var(--button_fade);
-    border-color: var(--button);
+    background-color: var(--button-secondary);
+    border-color: var(--input-text);
     width: 100%;
 }
 

@@ -5,7 +5,7 @@ body {
     align-items: center;
     height: 100vh;
     background-color: var(--background);
-    color: var(--text);
+    color: var(--text-primary);
 }
 
 .app-title {
@@ -19,7 +19,7 @@ body {
     background: var(--div);
     padding: 75px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     text-align: center;
     width: 500px;
 }
@@ -38,7 +38,7 @@ body {
 
 /* Form Label Styles */
 .login-form .form-label {
-    color: var(--text);
+    color: var(--text-primary);
     font-size: 1rem;
     margin-bottom: 5px;
     text-align: left;
@@ -57,7 +57,7 @@ body {
     border-radius: 5px;
     font-size: 1rem;
     background: var(--input);
-    color: var(--text);
+    color: var(--text-primary);
 }
 
 .login-form .form-input:focus,
@@ -71,17 +71,17 @@ body {
 .login-form .form-input:-webkit-autofill,
 .login-form .form-input:-webkit-autofill:hover,
 .login-form .form-input:-webkit-autofill:focus {
-    -webkit-text-fill-color: var(--text) !important;
     background-color: var(--input) !important;
+    color: var(--input-text) !important;
+    transition: all 5000s ease-in-out 0s;
+    -webkit-text-fill-color: var(--input-text) !important;
+    caret-color: var(--input-text);
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
-    color: var(--text) !important;
-    transition: background-color 5000s ease-in-out 0s;
-    caret-color: var(--text);
 }
 
 /* Placeholder Styles */
 .login-form .form-input::placeholder {
-    color: var(--text_light);
+    color: var(--input-text);
 }
 
 /* Remember Me and Forgot Password */
@@ -96,18 +96,18 @@ body {
 
 .forgot-password-link {
     font-size: 0.9rem;
-    color: var(--button);
+    color: var(--text-primary);
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .forgot-password-link:hover {
-    color: var(--button_hover);
+    color: var(--button-primary-hover);
     text-decoration: underline;
 }
 
 .forgot-password-link:focus {
-    color: var(--button_hover);
+    color: var(--button-primary-hover);
     text-decoration: underline;
     outline: none;
 }
@@ -116,8 +116,8 @@ body {
 .btn {
     width: 100%;
     padding: 10px;
-    background: var(--button);
-    color: var(--button_text);
+    background: var(--button-primary);
+    color: var(--button-text-primary);
     border: none;
     border-radius: 5px;
     font-size: 1rem;
@@ -127,8 +127,8 @@ body {
 
 .btn:focus,
 .btn-primary:hover {
-    background: var(--button_hover);
-    box-shadow: 0 0 0px 1000px var(--button_hover) inset !important;
+    background: var(--button-primary-hover);
+    box-shadow: 0 0 0px 1000px var(--button-primary-hover) inset !important;
 }
 
 /* Popup Styles */
@@ -138,7 +138,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     background: #f44336;
-    color: #fff;
+    color: var(--text-primary);
     padding: 10px 20px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -149,7 +149,7 @@ body {
 /* Form Link Styles */
 .form-link {
     font-size: 0.9rem;
-    color: var(--text_fade);
+    color: var(--text-secondary);
     text-align: center;
     display: block;
     margin-top: 10px;
@@ -164,12 +164,12 @@ body {
 }
 
 .register-link:hover {
-    color: var(--button_hover);
+    color: var(--button-primary-hover);
     text-decoration: underline;
 }
 
 .register-link:focus {
-    color: var(--button_hover);
+    color: var(--button-pirmary-hover);
     text-decoration: underline;
     outline: none;
 }

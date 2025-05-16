@@ -6,21 +6,21 @@
     display: flex;
     align-items: center;
     background-color: var(--input);
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 5px 10px;
     width: 300px;
     transition: all 0.3s ease-in-out;
+
 }
 .search-container:hover,
 .search-container:focus-within {
-    transition: all 0.3s ease-in-out;
-    border: 1px solid var(--input_element);
+    border: solid 0px var(--button-primary-hover);
 }
 
 .search-input {
     background-color: transparent;
     border: none;
-    color: var(--text);
+    color: var(--text-primary);
     font-size: 1rem;
     width: 100%;
     padding: 5px;
@@ -40,7 +40,7 @@
 }
 
 .search-container i{
-    color: var(--input_element);
+    color: var(--input-text);
     border: none;
     cursor: pointer;
     font-size: 2rem;

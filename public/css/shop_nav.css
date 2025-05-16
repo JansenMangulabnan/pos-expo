@@ -25,10 +25,11 @@
 }
 
 .sidebar-title {
-    color: var(--text_highlight);
+    color: var(--text-primary);
     font-size: 1.3rem;
     font-weight: bold;
     margin-bottom: 20px;
+    text-decoration: none;
 }
 
 .sidebar-menu {
@@ -58,11 +59,11 @@
     text-align: center;
 }
 
-.sidebar-item.active a,
-.sidebar-item a:hover {
+.sidebar-item a:hover,
+.sidebar-item.active a {
     transition: all 0.3s ease-in-out;
-    background-color: var(--button_hover);
-    color: var(--button_text_hover);
+    background-color: var(--button-primary);
+    color: var(--button-text-primary);
 }
 
 .sidebar-item .icon {
@@ -72,11 +73,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40px; /* Circle size */
-    height: 40px; /* Circle size */
-    border-radius: 50%; /* Makes it a circle */
-    background-color: var(--button_hover); /* Circle background color */
-    color: var(--button_text_hover); /* Icon color */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--button-primary-hover);
+    color: var(--button-text-primary);
     transition: all 0.3s ease-in-out;
 }
 
@@ -87,21 +88,21 @@
 }
 
 .sidebar-item .icon i {
-    color: var(--div); /* Inverted color for the icon */
+    color: var(--button-text-primary);
     transition: all 0.3s ease-in-out;
 }
 
 .sidebar-item.active .icon,
 .sidebar-item a:hover .icon {
     transition: all 0.3s ease-in-out;
-    background-color: var(--button_text_hover); /* Invert circle color */
-    color: var(--button_hover); /* Invert icon color */
+    background-color: var(--button-text-primary);
+    color: var(--button-primary-hover);
 }
 
 .sidebar-item.active .icon i,
 .sidebar-item a:hover .icon i {
     transition: all 0.3s ease-in-out;
-    color: var(--button_hover);
+    color: var(--button-primary-hover);
 }
 
 
@@ -129,6 +130,6 @@
 }
 
 .sidebar-logout a:hover {
-    color: var(--button_hover);
+    color: var(--button-primary-hover);
     transition: all 0.3s ease-in-out;
 }

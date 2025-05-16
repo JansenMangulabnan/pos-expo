@@ -15,7 +15,7 @@ $(document).ready(() => {
                 localStorage.setItem("icon", "moon");
             });
             localStorage.setItem("theme", "light");
-        } else {
+        } else { 
             localStorage.setItem("theme", "dark");
             $toggleButton.fadeOut(200, () => {
                 $toggleButton.empty().append("<i class='bx bxs-sun'></i>").fadeIn(200);

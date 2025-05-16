@@ -2,7 +2,7 @@
 .profile-icon {
     display: flex;
     align-items: center;
-    background-color: var(--button_hover_hover); 
+    background-color: var(--button-secondary_hover); 
     border-radius: 50%;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -69,7 +69,7 @@
     justify-content: center;
     width: 400px; /* Match login container width */
     position: absolute;
-    background: var(--div_hover); /* Match login container background */
+    background: var(--div-hover); /* Match login container background */
     right: 10px;
     top: 80px;
     border-radius: 10px;
@@ -77,7 +77,7 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Match login container shadow */
     z-index: 3;
     text-align: center; /* Center-align text */
-    color: var(--text); /* Match login text color */
+    color: var(--text-primary); /* Match login text color */
     gap: 20px;
     transition: all 0.3s ease-in-out;
 }
@@ -122,8 +122,8 @@
 
 .btn-acc-manage {   
     padding: 10px;
-    background: var(--button);
-    color: var(--button_text);
+    background: var(--button-primary);
+    color: var(--button-text-primary);
     border: solid 1px var(--input_element);
     border: none;
     border-radius: 50px;
@@ -133,8 +133,8 @@
 }
 
 .btn-acc-manage:hover {
-    background: var(--button_hover); /* Match login button hover */
-    box-shadow: 0 0 0px 1000px var(--button_hover) inset !important;
+    background: var(--button-primary_hover); /* Match login button hover */
+    box-shadow: 0 0 0px 1000px var(--button-primary_hover) inset !important;
 }
 
 

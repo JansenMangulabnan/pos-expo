@@ -1,7 +1,7 @@
 body {
-    background-color: var(--background-color);
+    background-color: var(--background);
+    color: var(--text-primary);
     font-family: sans-serif;
-    color: var(--text);
 }
 
 
@@ -34,7 +34,7 @@ body {
 }
 
 .sidebar-toggle:hover {
-    background-color: var(--div_hover);
+    background-color: var(--div-hover);
 }
 
 .toggle-icon {
@@ -102,12 +102,12 @@ body {
 }
 
 .register-link:hover {
-    color: var(--button_hover);
+    color: var(--button-primary-hover);
     text-decoration: underline;
 }
 
 .register-link:focus {
-    color: var(--button_hover);
+    color: var(--button-primary-hover);
     text-decoration: underline;
     outline: none;
     transition: all 0.3s ease-in-out;
@@ -145,12 +145,12 @@ body {
 }
 
 .register-link:hover {
-    color: var(--button_hover);
+    color: var(--button-primary-hover);
     text-decoration: underline;
 }
 
 .register-link:focus {
-    color: var(--button_hover);
+    color: var(--button-primary-hover);
     text-decoration: underline;
     outline: none;
 }

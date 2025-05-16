@@ -70,7 +70,7 @@
 .pos-product-name {
     font-size: 1.2em;
     font-weight: bold;
-    color: var(--text_highlight);
+    color: var(--text-secondary);
 }
 
 .pos-product-price {
@@ -80,8 +80,8 @@
 
 .pos-add-to-order-btn {
     padding: 10px 15px;
-    background-color: var(--button);
-    color: var(--button_text);
+    background-color: var(--button-primary);
+    color: var(--button_text_primary);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -90,8 +90,7 @@
 }
 
 .pos-add-to-order-btn:hover {
-    background-color: var(--button_hover);
-    color: var(--button_text_hover);
+    background-color: var(--button-primary-hover);
     transform: scale(1.05);
 }
 
@@ -116,21 +115,21 @@
 .pos-order-table th, .pos-order-table td {
     padding: 10px;
     text-align: center;
-    color: var(--text);
-    border: 1px solid var(--input_light);
+    color: var(--text-primary);
+
 }
 
 .pos-order-summary {
     margin-top: auto;
     text-align: right;
     font-size: 1.2em;
-    color: var(--text_highlight);
+    color: var(--text-primary);
 }
 
 #pos-checkout-btn {
     padding: 12px 25px;
-    background-color: var(--button);
-    color: var(--button_text);
+    background-color: var(--button-primary);
+    color: var(--buttonq_text_primary);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -139,15 +138,14 @@
 }
 
 #pos-checkout-btn:hover {
-    background-color: var(--button_hover);
-    color: var(--button_text_hover);
+    background-color: var(--button-primary-hover);
     transform: scale(1.05);
 }
 
 #apply-discount-btn {
     padding: 10px 20px;
-    background-color: var(--button);
-    color: var(--button_text);
+    background-color: var(--button-primary);
+    color: var(--button_text_primary);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -157,19 +155,19 @@
 }
 
 #apply-discount-btn:hover {
-    background-color: var(--button_hover);
-    color: var(--button_text_hover);
+    background-color: var(--button-primary);
+    color: var(--button_text_primary);
     transform: scale(1.05);
 }
 
 #pos-discount-indicator {
-    color: var(--text_highlight);
+    color: var(--text-secondary);
     font-size: 1em;
     margin-top: 5px;
 }
 
 #pos-final-total {
-    color: var(--text_highlight);
+    color: var(--text-secondary);
     font-size: 1em;
 }
 
@@ -186,8 +184,8 @@ button:active {
 button.pos-remove-item {
     width: max-content;
     padding: 10px 15px;
-    background-color: var(--button);
-    color: var(--button_text);
+    background-color: var(--button-primary);
+    color: var(--button_text_primary);
     border: none;
     border-radius: 5px; /* Slightly rounded corners for consistency */
     cursor: pointer;
@@ -206,8 +204,8 @@ button.pos-increase-qty,
 button.pos-decrease-qty {
     width: 30px; /* Square shape */
     height: 30px;
-    background-color: var(--button);
-    color: var(--button_text);
+    background-color: var(--button-primary);
+    color: var(--button_text_primary);
     border: none;
     border-radius: 5px; /* Slightly rounded corners for consistency */
     cursor: pointer;
@@ -225,6 +223,5 @@ button.pos-increase-qty {
 
 button.pos-increase-qty:hover,
 button.pos-decrease-qty:hover {
-    background-color: var(--button_hover);
-    color: var(--button_text_hover);
+    background-color: var(--button-primary);
 }

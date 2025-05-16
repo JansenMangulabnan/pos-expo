@@ -14,7 +14,7 @@
     width: 500px;
     aspect-ratio: 5/4;
     background-color: var(--div);
-    color: var(--text);
+    color: var(--text-primary);
     transition: transform 0.3s;
     transition: all 0.3s;
 }
@@ -22,6 +22,7 @@
 .product:hover {
     transition: all 0.3s;
     transform: scale(1.02);
+    background-color: var(--div-hover);
 }
 
 .img-display {
@@ -70,14 +71,14 @@
 .product-name {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--button_hover);
+    color: var(--text);
     text-transform: capitalize;
 }
 
 .product-description {
     font-size: 1.2rem;
     line-height: 1.6;
-    color: var(--text_fade);
+    color: var(--text-secondary);
     text-align: justify;
 }
 
@@ -89,12 +90,12 @@
 
 .product-stock {
     font-size: 0.95rem;
-    color: var(--text_fade);
+    color: var(--text-secondary);
 }
   
 .add-cart {
-    background-color: var(--button);
-    color: var(--button_text);
+    background-color: var(--button-primary);
+    color: var(--button-text-primary);
     padding: 8px 16px;
     font-size: 1rem;
     font-weight: bold;
@@ -107,5 +108,5 @@
 }
 .add-cart:hover {
     transition: all 0.3s;
-    background-color: var(--button_hover);
+    background-color: var(--button-primary-hover);
 }

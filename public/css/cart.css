@@ -1,7 +1,7 @@
 /* General container layout */
 .cart-icon,
 .search-container {
-    display:none;
+    display: none;
 }
 
 /* General container layout */
@@ -10,8 +10,7 @@
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px;
-    background-color: var(--body);
-    color: var(--text);
+    color: var(--text-primary);
 }
 
 .cart-main {
@@ -28,7 +27,7 @@
 .cart-product-list h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: var(--text_highlight);
+    color: var(--text-primary);
 }
 
 .cart-product-grid {
@@ -43,13 +42,12 @@
     padding: 10px;
     text-align: center;
     background-color: var(--div);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
 }
 
 .cart-product-card:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: var(--div_hover);
+    background-color: var(--div-hover);
 }
 
 .cart-product-card .img-display {
@@ -71,21 +69,20 @@
 .cart-product-card .add-to-checkout-btn {
     margin-top: 10px;
     padding: 5px 10px;
-    background-color: var(--button);
-    color: var(--button_text);
+    background-color: var(--button-primary);
+    color: var(--button-text-primary);
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
 
 .cart-product-card .add-to-checkout-btn:hover {
-    background-color: var(--button_hover);
-    color: var(--button_text_hover);
+    background-color: var(--button-primary-hover);
 }
 
 .cart-product-card.in-checkout {
-    border: 3px solid var(--text_highlight);
+    border: 3px solid var(--text-secondary);
 }
 
 /* Checkout Section */
@@ -95,13 +92,13 @@
     border-radius: 8px;
     padding: 20px;
     background-color: var(--div);
-    color: var(--text);
+    color: var(--text-primary);
 }
 
 .cart-checkout-section h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: var(--text_highlight);
+    color: var(--text-secondary);
 }
 
 .cart-checkout-table-wrapper {
@@ -115,14 +112,14 @@
 .cart-checkout-table {
     width: 100%;
     border-collapse: collapse;
-    color: var(--text);
+    color: var(--text-primary);
 }
 
 .cart-checkout-table th,
 .cart-checkout-table td {
     padding: 10px;
     text-align: center;
-    border-bottom: 1px solid var(--div_highlight);
+    border-bottom: 1px solid var(--div-hover);
 }
 
 .cart-checkout-summary {
@@ -134,28 +131,27 @@
     justify-content: space-between;
     margin-bottom: 10px;
     font-size: 1rem;
-    color: var(--text_highlight);
+    color: var(--text-secordary);
 }
 
 .cart-checkout-summary .summary-row.total {
     font-weight: bold;
     font-size: 1.2rem;
-    color: var(--text_highlight);
+    color: var(--text-secordary);
 }
 
 .checkout-btn {
     width: 100%;
     padding: 10px;
-    background-color: var(--button);
-    color: var(--button_text);
+    background-color: var(--button-primary);
+    color: var(--button-text-primary);
     border: none;
     border-radius: 4px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
 
 .checkout-btn:hover {
-    background-color: var(--button_hover);
-    color: var(--button_text_hover);
+    background-color: var(--button-primary-hover);
 }

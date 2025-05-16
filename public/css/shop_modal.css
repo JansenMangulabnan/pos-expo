@@ -41,25 +41,25 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    background-color: rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease-in-out;
 }
 
 .modal-content {
     display: flex;
-    flex-direction: column; /* Stack child elements vertically */
-    align-items: center; /* Center-align child elements horizontally */
-    justify-content: center; /* Center-align child elements vertically */
-    background-color: var(--div); /* Match login container background */
-    padding: 50px; /* Similar padding to login container */
-    border-radius: 10px; /* Rounded corners */    
-    width: 500px; /* Match login container width */
-    text-align: center; /* Center-align text */
-    z-index: 4; /* Ensure modal content is above the background */
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    background-color: var(--div);
+    padding: 50px;
+    border-radius: 10px;
+    width: 500px;
+    text-align: center;
+    z-index: 4;
 }
 
 h2 {
-    color: var(--button); /* Match login title color */
+    color: var(--text-primary);
     font-weight: 600;
     margin-bottom: 20px;
 }
@@ -73,13 +73,13 @@ h2 {
 }
 
 .form-group {
-    width: 100%; /* Ensure form groups take full width */
+    width: 100%;
     margin-bottom: 15px;
-    text-align: left; /* Align labels and inputs to the left */
+    text-align: left;
 }
 
 .form-group label {
-    color: var(--text); /* Match text color */
+    color: var(--text-primary);
     font-size: 1rem;
     margin-bottom: 5px;
     display: block;
@@ -97,7 +97,7 @@ h2 {
     border-radius: 5px;
     font-size: 1rem;
     background: var(--input); 
-    color: var(--text); /* Match input text color */
+    color: var(--text-primary);
     transition: all 0.3s ease-in-out;
 }
 
@@ -105,7 +105,7 @@ h2 {
 .form-group textarea:focus {
     outline: none;
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
-    border: 1px solid var(--input_element); 
+    border: 1px solid var(--input-element) !important; 
     transition: all 0.3s ease-in-out;
 }
 
@@ -113,10 +113,10 @@ h2 {
 .form-group input:-webkit-autofill:hover,
 .form-group input:-webkit-autofill:focus {
     background-color: var(--input) !important;
-    color: var(--text) !important;
+    color: var(--input-text) !important;
     transition: all 5000s ease-in-out 0s;
-    -webkit-text-fill-color: var(--text) !important;
-    caret-color: var(--text);
+    -webkit-text-fill-color: var(--input-text) !important;
+    caret-color: var(--input-text) !important;
     box-shadow: 0 0 0px 1000px var(--input) inset !important;
 }
 
@@ -134,64 +134,62 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .submit-btn {
     align-self: flex-end;
-    background-color: var(--button); /* Match button background */
-    color: var(--button_text); /* Match button text color */
+    background-color: var(--button-primary);
+    color: var(--button-text-primary);
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    margin-top: 20px; /* Add spacing above the button */
+    margin-top: 20px;
 }
 
 .submit-btn:hover {
     transition: all 0.3s ease-in-out;
-    background-color: var(--button_hover); /* Match hover effect */
+    background-color: var(--button-primary-hover);
 }
 
 .close-btn {
-    background-color: var(--button_fade); /* Match button background */
-    color: var(--input_element); /* Match button text color */
+    background-color: var(--button-secondary);
+    color: var(--button-text-secondary);
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 20px; /* Add spacing above the button */
+    margin-top: 20px;
 }
 .close-btn:hover {
     transition: all 0.3s ease-in-out;
-    background-color: var(--button_fade_hover); /* Match hover effect */
+    background-color: var(--button-secondary-hover);
 }
 
-/* Specific styles for delete modal */
 #deleteModal h2 {
-    color: var(--danger); /* Red color for delete confirmation */
+    color: var(--danger);
 }
 
 #deleteModal .submit-btn {
     transition: all 0.3s ease-in-out;
-    background-color: var(--button); /* Red button for delete */
+    background-color: var(--button);
 }
 #deleteModal .submit-btn:hover {
     transition: all 0.3s ease-in-out;
-    background-color: var(--button_hover); /* Darker red on hover */
+    background-color: var(--button_hover);
 }
 
-/* Specific styles for save changes modal */
 #saveChangesModal h2 {
-    color: var(--success); /* Green color for save confirmation */
+    color: var(--success);
 }
 
 #saveChangesModal .submit-btn {
     transition: all 0.3s ease-in-out;
-    background-color: var(--success); /* Green button for save */
+    background-color: var(--success);
 }
 #saveChangesModal .submit-btn:hover {
     transition: all 0.3s ease-in-out;
-    background-color: var(--success_hover); /* Darker green on hover */
+    background-color: var(--success_hover);
 }
 
 .dropzone {
