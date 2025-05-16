@@ -12,7 +12,9 @@ body {
     gap: 20px;
 }
 
-
+.cart-icon {
+    display: none;
+}
 
 .top-details {
     display: flex;

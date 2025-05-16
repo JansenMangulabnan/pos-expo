@@ -387,12 +387,12 @@ app.get('/shop', isSeller, async (req, res) => {
             styles: [
                 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
                 'css/BASE.css',
-                'css/shop.css',
                 'css/shop_nav.css',
                 'css/searchbar.css',
                 'css/shop_modal.css',
                 'css/profile.css',
                 'css/shop_content_menu.css',
+                'css/shop.css',
                 'css/shop_content_POS.css',
                 'css/shop_content_order.css',
                 'css/shop_content_report.css',
