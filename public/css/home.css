@@ -110,3 +110,16 @@
     transition: all 0.3s;
     background-color: var(--button-primary-hover);
 }
+
+
+#no-items-matched {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+    text-align: center;
+    color: var(--text-secondary);
+    margin: auto auto auto auto;
+}
+
+/* style='margin-top:20px;text-align:center;color:#888;' */

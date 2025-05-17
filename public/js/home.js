@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    let searchTimeout;
+
     $(document).on("keydown", function (e) {
         if (e.ctrlKey && e.key === "k") {
             e.preventDefault();
@@ -7,31 +9,48 @@ $(document).ready(function () {
     });
 
     $("#searchBar").on("keyup", function () {
-        const query = $(this).val().trim().toLowerCase();
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const query = $("#searchBar").val().trim().toLowerCase();
+            let matchCount = 0;
 
-        $(".product").each(function () {
-            const name = $(this).find(".product-name").text().toLowerCase();
-            const desc = $(this)
-                .find(".product-description")
-                .text()
-                .toLowerCase();
+            $(".product").each(function () {
+                const name = $(this).find(".product-name").text().toLowerCase();
+                const desc = $(this)
+                    .find(".product-description")
+                    .text()
+                    .toLowerCase();
 
-            if (name.includes(query) || desc.includes(query)) {
-                $(this).show();
-            } else {
-                $(this).hide();
+                if (name.includes(query) || desc.includes(query)) {
+                    $(this).css("display", "block").animate({ opacity: 1 }, 200);
+                    matchCount++;
+                } else {
+                    $(this).animate({ opacity: 0 }, 200, function () {
+                        setTimeout(() => {
+                            $(this).css("display", "none");
+                        }, 200);
+                    });
+                }
+            });
+
+            $("#no-items-matched").remove();
+
+            if (!query) {
+                $(".product").css("display", "block").animate({ opacity: 1 }, 200);
+            } else if (matchCount === 0) {
+                $("<div id='no-items-matched'>No Items Found</div>")
+                    .css({ display: "none", opacity: 0 })
+                    .insertAfter(".product-container")
+                    .css("display", "block")
+                    .animate({ opacity: 1 }, 200);
             }
-        });
-
-        if (!query) {
-            $(".product").show(); // Show all if input is cleared
-        }
+        }, 300); // 300ms cooldown
     });
 
     // Add to Cart functionality
     $(".add-cart").on("click", function () {
         const product_id = $(this).closest(".product").attr("id");
-        const quantity = 1; // Default quantity, can be adjusted
+        const quantity = 1;
 
         $.ajax({
             url: "/cart/add",
@@ -52,6 +71,6 @@ $(document).ready(function () {
     });
 
     $(".brand").on("click", function () {
-        window.location.heref = "/"
+        window.location.href = "/";
     });
 });
