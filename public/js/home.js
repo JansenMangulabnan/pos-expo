@@ -22,29 +22,23 @@ $(document).ready(function () {
                     .toLowerCase();
 
                 if (name.includes(query) || desc.includes(query)) {
-                    $(this).css("display", "block").animate({ opacity: 1 }, 200);
+                    $(this).css({ display: "block", opacity: 1 });
                     matchCount++;
                 } else {
-                    $(this).animate({ opacity: 0 }, 200, function () {
-                        setTimeout(() => {
-                            $(this).css("display", "none");
-                        }, 200);
-                    });
+                    $(this).css({ display: "none", opacity: 0 });
                 }
             });
 
             $("#no-items-matched").remove();
 
             if (!query) {
-                $(".product").css("display", "block").animate({ opacity: 1 }, 200);
+                $(".product").css({ display: "block", opacity: 1 });
             } else if (matchCount === 0) {
                 $("<div id='no-items-matched'>No Items Found</div>")
-                    .css({ display: "none", opacity: 0 })
-                    .insertAfter(".product-container")
-                    .css("display", "block")
-                    .animate({ opacity: 1 }, 200);
+                    .css({ display: "block", opacity: 1 })
+                    .insertAfter(".product-container");
             }
-        }, 300); // 300ms cooldown
+        }, 500);
     });
 
     // Add to Cart functionality
