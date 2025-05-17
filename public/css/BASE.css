@@ -103,7 +103,7 @@ body {
 }
 
 @supports (scrollbar-color: auto) {
-    body {
+    * {
         scrollbar-color: var(--button) transparent;
     }
 }

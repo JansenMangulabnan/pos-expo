@@ -493,52 +493,49 @@ $(document).ready(function () {
             if (response.success) {
                 const orderHistory = response.orderHistory;
 
-                // Prepare data for the charts
-                const dailyLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                const dailyData = new Array(7).fill(0); // Initialize data for 7 days
-                const monthlyLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                const monthlyData = new Array(12).fill(0); // Initialize data for 12 months
-                const annualData = {};
-                const weeklyLabels = ["Week 1", "Week 2", "Week 3", "Week 4"];
-                const weeklyData = new Array(4).fill(0); // Initialize data for 4 weeks
-                const shopRevenue = {}; // Revenue grouped by shop
-                let totalRevenue = 0;
+                // Get current month and year
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
 
-                // Process order history for graphs
-                orderHistory.forEach((order) => {
+                // Filter for current month
+                const currentMonthOrders = orderHistory.filter(order => {
                     const date = new Date(order.history_order_date);
-                    const revenue = order.history_product_price * order.history_order_quantity; // Multiply price by quantity
-                    const shopId = order.history_shop_id; // Use history_shop_id to group revenue by shop
-
-                    // Group revenue by shop
-                    if (!shopRevenue[shopId]) {
-                        shopRevenue[shopId] = 0;
-                    }
-                    shopRevenue[shopId] += revenue;
-
-                    // Group by day of the week
-                    const dayIndex = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-                    dailyData[dayIndex] += revenue;
-
-                    // Group by month
-                    const monthIndex = date.getMonth(); // 0 = January, 1 = February, ..., 11 = December
-                    monthlyData[monthIndex] += revenue;
-
-                    // Group by year
-                    const yearLabel = `${date.getFullYear()}`; // Format: YYYY
-                    if (!annualData[yearLabel]) {
-                        annualData[yearLabel] = 0;
-                    }
-                    annualData[yearLabel] += revenue;
-
-                    // Group by week of the month
-                    const weekIndex = getWeekOfMonth(date) - 1; // Week 1 = index 0
-                    if (weekIndex >= 0 && weekIndex < 4) {
-                        weeklyData[weekIndex] += revenue;
-                    }
+                    return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
                 });
 
-                // Render the daily income chart
+                // Get the current week number
+                function getCurrentWeekNumber(date) {
+                    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+                    const dayOfMonth = date.getDate();
+                    const adjustedDate = dayOfMonth + firstDayOfMonth.getDay(); // Adjust for the first day of the week
+                    return Math.ceil(adjustedDate / 7); // Divide by 7 to get the week number
+                }
+
+                // Get the current week number
+                const currentWeekNumber = getCurrentWeekNumber(now);
+
+                // Filter for current week orders
+                const currentWeekOrders = currentMonthOrders.filter(order => {
+                    const date = new Date(order.history_order_date);
+                    return getCurrentWeekNumber(date) === currentWeekNumber;
+                });
+
+                // Prepare data for the daily income chart (current week only)
+                const dailyLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                const dailyData = new Array(7).fill(0);
+
+                // Only use current week orders for the daily chart
+                currentWeekOrders.forEach(order => {
+                    const date = new Date(order.history_order_date);
+                    const revenue = order.history_product_price * order.history_order_quantity;
+
+                    // Group by day of the week
+                    const dayIndex = date.getDay();
+                    dailyData[dayIndex] += revenue;
+                });
+
+                // Render the daily income chart (current week)
                 const dailyCtx = document.getElementById("dailyIncomeChart").getContext("2d");
                 new Chart(dailyCtx, {
                     type: "line",
@@ -546,7 +543,7 @@ $(document).ready(function () {
                         labels: dailyLabels,
                         datasets: [
                             {
-                                label: "Daily Income",
+                                label: "Daily Income (Current Week)",
                                 data: dailyData,
                                 backgroundColor: "rgba(75, 192, 192, 0.2)",
                                 borderColor: "rgba(75, 192, 192, 1)",
@@ -575,20 +572,90 @@ $(document).ready(function () {
                     },
                 });
 
-                // Render the monthly income chart
-                const monthlyCtx = document.getElementById("monthlyIncomeChart").getContext("2d");
-                new Chart(monthlyCtx, {
+                // Prepare data for the weekly income chart (current month only)
+                const weeklyLabels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+                const weeklyData = new Array(5).fill(0);
+
+                // Only use current month orders for the weekly chart
+                currentMonthOrders.forEach(order => {
+                    const date = new Date(order.history_order_date);
+                    const revenue = order.history_product_price * order.history_order_quantity;
+
+                    // Group by week of the month
+                    const weekIndex = getWeekOfMonth(date) - 1; // Subtract 1 to make it zero-based
+                    if (weekIndex >= 0 && weekIndex < 5) {
+                        weeklyData[weekIndex] += revenue;
+                    }
+                });
+
+                // Render the weekly income chart (current month)
+                const weeklyCtx = document.getElementById("weeklyIncomeChart").getContext("2d");
+                new Chart(weeklyCtx, {
                     type: "line",
                     data: {
-                        labels: monthlyLabels,
+                        labels: weeklyLabels,
                         datasets: [
                             {
-                                label: "Monthly Income",
-                                data: monthlyData,
+                                label: "Weekly Income (Current Month)",
+                                data: weeklyData,
                                 backgroundColor: "rgba(255, 159, 64, 0.2)",
                                 borderColor: "rgba(255, 159, 64, 1)",
                                 borderWidth: 2,
                                 tension: 0.3,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Revenue (₱)",
+                                },
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Week of the Month",
+                                },
+                            },
+                        },
+                    },
+                });
+
+                // Prepare data for monthly chart (all months in current year)
+                const monthlyLabels = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const monthlyData = new Array(12).fill(0);
+
+                orderHistory.forEach(order => {
+                    const date = new Date(order.history_order_date);
+                    if (date.getFullYear() === currentYear) {
+                        const monthIndex = date.getMonth();
+                        const revenue = order.history_product_price * order.history_order_quantity;
+                        monthlyData[monthIndex] += revenue;
+                    }
+                });
+
+                // Render the monthly income chart (current year) as a line chart
+                const monthlyCtx = document.getElementById("monthlyIncomeChart").getContext("2d");
+                new Chart(monthlyCtx, {
+                    type: "line", // changed from "bar" to "line"
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [
+                            {
+                                label: "Monthly Income (Current Year)",
+                                data: monthlyData,
+                                backgroundColor: "rgba(54, 162, 235, 0.2)",
+                                borderColor: "rgba(54, 162, 235, 1)",
+                                borderWidth: 2,
+                                tension: 0.3,
+                                fill: true,
                             },
                         ],
                     },
@@ -612,22 +679,29 @@ $(document).ready(function () {
                     },
                 });
 
-                // Render the annual income chart
+                // Prepare data for annual chart (all years in data)
+                const years = [...new Set(orderHistory.map(order => new Date(order.history_order_date).getFullYear()))].sort();
+                const annualData = years.map(year => {
+                    return orderHistory
+                        .filter(order => new Date(order.history_order_date).getFullYear() === year)
+                        .reduce((sum, order) => sum + order.history_product_price * order.history_order_quantity, 0);
+                });
+
+                // Render the annual income chart as a line chart
                 const annualCtx = document.getElementById("annualIncomeChart").getContext("2d");
-                const annualLabels = Object.keys(annualData).sort();
-                const annualValues = annualLabels.map((label) => annualData[label]);
                 new Chart(annualCtx, {
-                    type: "line",
+                    type: "line", // Ensure the chart type is "line"
                     data: {
-                        labels: annualLabels,
+                        labels: years,
                         datasets: [
                             {
                                 label: "Annual Income",
-                                data: annualValues,
-                                backgroundColor: "rgba(54, 162, 235, 0.2)",
-                                borderColor: "rgba(54, 162, 235, 1)",
+                                data: annualData,
+                                backgroundColor: "rgba(153, 102, 255, 0.2)",
+                                borderColor: "rgba(153, 102, 255, 1)",
                                 borderWidth: 2,
-                                tension: 0.4,
+                                tension: 0.3,
+                                fill: true,
                             },
                         ],
                     },
@@ -651,24 +725,10 @@ $(document).ready(function () {
                     },
                 });
 
-                // Calculate total revenue after rendering graphs
-                totalRevenue = Object.values(shopRevenue).reduce((sum, revenue) => sum + revenue, 0);
-
-                // Update total revenue in the UI
+                // Optionally, update total revenue for current month
+                const totalRevenue = currentMonthOrders.reduce((sum, order) =>
+                    sum + order.history_product_price * order.history_order_quantity, 0);
                 $("#total-revenue").text(`₱${totalRevenue.toFixed(2)}`);
-
-                // Display revenue per shop
-                const $shopRevenueContainer = $("#shop-revenue-container");
-                $shopRevenueContainer.empty(); // Clear previous data
-                Object.keys(shopRevenue).forEach((shopId) => {
-                    const revenue = shopRevenue[shopId];
-                    $shopRevenueContainer.append(`
-                        <div class="shop-revenue">
-                            <span>Shop ID: ${shopId}</span>
-                            <span>Revenue: ₱${revenue.toFixed(2)}</span>
-                        </div>
-                    `);
-                });
             } else {
                 console.error("Failed to fetch order history:", response.message);
             }
