@@ -1299,3 +1299,59 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
+
+app.get('/api/notifications/count', async (req, res) => {
+    try {
+        const userId = req.session?.login?.id;
+
+        if (!userId) {
+            return res.status(401).json({ success: false, count: 0 });
+        }
+
+        const db = await dbPromise;
+
+        // Fetch the count of notifications for the user
+        const notificationCountRecord = await db.request()
+            .input('userId', sql.Int, userId)
+            .query(`
+                SELECT COUNT(*) AS count
+                FROM History
+                WHERE history_user_id = @userId
+            `);
+
+        const notificationCount = notificationCountRecord.recordset[0]?.count || 0;
+
+        res.json({ success: true, count: notificationCount });
+    } catch (error) {
+        console.error('Error fetching notification count:', error);
+        res.status(500).json({ success: false, count: 0 });
+    }
+});
+
+app.get('/api/cart/count', async (req, res) => {
+    try {
+        const userId = req.session?.login?.id;
+
+        if (!userId) {
+            return res.status(401).json({ success: false, count: 0 });
+        }
+
+        const db = await dbPromise;
+
+        // Fetch the count of items in the cart for the user
+        const cartCountRecord = await db.request()
+            .input('userId', sql.Int, userId)
+            .query(`
+                SELECT SUM(cart_quantity) AS count
+                FROM Cart
+                WHERE cart_user_id = @userId
+            `);
+
+        const cartCount = cartCountRecord.recordset[0]?.count || 0;
+
+        res.json({ success: true, count: cartCount });
+    } catch (error) {
+        console.error('Error fetching cart item count:', error);
+        res.status(500).json({ success: false, count: 0 });
+    }
+});

@@ -65,12 +65,37 @@
 
 .notification-icon,
 .cart-icon {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: var(--button-primary);
     cursor: pointer;
     transition: all 0.2s ease-in-out; 
     align-self: center;
     margin: auto;
+}
+
+.cart-icon {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--text-primary);
+    color: var(--button-text-primary);
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .notification-dropdown {
@@ -99,6 +124,31 @@
 
 .notification-dropdown ul li:last-child {
     border-bottom: none;
+}
+
+.notification-icon {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--text-primary);
+    color: var(--button-text-primary);
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .user-profile {

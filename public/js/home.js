@@ -67,4 +67,5 @@ $(document).ready(function () {
     $(".brand").on("click", function () {
         window.location.href = "/";
     });
+
 });
