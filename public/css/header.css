@@ -218,3 +218,15 @@
     background-color: var(--button-primary-hover);
 }
 
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--div);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1.3rem;
+}
