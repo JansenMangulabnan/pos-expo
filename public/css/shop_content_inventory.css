@@ -13,6 +13,7 @@
     background-color: var(--div);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    
 }
 
 .inventory-table {
@@ -26,17 +27,18 @@
 
 .inventory-table th,
 .inventory-table td {
-    border: 1px solid var(--div_highlight);
+    border: 1px solid var(--text-seocndary);
     padding: 12px;
     text-align: center;
     color: var(--text);
 }
 
 .inventory-table th {
-    background-color: var(--div_hover);
+    background-color: var(--div-hover);
     font-weight: bold;
     color: var(--text_highlight);
     text-transform: uppercase;
+    border: 1px solid var(--text-primary);
 }
 
 .inventory-table td {
@@ -46,9 +48,10 @@
 .inventory-table td input[type="number"] {
     width: 60px;
     text-align: center;
+    margin: auto auto auto auto;
     background-color: var(--input);
     color: var(--text);
-    border: 1px solid var(--input_light);
+    border: 1px solid var(--input-border);
     border-radius: 4px;
     padding: 5px;
 }
@@ -60,8 +63,8 @@
 
 .inventory-table td button {
     padding: 8px 12px;
-    background-color: var(--button);
-    color: var(--button_text);
+    background-color: var(--button-primary);
+    color: var(--button-text-primary);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -69,15 +72,14 @@
 }
 
 .inventory-table td button:hover {
-    background-color: var(--button_hover);
-    color: var(--button_text_hover);
+    background-color: var(--button-primary-hover);
 }
 
 .inventory-table tr:nth-child(even) {
-    background-color: var(--div_hover);
+    background-color: var(--div);
 }
 
 .inventory-table tr:hover {
-    background-color: var(--div_highlight);
-    color: var(--text_highlight);
+    border: 1px solid var(--text-primary);
+    color: var(--text-primary);
 }

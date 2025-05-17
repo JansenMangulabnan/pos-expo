@@ -81,7 +81,7 @@
 .pos-add-to-order-btn {
     padding: 10px 15px;
     background-color: var(--button-primary);
-    color: var(--button_text_primary);
+    color: var(--button-text-primary);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -129,7 +129,7 @@
 #pos-checkout-btn {
     padding: 12px 25px;
     background-color: var(--button-primary);
-    color: var(--buttonq_text_primary);
+    color: var(--button-text-primary);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -145,7 +145,7 @@
 #apply-discount-btn {
     padding: 10px 20px;
     background-color: var(--button-primary);
-    color: var(--button_text_primary);
+    color: var(--button-text-primary);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -156,7 +156,7 @@
 
 #apply-discount-btn:hover {
     background-color: var(--button-primary);
-    color: var(--button_text_primary);
+    color: var(--button-text-primary);
     transform: scale(1.05);
 }
 
@@ -185,7 +185,7 @@ button.pos-remove-item {
     width: max-content;
     padding: 10px 15px;
     background-color: var(--button-primary);
-    color: var(--button_text_primary);
+    color: var(--button-text-primary);
     border: none;
     border-radius: 5px; /* Slightly rounded corners for consistency */
     cursor: pointer;
@@ -205,7 +205,7 @@ button.pos-decrease-qty {
     width: 30px; /* Square shape */
     height: 30px;
     background-color: var(--button-primary);
-    color: var(--button_text_primary);
+    color: var(--button-text-primary);
     border: none;
     border-radius: 5px; /* Slightly rounded corners for consistency */
     cursor: pointer;
