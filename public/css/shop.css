@@ -24,6 +24,13 @@ body {
     border-radius: 10px;
 }
 
+.left-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
 .sidebar-toggle {
     color: var(--text);
     width: 35px;
@@ -43,6 +50,15 @@ body {
     display: flex;
     font-size: 30px;
     margin: 2.5px;
+}
+
+.notification-icon {
+    color: var(--text);
+    font-size: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .shop_name {

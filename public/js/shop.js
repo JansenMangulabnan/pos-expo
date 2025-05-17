@@ -625,13 +625,14 @@ $(document).ready(function () {
                     },
                 });
 
-                // Prepare data for monthly chart (all months in current year)
+                // Prepare data for the monthly chart (current year only)
                 const monthlyLabels = [
                     "January", "February", "March", "April", "May", "June",
                     "July", "August", "September", "October", "November", "December"
                 ];
                 const monthlyData = new Array(12).fill(0);
 
+                // Only use current year orders for the monthly chart
                 orderHistory.forEach(order => {
                     const date = new Date(order.history_order_date);
                     if (date.getFullYear() === currentYear) {
@@ -641,10 +642,10 @@ $(document).ready(function () {
                     }
                 });
 
-                // Render the monthly income chart (current year) as a line chart
+                // Render the monthly income chart (current year)
                 const monthlyCtx = document.getElementById("monthlyIncomeChart").getContext("2d");
                 new Chart(monthlyCtx, {
-                    type: "line", // changed from "bar" to "line"
+                    type: "line",
                     data: {
                         labels: monthlyLabels,
                         datasets: [
