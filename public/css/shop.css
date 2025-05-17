@@ -24,7 +24,7 @@ body {
     border-radius: 10px;
 }
 
-.left-content {
+.right-top-content {
     display: flex;
     align-items: center;
     gap: 10px;

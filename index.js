@@ -394,9 +394,9 @@ app.get('/shop', isSeller, async (req, res) => {
                 'css/shop_content_menu.css',
                 'css/shop.css',
                 'css/shop_content_POS.css',
-                'css/shop_content_order.css',
                 'css/shop_content_report.css',
-                'css/shop_content_inventory.css'
+                'css/shop_content_inventory.css',
+                'css/shop_content_order.css'
             ],
             beforeBody: [],
             afterbody: [],
