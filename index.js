@@ -787,10 +787,18 @@ app.post('/confirmOrder', async (req, res) => {
         const { order_id } = req.body;
 
         const sellerShopId = req.session?.login?.seller_shop_id;
+        const sellerId = req.session?.login?.id;
         if (!sellerShopId) {
             return res.status(401).json({
                 success: false,
                 message: 'Unauthorized: Seller shop ID not found.',
+            });
+        }
+
+        if (!sellerId) {
+            return res.status(401).json({
+                success: false,
+                message: 'Unauthorized: Seller ID not found.',
             });
         }
 
@@ -806,7 +814,6 @@ app.post('/confirmOrder', async (req, res) => {
                     p.product_name AS history_product_name,
                     p.product_price AS history_product_price,
                     o.order_user_id AS history_user_id,
-                    o.order_seller_id AS history_seller_id,
                     o.order_date AS history_order_date,
                     o.order_quantity AS history_order_quantity,
                     o.order_type AS history_order_type
@@ -827,7 +834,7 @@ app.post('/confirmOrder', async (req, res) => {
             .input('history_product_name', sql.VarChar, order.history_product_name)
             .input('history_product_price', sql.Decimal(10, 2), order.history_product_price)
             .input('history_user_id', sql.Int, order.history_user_id)
-            .input('history_seller_id', sql.Int, order.history_seller_id)
+            .input('history_seller_id', sql.Int, sellerId)
             .input('history_order_date', sql.DateTime, order.history_order_date)
             .input('history_order_quantity', sql.Int, order.history_order_quantity)
             .input('history_order_type', sql.Int, order.history_order_type)
@@ -944,14 +951,6 @@ app.get('/', async (req, res) => {
         // Fetch user-specific history
         let history = [];
         if (userId) {
-            const historyRecord = await db.request()
-                .input('userId', sql.Int, userId)
-                .query(`
-                    SELECT history_id, history_product_name, history_order_date
-                    FROM History 
-                    WHERE history_user_id = @userId
-                `);
-            history = historyRecord.recordset;
         }
 
         res.render('home', {
@@ -980,7 +979,6 @@ app.get('/', async (req, res) => {
                 'js/theme_toggle.js'
             ],
             Product,
-            history,
             isLoggedIn: !!req.session?.login,
             loginData: req.session?.login || null, // Pass the entire session login object
         });
@@ -1440,5 +1438,34 @@ app.get('/order/:orderId', async (req, res) => {
     } catch (error) {
         console.error('Error fetching order details:', error);
         res.status(500).send('Internal Server Error');
+    }
+});
+
+app.get('/api/userNotifications', async (req, res) => {
+    try {
+        const userId = req.session?.login?.id;
+
+        if (!userId) {
+            return res.status(401).json({ success: false, history: [] });
+        }
+
+        const db = await dbPromise;
+
+        // Fetch user notifications from the History table
+        const historyRecords = await db.request()
+            .input('userId', sql.Int, userId)
+            .query(`
+                SELECT 
+                    history_id, 
+                    history_product_name, 
+                    history_order_date
+                FROM History
+                WHERE history_user_id = @userId
+            `);
+
+        res.json({ success: true, history: historyRecords.recordset });
+    } catch (error) {
+        console.error('Error fetching user notifications:', error);
+        res.status(500).json({ success: false, history: [] });
     }
 });

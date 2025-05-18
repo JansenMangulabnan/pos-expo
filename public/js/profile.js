@@ -1,19 +1,19 @@
 $(document).ready(function () {
-    $('.notification-item').on('click', function () {
-        const orderId = $(this).attr('id');
+    $(document).on("click", ".notification-item", function () {
+        const orderId = $(this).attr("id");
         window.location.href = `/order/${orderId}`;
     });
 
     const profileImage = $("#profileImage");
     const profilePlaceholder = $("#profilePlaceholder");
-    
+
     // Check if the profile image is empty or fails to load
     if (!profileImage.attr("src") || profileImage.attr("src").trim() === "") {
         profileImage.css("display", "none"); // Hide the image
         $("#profileDetailImage").css("display", "none"); // Hide the detail image
-        profilePlaceholder.css("display", "flex"); 
+        profilePlaceholder.css("display", "flex");
     }
-    
+
     // Handle image load error
     profileImage.on("error", function () {
         $(this).hide(); // Hide the image
@@ -36,7 +36,7 @@ $(document).ready(function () {
                 $("#profileDetails").css("display", "none");
             }, 300);
         }
-    })
+    });
 
     $(document).click(function (e) {
         if (!$(e.target).closest("#profileIcon, #profileDetails").length) {
@@ -70,30 +70,7 @@ $(document).ready(function () {
     let toggleNotif = false;
 
     // Fetch and display user notifications
-    function loadUserNotifications() {
-        $.ajax({
-            url: '/api/userNotifications',
-            method: 'GET',
-            success: function (response) {
-                if (response.success) {
-                    const notificationList = $('#notificationList');
-                    notificationList.empty();
-                    response.history.forEach(notification => {
-                        notificationList.append(
-                            `<div class='notification-item'>
-                                <p>#${notification.history_id}</p>
-                                <p>${notification.history_product_name}</p>
-                                <p><strong>Process on:</strong> ${notification.history_order_date}</p>
-                            </div>`
-                        );
-                    });
-                }
-            },
-            error: function () {
-                console.error('Failed to load notifications');
-            }
-        });
-    }
+    function loadUserNotifications() {}
 
     $(".notification-icon").click(function () {
         toggleNotif = !toggleNotif;
@@ -109,10 +86,36 @@ $(document).ready(function () {
                 $("#notificationDetails").css("display", "none");
             }, 300);
         }
+
+        $.ajax({
+            url: "/api/userNotifications",
+            method: "GET",
+            success: function (response) {
+                if (response.success) {
+                    const notificationList = $("#notificationList");
+                    notificationList.empty();
+                    response.history.forEach((notification) => {
+                        notificationList.append(
+                            `<div class='notification-item' id='${notification.history_id}'>
+                                <p>#${notification.history_id}</p>
+                                <p>${notification.history_product_name}</p>
+                                <p><strong>Process on:</strong> ${notification.history_order_date}</p>
+                            </div>`
+                        );
+                    });
+                }
+            },
+            error: function () {
+                console.error("Failed to load notifications");
+            },
+        });
     });
 
     $(document).click(function (e) {
-        if (!$(e.target).closest(".notification-icon, #notificationDetails").length) {
+        if (
+            !$(e.target).closest(".notification-icon, #notificationDetails")
+                .length
+        ) {
             $("#notificationDetails").css("display", "none");
             toggleNotif = false;
         }
