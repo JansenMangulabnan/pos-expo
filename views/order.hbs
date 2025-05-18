@@ -1,12 +1,25 @@
 {{> header}}
 
+{{#if history}}
 <div class="order-container">
     <h1>Order Receipt</h1>
     <div class="order-details">
-        <p><strong>Order ID:</strong> {{order.order_id}}</p>
-        <p><strong>Product Name:</strong> {{order.product_name}}</p>
-        <p><strong>Quantity:</strong> {{order.order_quantity}}</p>
-        <p><strong>Total Price:</strong> ${{order.order_final_price}}</p>
-        <p><strong>Order Date:</strong> {{order.order_date}}</p>
+        <p><strong>Order ID:</strong> {{history.history_id}}</p>
+        <p><strong>Product Name:</strong> {{history.history_product_name}}</p>
+        <p><strong>Quantity:</strong> {{history.history_order_quantity}}</p>
+        <p><strong>Total Price:</strong> ${{history.history_product_price}}</p>
+        <p><strong>Order Date:</strong> {{history.history_order_date}}</p>
+        <p><strong>Shop:</strong> {{history.shop_name}}</p>
+        <p><strong>Seller:</strong> {{history.seller_name}}</p>
+        
+    </div>
+    <div class="order-footer">
+        Thank you for your purchase!
     </div>
 </div>
+{{else}}
+<div class="order-container">
+    <h1>Order Not Found</h1>
+    <p>We couldn't find the order details. Please check the order ID and try again.</p>
+</div>
+{{/if}}

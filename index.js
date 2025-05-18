@@ -79,7 +79,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 app.use(
     session({
         secret: 'your_secret_key',
@@ -1382,25 +1382,28 @@ app.get('/order/:orderId', async (req, res) => {
 
         const db = await dbPromise;
 
-        // Fetch order details
+        // Fetch order details from the History table
         const orderRecord = await db.request()
             .input('orderId', sql.Int, orderId)
             .input('userId', sql.Int, userId)
             .query(`
                 SELECT 
-                    o.order_id,
-                    p.product_name,
-                    o.order_quantity,
-                    o.order_final_price,
-                    o.order_date
-                FROM [Order] o
-                JOIN [Product] p ON o.order_product_id = p.product_id
-                WHERE o.order_id = @orderId AND o.order_user_id = @userId
+                    h.history_id AS history_id,
+                    h.history_product_name AS history_product_name,
+                    h.history_order_quantity AS history_order_quantity,
+                    h.history_product_price AS history_product_price,
+                    h.history_order_date AS history_order_date,
+                    s.shop_name AS shop_name,
+                    sl.seller_name AS seller_name
+                FROM [History] h
+                LEFT JOIN [Shop] s ON h.history_shop_id = s.shop_id
+                LEFT JOIN [Seller] sl ON h.history_seller_id = sl.seller_id
+                WHERE h.history_id = @orderId AND h.history_user_id = @userId
             `);
 
-        const order = orderRecord.recordset[0];
+        const history = orderRecord.recordset[0];
 
-        if (!order) {
+        if (!history) {
             return res.status(404).send('Order not found or unauthorized access.');
         }
 
@@ -1408,10 +1411,12 @@ app.get('/order/:orderId', async (req, res) => {
             title: 'Order Receipt',
             styles: [
                 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
-                'css/BASE.css',
-                'css/header.css',
-                'css/profile.css',
-                'css/order.css'
+                '/css/BASE.css',
+                '/css/header.css',
+                '/css/profile.css',
+                '/css/order.css',
+                '/css/header.css',
+                '/css/profile.css'
             ],
             beforeBody: [],
             afterbody: [],
@@ -1421,11 +1426,14 @@ app.get('/order/:orderId', async (req, res) => {
             scripts: [
                 'https://code.jquery.com/jquery-3.6.0.min.js',
                 'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
-                'js/BASE.js',
-                'js/header.js',
-                'js/profile.js'
+                '/js/BASE.js',
+                '/js/header.js',
+                '/js/profile.js',
+                '/js/order.js',
+                '/js/header.js',
+                '/js/profile.js'
             ],
-            order,
+            history,
             isLoggedIn: !!req.session?.login,
             loginData: req.session?.login || null
         });

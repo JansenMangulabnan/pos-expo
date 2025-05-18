@@ -48,7 +48,7 @@
         <h3>Notifications</h3>
     <div class="notification-container">
         {{#each history}}
-        <div class="notification-item">
+        <div class="notification-item" id="{{history_id}}">
             <p>Your order has been processed: </p>
             <p>#{{history_id}}</p>
             <p>{{history_product_name}}</p>

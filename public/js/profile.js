@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $('.notification-item').on('click', function () {
-        const orderId = $(this).find('p:first').text().replace('#', '');
+        const orderId = $(this).attr('id');
         window.location.href = `/order/${orderId}`;
     });
 
