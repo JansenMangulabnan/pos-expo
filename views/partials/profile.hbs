@@ -1,4 +1,10 @@
 {{#if isLoggedIn}}
+{{#if isSeller}}
+<div class="notification-icon">
+    <i class='bx bx-bell'></i>
+    <span class="notification-badge" id="notificationCount">0</span>
+</div>
+{{else}}
 <div class="cart-icon">
     <i class='bx bx-cart'></i>
     <span class="cart-badge" id="cartCount">0</span>
@@ -7,6 +13,7 @@
     <i class='bx bx-bell'></i>
     <span class="notification-badge" id="notificationCount">0</span>
 </div>
+{{/if}}
 <div class="user-profile">
     <div class="profile-icon" id="profileIcon">
         {{#if loginData.profile_img}}
@@ -35,6 +42,18 @@
         <div class="detail-logout" id="detailLogout">
             <a role="button"><i class="icon"><i class='bx bx-log-out'></i></i>Logout</a>
         </div>
+    </div>
+</div>
+<div class="notification-details" id="notificationDetails">
+        <h3>Notifications</h3>
+    <div class="notification-container">
+        {{#each history}}
+        <div class="notification-item">
+            <p>Your order has been processed: </p>
+            <p>#{{history_id}}</p>
+            <p>{{history_product_name}}</p>
+        </div>
+        {{/each}}
     </div>
 </div>
 {{else}}

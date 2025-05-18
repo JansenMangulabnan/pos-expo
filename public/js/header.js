@@ -1,8 +1,4 @@
 $(document).ready(function () {
-    $(".notification-icon").on("click", function () {
-        window.location.href = "/notif";
-    });
-
     $.ajax({
         url: "/api/notifications/count", // Replace with your API endpoint
         method: "GET",

@@ -88,6 +88,7 @@ body {
     user-select: none;
     background-color: var(--background);
     color: var(--text);
+    scrollbar-color: var(--button-primary) transparent;
 }
 
 html {
@@ -102,8 +103,7 @@ body {
     color: var(--text);
 }
 
-@supports (scrollbar-color: auto) {
-    * {
-        scrollbar-color: var(--button) transparent;
+
+    body {
     }
-}
+

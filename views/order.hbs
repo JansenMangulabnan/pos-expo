@@ -1,0 +1,12 @@
+{{> header}}
+
+<div class="order-container">
+    <h1>Order Receipt</h1>
+    <div class="order-details">
+        <p><strong>Order ID:</strong> {{order.order_id}}</p>
+        <p><strong>Product Name:</strong> {{order.product_name}}</p>
+        <p><strong>Quantity:</strong> {{order.order_quantity}}</p>
+        <p><strong>Total Price:</strong> ${{order.order_final_price}}</p>
+        <p><strong>Order Date:</strong> {{order.order_date}}</p>
+    </div>
+</div>

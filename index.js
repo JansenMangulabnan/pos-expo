@@ -932,6 +932,7 @@ app.get('/notif', async (req, res) => {
 app.get('/', async (req, res) => {
     try {
         const db = await dbPromise;
+        const userId = req.session?.login?.id;
 
         // Fetch all products
         const productRecord = await db.request().query(`
@@ -939,6 +940,19 @@ app.get('/', async (req, res) => {
             FROM Product
         `);
         const Product = productRecord.recordset;
+
+        // Fetch user-specific history
+        let history = [];
+        if (userId) {
+            const historyRecord = await db.request()
+                .input('userId', sql.Int, userId)
+                .query(`
+                    SELECT history_id, history_product_name, history_order_date
+                    FROM History 
+                    WHERE history_user_id = @userId
+                `);
+            history = historyRecord.recordset;
+        }
 
         res.render('home', {
             title: 'Home',
@@ -966,6 +980,7 @@ app.get('/', async (req, res) => {
                 'js/theme_toggle.js'
             ],
             Product,
+            history,
             isLoggedIn: !!req.session?.login,
             loginData: req.session?.login || null, // Pass the entire session login object
         });
@@ -1353,5 +1368,69 @@ app.get('/api/cart/count', async (req, res) => {
     } catch (error) {
         console.error('Error fetching cart item count:', error);
         res.status(500).json({ success: false, count: 0 });
+    }
+});
+
+app.get('/order/:orderId', async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const userId = req.session?.login?.id;
+
+        if (!userId) {
+            return res.redirect('/login?error=unauthorized');
+        }
+
+        const db = await dbPromise;
+
+        // Fetch order details
+        const orderRecord = await db.request()
+            .input('orderId', sql.Int, orderId)
+            .input('userId', sql.Int, userId)
+            .query(`
+                SELECT 
+                    o.order_id,
+                    p.product_name,
+                    o.order_quantity,
+                    o.order_final_price,
+                    o.order_date
+                FROM [Order] o
+                JOIN [Product] p ON o.order_product_id = p.product_id
+                WHERE o.order_id = @orderId AND o.order_user_id = @userId
+            `);
+
+        const order = orderRecord.recordset[0];
+
+        if (!order) {
+            return res.status(404).send('Order not found or unauthorized access.');
+        }
+
+        res.render('order', {
+            title: 'Order Receipt',
+            styles: [
+                'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
+                'css/BASE.css',
+                'css/header.css',
+                'css/profile.css',
+                'css/order.css'
+            ],
+            beforeBody: [],
+            afterbody: [],
+            nodeModules: [
+                '/node_modules/jquery/dist/jquery.min.js',
+            ],
+            scripts: [
+                'https://code.jquery.com/jquery-3.6.0.min.js',
+                'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
+                'js/BASE.js',
+                'js/header.js',
+                'js/profile.js'
+            ],
+            order,
+            isLoggedIn: !!req.session?.login,
+            loginData: req.session?.login || null
+        });
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        res.status(500).send('Internal Server Error');
     }
 });

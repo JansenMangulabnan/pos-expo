@@ -1,5 +1,9 @@
-
 $(document).ready(function () {
+    $('.notification-item').on('click', function () {
+        const orderId = $(this).find('p:first').text().replace('#', '');
+        window.location.href = `/order/${orderId}`;
+    });
+
     const profileImage = $("#profileImage");
     const profilePlaceholder = $("#profilePlaceholder");
     
@@ -55,5 +59,62 @@ $(document).ready(function () {
                 showPopup(errorMessage);
             },
         });
+    });
+
+    const isSeller = $("#profileIcon").data("is-seller");
+
+    if (isSeller) {
+        $(".cart-icon").hide();
+    }
+
+    let toggleNotif = false;
+
+    // Fetch and display user notifications
+    function loadUserNotifications() {
+        $.ajax({
+            url: '/api/userNotifications',
+            method: 'GET',
+            success: function (response) {
+                if (response.success) {
+                    const notificationList = $('#notificationList');
+                    notificationList.empty();
+                    response.history.forEach(notification => {
+                        notificationList.append(
+                            `<div class='notification-item'>
+                                <p>#${notification.history_id}</p>
+                                <p>${notification.history_product_name}</p>
+                                <p><strong>Process on:</strong> ${notification.history_order_date}</p>
+                            </div>`
+                        );
+                    });
+                }
+            },
+            error: function () {
+                console.error('Failed to load notifications');
+            }
+        });
+    }
+
+    $(".notification-icon").click(function () {
+        toggleNotif = !toggleNotif;
+        if (toggleNotif) {
+            $("#notificationDetails").css("display", "flex");
+            setTimeout(() => {
+                $("#notificationDetails").css("opacity", "1");
+            }, 0);
+            loadUserNotifications();
+        } else {
+            $("#notificationDetails").css("opacity", "0");
+            setTimeout(() => {
+                $("#notificationDetails").css("display", "none");
+            }, 300);
+        }
+    });
+
+    $(document).click(function (e) {
+        if (!$(e.target).closest(".notification-icon, #notificationDetails").length) {
+            $("#notificationDetails").css("display", "none");
+            toggleNotif = false;
+        }
     });
 });
