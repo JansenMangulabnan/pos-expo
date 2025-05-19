@@ -406,6 +406,7 @@ $(document).ready(function () {
                 success: function (response) {
                     alert(response.message);
                     $(`.order-card[data-order-id="${orderId}"]`).remove();
+                    socket.emit("orderRemove", orderId);
                 },
                 error: function (xhr) {
                     alert("Error archiving order: " + xhr.responseText);
@@ -428,6 +429,8 @@ $(document).ready(function () {
                 success: function (response) {
                     alert(response.message);
                     $(`.order-card[data-order-id="${orderId}"]`).remove();
+                    socket.emit("orderRemove", orderId);
+                    socket.emit("notificationUpdate");
                 },
                 error: function (xhr) {
                     alert("Error confirming order: " + xhr.responseText);
@@ -474,18 +477,22 @@ $(document).ready(function () {
             .find(".confirm-order-btn, .delete-order-btn")
             .prop("disabled", false);
         $orderCard.find(".lock-overlay").remove();
+
+    });
+
+    socket.on("orderRemoved", (orderId) => {
+        const $orderCard = $(`.order-card[data-order-id="${orderId}"]`);
+        $orderCard.removeClass("locked");
+        $orderCard
+            .find(".confirm-order-btn, .delete-order-btn")
+            .prop("disabled", false);
+        $orderCard.remove();
     });
 
     socket.on("orderAlreadyLocked", (orderId) => {
         alert(`Order ${orderId} is already locked by another seller.`);
     });
 
-    socket.on("orderCompleted", (orderId) => {
-        $(`.order-card[data-order-id="${orderId}"]`).remove();
-        alert(`Order ${orderId} has been completed.`);
-    });
-
-    // Fetch order history data via AJAX
     $.ajax({
         url: '/api/orderHistory',
         method: 'GET',

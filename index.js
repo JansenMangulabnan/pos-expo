@@ -1,17 +1,17 @@
-import express from 'express';
-import { engine } from 'express-handlebars';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import bodyParser from 'body-parser';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import session from 'express-session';
-import sql from 'mssql';
-import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
-import { Server } from 'socket.io';
-import http from 'http';
+import express from "express";
+import { engine } from "express-handlebars";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import bodyParser from "body-parser";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import session from "express-session";
+import sql from "mssql";
+import dotenv from "dotenv";
+import bcrypt from "bcrypt";
+import { Server } from "socket.io";
+import http from "http";
 
 dotenv.config();
 
@@ -37,7 +37,7 @@ const dbPromise = sql.connect(sqlConfig);
 
 const sellerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const dir = path.join(__dirname, 'public/img');
+        const dir = path.join(__dirname, "public/img");
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
@@ -52,7 +52,7 @@ const sellerUpload = multer({ storage: sellerStorage });
 
 const scheduleStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const dir = path.join(__dirname, 'public/img');
+        const dir = path.join(__dirname, "public/img");
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
@@ -66,66 +66,64 @@ const scheduleStorage = multer.diskStorage({
 const scheduleUpload = multer({ storage: scheduleStorage });
 
 app.engine(
-    'hbs',
+    "hbs",
     engine({
-        extname: '.hbs',
+        extname: ".hbs",
         helpers: {
-            include: (path) => fs.readFileSync(join(__dirname, path), 'utf-8'),
+            include: (path) => fs.readFileSync(join(__dirname, path), "utf-8"),
         },
     })
 );
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'views'));
+app.set("view engine", "hbs");
+app.set("views", path.join(__dirname, "views"));
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static("public"));
 app.use(
     session({
-        secret: 'your_secret_key',
+        secret: "your_secret_key",
         resave: false,
         saveUninitialized: true,
     })
 );
 
-app.post('/logout', (req, res) => {
+app.post("/logout", (req, res) => {
     req.session.destroy((err) => {
         if (err) {
-            console.error('Error destroying session:', err);
+            console.error("Error destroying session:", err);
             return res.status(500).json({
                 success: false,
-                message: 'Failed to log out. Please try again.',
+                message: "Failed to log out. Please try again.",
             });
         }
-        res.clearCookie('connect.sid');
+        res.clearCookie("connect.sid");
         res.status(200).json({ success: true });
     });
 });
 
 //signup hbs renderer
-app.get('/signup', (req, res) => {
-    res.render('signup', {
-        title: 'Sign Up',
+app.get("/signup", (req, res) => {
+    res.render("signup", {
+        title: "Sign Up",
         styles: [
-            'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
-            'css/BASE.css',
-            'css/signup.css',
+            "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
+            "css/BASE.css",
+            "css/signup.css",
         ],
         beforeBody: [],
         afterbody: [],
-        nodeModules: [
-            '/node_modules/jquery/dist/jquery.min.js',
-        ],
+        nodeModules: ["/node_modules/jquery/dist/jquery.min.js"],
         scripts: [
-            'https://code.jquery.com/jquery-3.6.0.min.js',
-            'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
-            'js/signup.js',
+            "https://code.jquery.com/jquery-3.6.0.min.js",
+            "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+            "js/signup.js",
         ],
     });
 });
 
 //signup request handler
-app.post('/signup', async (req, res) => {
+app.post("/signup", async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
@@ -133,13 +131,13 @@ app.post('/signup', async (req, res) => {
         if (!emailRegex.test(email)) {
             return res
                 .status(400)
-                .json({ success: false, message: 'Invalid email format.' });
+                .json({ success: false, message: "Invalid email format." });
         }
 
         if (password.length < 8) {
             return res.status(400).json({
                 success: false,
-                message: 'Password must be at least 8 characters long.',
+                message: "Password must be at least 8 characters long.",
             });
         }
 
@@ -147,8 +145,8 @@ app.post('/signup', async (req, res) => {
 
         const userCheck = await db
             .request()
-            .input('username', sql.VarChar, username)
-            .input('email', sql.VarChar, email).query(`
+            .input("username", sql.VarChar, username)
+            .input("email", sql.VarChar, email).query(`
                 SELECT * FROM [User]
                 WHERE user_name = @username OR user_email = @email
             `);
@@ -156,7 +154,7 @@ app.post('/signup', async (req, res) => {
         if (userCheck.recordset.length > 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Username or email already exists.',
+                message: "Username or email already exists.",
             });
         }
 
@@ -164,57 +162,55 @@ app.post('/signup', async (req, res) => {
 
         await db
             .request()
-            .input('username', sql.VarChar, username)
-            .input('email', sql.VarChar, email)
-            .input('password', sql.VarChar, hashedPassword).query(`
+            .input("username", sql.VarChar, username)
+            .input("email", sql.VarChar, email)
+            .input("password", sql.VarChar, hashedPassword).query(`
                 INSERT INTO [User] (user_name, user_email, user_password)
                 VALUES (@username, @email, @password)
             `);
 
         req.session.login = {
             id: username,
-            role: 'user',
+            role: "user",
             username: username,
         };
 
         res.status(200).json({
             success: true,
-            message: 'User registered successfully. Redirecting...',
-            redirectUrl: '/',
+            message: "User registered successfully. Redirecting...",
+            redirectUrl: "/",
         });
     } catch (error) {
-        console.error('Error during signup:', error);
+        console.error("Error during signup:", error);
         res.status(500).json({
             success: false,
-            message: 'Internal Server Error',
+            message: "Internal Server Error",
         });
     }
 });
 
 //login hbs renderer
-app.get('/login', (req, res) => {
-    res.render('login', {
-        title: 'Login',
+app.get("/login", (req, res) => {
+    res.render("login", {
+        title: "Login",
         styles: [
-            'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
-            'css/BASE.css',
-            'css/login.css',
+            "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
+            "css/BASE.css",
+            "css/login.css",
         ],
         beforeBody: [],
         afterbody: [],
-        nodeModules: [
-            '/node_modules/jquery/dist/jquery.min.js',
-        ],
+        nodeModules: ["/node_modules/jquery/dist/jquery.min.js"],
         scripts: [
-            'https://code.jquery.com/jquery-3.6.0.min.js',
-            'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
-            'js/login.js',
+            "https://code.jquery.com/jquery-3.6.0.min.js",
+            "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+            "js/login.js",
         ],
     });
 });
 
 // Login request handler
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
 
@@ -222,7 +218,7 @@ app.post('/login', async (req, res) => {
 
         const sellerRecord = await db
             .request()
-            .input('username', sql.VarChar, username).query(`
+            .input("username", sql.VarChar, username).query(`
                 SELECT 'seller' AS role, seller_id AS id, seller_name AS username, seller_password AS hashedPassword, seller_email AS email, profile_img AS profile_img
                 FROM Seller
                 WHERE seller_name = @username OR seller_email = @username
@@ -230,7 +226,7 @@ app.post('/login', async (req, res) => {
 
         const userRecord = await db
             .request()
-            .input('username', sql.VarChar, username).query(`
+            .input("username", sql.VarChar, username).query(`
                 SELECT 'user' AS role, user_id AS id, user_name AS username, user_password AS hashedPassword, user_email AS email, profile_img AS profile_img
                 FROM [User] 
                 WHERE user_name = @username OR user_email = @username
@@ -241,7 +237,7 @@ app.post('/login', async (req, res) => {
         if (!login) {
             return res
                 .status(401)
-                .json({ success: false, message: 'Invalid login info.' });
+                .json({ success: false, message: "Invalid login info." });
         }
 
         let isPasswordValid = await bcrypt.compare(
@@ -256,14 +252,13 @@ app.post('/login', async (req, res) => {
         if (!isPasswordValid) {
             return res
                 .status(401)
-                .json({ success: false, message: 'Invalid login info.' });
+                .json({ success: false, message: "Invalid login info." });
         }
 
-        if (login.role === 'seller') {
+        if (login.role === "seller") {
             const sellerShopRecord = await db
                 .request()
-                .input('sellerId', sql.Int, login.id)
-                .query(`
+                .input("sellerId", sql.Int, login.id).query(`
                     SELECT seller_shop_id FROM Seller WHERE seller_id = @sellerId
                 `);
 
@@ -278,13 +273,13 @@ app.post('/login', async (req, res) => {
 
         res.json({
             success: true,
-            redirectUrl: login.role === 'seller' ? '/shop' : '/',
+            redirectUrl: login.role === "seller" ? "/shop" : "/",
         });
     } catch (error) {
-        console.error('Error during login:', error);
+        console.error("Error during login:", error);
         res.status(500).json({
             success: false,
-            message: 'Internal Server Error',
+            message: "Internal Server Error",
         });
     }
 });
@@ -293,25 +288,24 @@ function isLoggedIn(req, res, next) {
     if (req.session.login) {
         return next();
     }
-    res.redirect('/login');
+    res.redirect("/login");
 }
 function isSeller(req, res, next) {
-    if (!req.session?.login || req.session.login.role !== 'seller') {
-        return res.redirect('/login?error=unauthorized');
+    if (!req.session?.login || req.session.login.role !== "seller") {
+        return res.redirect("/login?error=unauthorized");
     }
     next();
 }
 
 //shop renderer
-app.get('/shop', isSeller, async (req, res) => {
+app.get("/shop", isSeller, async (req, res) => {
     try {
         const sellerId = req.session.login.id;
         const db = await dbPromise;
 
         const sellerRecord = await db
             .request()
-            .input('sellerId', sql.Int, sellerId)
-            .query(`
+            .input("sellerId", sql.Int, sellerId).query(`
                 SELECT seller_shop_id 
                 FROM Seller 
                 WHERE seller_id = @sellerId
@@ -319,22 +313,19 @@ app.get('/shop', isSeller, async (req, res) => {
 
         const seller = sellerRecord.recordset[0];
         if (!seller) {
-            return res.status(401).send('Unauthorized access.');
+            return res.status(401).send("Unauthorized access.");
         }
         const shopId = seller.seller_shop_id;
 
         const productRecord = await db
             .request()
-            .input('shopId', sql.Int, shopId)
-            .query(`SELECT * 
+            .input("shopId", sql.Int, shopId).query(`SELECT * 
                 FROM Product 
                 WHERE product_shop_id = @shopId
             `);
         const products = productRecord.recordset;
 
-        const shopRecord = await db
-            .request()
-            .input('shopId', sql.Int, shopId)
+        const shopRecord = await db.request().input("shopId", sql.Int, shopId)
             .query(`
                 SELECT *
                 FROM Shop
@@ -342,9 +333,7 @@ app.get('/shop', isSeller, async (req, res) => {
             `);
         const shops = shopRecord.recordset;
 
-        const ordersRecord = await db
-            .request()
-            .input('shopId', sql.Int, shopId)
+        const ordersRecord = await db.request().input("shopId", sql.Int, shopId)
             .query(`
                 SELECT 
                     o.order_id,
@@ -364,8 +353,7 @@ app.get('/shop', isSeller, async (req, res) => {
 
         const orderHistoryRecord = await db
             .request()
-            .input('shopId', sql.Int, shopId)
-            .query(`
+            .input("shopId", sql.Int, shopId).query(`
                 SELECT 
                     o.order_id,
                     p.product_name,
@@ -382,40 +370,38 @@ app.get('/shop', isSeller, async (req, res) => {
             `);
         const orderHistory = orderHistoryRecord.recordset;
 
-        res.render('shop', {
-            title: 'Shop',
+        res.render("shop", {
+            title: "Shop",
             styles: [
-                'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
-                'css/BASE.css',
-                'css/shop_nav.css',
-                'css/searchbar.css',
-                'css/shop_modal.css',
-                'css/profile.css',
-                'css/shop_content_menu.css',
-                'css/shop.css',
-                'css/shop_content_POS.css',
-                'css/shop_content_report.css',
-                'css/shop_content_inventory.css',
-                'css/shop_content_order.css'
+                "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
+                "css/BASE.css",
+                "css/shop_nav.css",
+                "css/searchbar.css",
+                "css/shop_modal.css",
+                "css/profile.css",
+                "css/shop_content_menu.css",
+                "css/shop.css",
+                "css/shop_content_POS.css",
+                "css/shop_content_report.css",
+                "css/shop_content_inventory.css",
+                "css/shop_content_order.css",
             ],
             beforeBody: [],
             afterbody: [],
-            nodeModules: [
-                '/node_modules/jquery/dist/jquery.min.js',
-            ],
+            nodeModules: ["/node_modules/jquery/dist/jquery.min.js"],
             scripts: [
-                'https://code.jquery.com/jquery-3.6.0.min.js',
-                'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
-                '/socket.io/socket.io.js',
-                'https://cdn.jsdelivr.net/npm/chart.js',
-                'js/BASE.js',
-                'js/shop_nav.js',
-                'js/profile.js',
-                'js/shop.js',
-                'js/shop_content_menu.js',
-                'js/shop_modal.js',
-                'js/searchbar.js',
-                'js/profile.js'
+                "https://code.jquery.com/jquery-3.6.0.min.js",
+                "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+                "/socket.io/socket.io.js",
+                "https://cdn.jsdelivr.net/npm/chart.js",
+                "js/BASE.js",
+                "js/shop_nav.js",
+                "js/profile.js",
+                "js/shop.js",
+                "js/shop_content_menu.js",
+                "js/shop_modal.js",
+                "js/searchbar.js",
+                "js/profile.js",
             ],
             products,
             orders,
@@ -427,13 +413,13 @@ app.get('/shop', isSeller, async (req, res) => {
             username: req.session?.login?.username || null,
         });
     } catch (error) {
-        console.error('Error fetching products:', error);
-        res.status(500).send('Internal Server Error');
+        console.error("Error fetching products:", error);
+        res.status(500).send("Internal Server Error");
     }
 });
 
 //sellerAdd request handler
-app.post('/sellerAdd', sellerUpload.single('product_img'), async (req, res) => {
+app.post("/sellerAdd", sellerUpload.single("product_img"), async (req, res) => {
     try {
         const {
             product_name,
@@ -447,7 +433,7 @@ app.post('/sellerAdd', sellerUpload.single('product_img'), async (req, res) => {
         if (!product_shop_id) {
             return res
                 .status(401)
-                .send('Unauthorized: Seller shop ID not found.');
+                .send("Unauthorized: Seller shop ID not found.");
         }
 
         const product_img = req.file ? `/img/${req.file.filename}` : null;
@@ -456,27 +442,27 @@ app.post('/sellerAdd', sellerUpload.single('product_img'), async (req, res) => {
 
         await db
             .request()
-            .input('product_img', sql.VarChar, product_img)
-            .input('product_name', sql.VarChar, product_name)
-            .input('product_description', sql.VarChar, product_description)
-            .input('product_stock', sql.Int, product_stock)
-            .input('product_category', sql.VarChar, product_category)
-            .input('product_price', sql.Decimal(10, 2), product_price)
-            .input('product_shop_id', sql.Int, product_shop_id).query(`
+            .input("product_img", sql.VarChar, product_img)
+            .input("product_name", sql.VarChar, product_name)
+            .input("product_description", sql.VarChar, product_description)
+            .input("product_stock", sql.Int, product_stock)
+            .input("product_category", sql.VarChar, product_category)
+            .input("product_price", sql.Decimal(10, 2), product_price)
+            .input("product_shop_id", sql.Int, product_shop_id).query(`
                 INSERT INTO Product 
                 (product_img, product_name, product_description, product_stock, product_category, product_price, product_shop_id) 
                 VALUES 
                 (@product_img, @product_name, @product_description, @product_stock, @product_category, @product_price, @product_shop_id)`);
 
-        res.status(200).send('Product added successfully.');
+        res.status(200).send("Product added successfully.");
     } catch (error) {
-        console.error('Error adding product:', error);
-        res.status(500).send('Internal Server Error');
+        console.error("Error adding product:", error);
+        res.status(500).send("Internal Server Error");
     }
 });
 
 //sellerUpdate request handler
-app.post('/sellerUpdate', async (req, res) => {
+app.post("/sellerUpdate", async (req, res) => {
     try {
         const {
             product_id,
@@ -491,13 +477,12 @@ app.post('/sellerUpdate', async (req, res) => {
 
         await db
             .request()
-            .input('product_id', sql.Int, product_id)
-            .input('product_img', sql.VarChar, product_img)
-            .input('product_name', sql.VarChar, product_name)
-            .input('product_description', sql.VarChar, product_description)
-            .input('product_category', sql.VarChar, product_category)
-            .input('product_price', sql.Decimal(10, 2), product_price)
-            .query(`
+            .input("product_id", sql.Int, product_id)
+            .input("product_img", sql.VarChar, product_img)
+            .input("product_name", sql.VarChar, product_name)
+            .input("product_description", sql.VarChar, product_description)
+            .input("product_category", sql.VarChar, product_category)
+            .input("product_price", sql.Decimal(10, 2), product_price).query(`
                 UPDATE Product
                 SET 
                     product_img = @product_img,
@@ -531,36 +516,47 @@ app.post("/uploadImage", sellerUpload.single("product_img"), (req, res) => {
 });
 
 //sellerUpdateWithImage request handler
-app.post("/sellerUpdateWithImage", sellerUpload.single("product_img"), async (req, res) => {
-    try {
-        const { product_id, product_name, product_description, product_stock, product_category, product_price } = req.body;
+app.post(
+    "/sellerUpdateWithImage",
+    sellerUpload.single("product_img"),
+    async (req, res) => {
+        try {
+            const {
+                product_id,
+                product_name,
+                product_description,
+                product_stock,
+                product_category,
+                product_price,
+            } = req.body;
 
-        const db = await dbPromise;
+            const db = await dbPromise;
 
-        // Retrieve the current product details from the database
-        const currentProduct = await db
-            .request()
-            .input("product_id", sql.Int, product_id)
-            .query(`
+            // Retrieve the current product details from the database
+            const currentProduct = await db
+                .request()
+                .input("product_id", sql.Int, product_id).query(`
                 SELECT product_img
                 FROM Product
                 WHERE product_id = @product_id
             `);
 
-        // Use the old image path if no new file is uploaded
-        const product_img = req.file ? `/img/${req.file.filename}` : currentProduct.recordset[0].product_img;
+            // Use the old image path if no new file is uploaded
+            const product_img = req.file
+                ? `/img/${req.file.filename}`
+                : currentProduct.recordset[0].product_img;
 
-        // Update the product in the database
-        await db
-            .request()
-            .input("product_id", sql.Int, product_id)
-            .input("product_img", sql.VarChar, product_img)
-            .input("product_name", sql.VarChar, product_name)
-            .input("product_description", sql.VarChar, product_description)
-            .input("product_stock", sql.Int, product_stock)
-            .input("product_category", sql.VarChar, product_category)
-            .input("product_price", sql.Decimal(10, 2), product_price)
-            .query(`
+            // Update the product in the database
+            await db
+                .request()
+                .input("product_id", sql.Int, product_id)
+                .input("product_img", sql.VarChar, product_img)
+                .input("product_name", sql.VarChar, product_name)
+                .input("product_description", sql.VarChar, product_description)
+                .input("product_stock", sql.Int, product_stock)
+                .input("product_category", sql.VarChar, product_category)
+                .input("product_price", sql.Decimal(10, 2), product_price)
+                .query(`
                 UPDATE Product
                 SET 
                     product_img = @product_img,
@@ -572,33 +568,31 @@ app.post("/sellerUpdateWithImage", sellerUpload.single("product_img"), async (re
                 WHERE product_id = @product_id
             `);
 
-        // Return the updated product details
-        res.status(200).json({
-            product_id,
-            product_img,
-            product_name,
-            product_description,
-            product_stock,
-            product_category,
-            product_price,
-        });
-    } catch (error) {
-        console.error("Error updating product:", error);
-        res.status(500).send("Internal Server Error");
+            // Return the updated product details
+            res.status(200).json({
+                product_id,
+                product_img,
+                product_name,
+                product_description,
+                product_stock,
+                product_category,
+                product_price,
+            });
+        } catch (error) {
+            console.error("Error updating product:", error);
+            res.status(500).send("Internal Server Error");
+        }
     }
-});
+);
 
 //sellerDelete request handler
-app.post('/sellerDelete', async (req, res) => {
+app.post("/sellerDelete", async (req, res) => {
     try {
         const { product_id } = req.body;
 
         const db = await dbPromise;
 
-        await db
-            .request()
-            .input('product_id', sql.Int, product_id)
-            .query(`
+        await db.request().input("product_id", sql.Int, product_id).query(`
                 DELETE FROM Product
                 WHERE product_id = @product_id
             `);
@@ -610,16 +604,15 @@ app.post('/sellerDelete', async (req, res) => {
     }
 });
 
-
 // sellerCheckout request handler
-app.post('/sellerCheckout', async (req, res) => {
+app.post("/sellerCheckout", async (req, res) => {
     try {
         const { orders } = req.body;
 
         if (!orders || !Array.isArray(orders) || orders.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: 'No orders provided or invalid format.',
+                message: "No orders provided or invalid format.",
             });
         }
 
@@ -627,7 +620,7 @@ app.post('/sellerCheckout', async (req, res) => {
         if (!sellerId) {
             return res.status(401).json({
                 success: false,
-                message: 'Unauthorized: Seller ID not found.',
+                message: "Unauthorized: Seller ID not found.",
             });
         }
 
@@ -648,8 +641,7 @@ app.post('/sellerCheckout', async (req, res) => {
             // Fetch the product_shop_id for the product
             const productResult = await db
                 .request()
-                .input('product_id', sql.Int, productId)
-                .query(`
+                .input("product_id", sql.Int, productId).query(`
                     SELECT product_shop_id 
                     FROM [Product] 
                     WHERE product_id = @product_id
@@ -667,12 +659,11 @@ app.post('/sellerCheckout', async (req, res) => {
             // Log the order in the database as "pending"
             await db
                 .request()
-                .input('productId', sql.Int, productId)
-                .input('quantity', sql.Int, quantity)
-                .input('totalPrice', sql.Decimal(10, 2), price)
-                .input('sellerId', sql.Int, sellerId)
-                .input('shopId', sql.Int, product_shop_id)
-                .query(`
+                .input("productId", sql.Int, productId)
+                .input("quantity", sql.Int, quantity)
+                .input("totalPrice", sql.Decimal(10, 2), price)
+                .input("sellerId", sql.Int, sellerId)
+                .input("shopId", sql.Int, product_shop_id).query(`
                     INSERT INTO [Order] (order_product_id, order_user_id, order_type, order_seller_id, order_quantity, order_final_price, order_shop_id)
                     VALUES (@productId, NULL, 1, @sellerId, @quantity, @totalPrice, @shopId)
                 `);
@@ -680,18 +671,18 @@ app.post('/sellerCheckout', async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Order added to pending list successfully.',
+            message: "Order added to pending list successfully.",
         });
     } catch (error) {
-        console.error('Error processing checkout:', error);
+        console.error("Error processing checkout:", error);
         res.status(500).json({
             success: false,
-            message: 'Internal Server Error',
+            message: "Internal Server Error",
         });
     }
 });
 
-app.post('/archiveOrder', async (req, res) => {
+app.post("/archiveOrder", async (req, res) => {
     try {
         const { order_id } = req.body;
 
@@ -699,7 +690,7 @@ app.post('/archiveOrder', async (req, res) => {
         if (!sellerShopId) {
             return res.status(401).json({
                 success: false,
-                message: 'Unauthorized: Seller shop ID not found.',
+                message: "Unauthorized: Seller shop ID not found.",
             });
         }
 
@@ -708,8 +699,7 @@ app.post('/archiveOrder', async (req, res) => {
         // Fetch the order details
         const orderRecord = await db
             .request()
-            .input('order_id', sql.Int, order_id)
-            .query(`
+            .input("order_id", sql.Int, order_id).query(`
                 SELECT 
                     o.order_id AS archive_product_id,
                     p.product_name AS archive_product_name,
@@ -726,22 +716,35 @@ app.post('/archiveOrder', async (req, res) => {
 
         const order = orderRecord.recordset[0];
         if (!order) {
-            return res.status(404).json({ success: false, message: 'Order not found.' });
+            return res
+                .status(404)
+                .json({ success: false, message: "Order not found." });
         }
 
         // Insert the order into the Archive table
         await db
             .request()
-            .input('archive_product_id', sql.Int, order.archive_product_id)
-            .input('archive_product_name', sql.VarChar, order.archive_product_name)
-            .input('archive_product_price', sql.Decimal(10, 2), order.archive_product_price)
-            .input('archive_user_id', sql.Int, order.archive_user_id)
-            .input('archive_seller_id', sql.Int, order.archive_seller_id)
-            .input('archive_order_date', sql.DateTime, order.archive_order_date)
-            .input('archive_order_quantity', sql.Int, order.archive_order_quantity)
-            .input('archive_order_type', sql.Int, order.archive_order_type)
-            .input('archive_shop_id', sql.Int, sellerShopId)
-            .query(`
+            .input("archive_product_id", sql.Int, order.archive_product_id)
+            .input(
+                "archive_product_name",
+                sql.VarChar,
+                order.archive_product_name
+            )
+            .input(
+                "archive_product_price",
+                sql.Decimal(10, 2),
+                order.archive_product_price
+            )
+            .input("archive_user_id", sql.Int, order.archive_user_id)
+            .input("archive_seller_id", sql.Int, order.archive_seller_id)
+            .input("archive_order_date", sql.DateTime, order.archive_order_date)
+            .input(
+                "archive_order_quantity",
+                sql.Int,
+                order.archive_order_quantity
+            )
+            .input("archive_order_type", sql.Int, order.archive_order_type)
+            .input("archive_shop_id", sql.Int, sellerShopId).query(`
                 INSERT INTO Archive (
                     archive_product_id,
                     archive_product_name,
@@ -767,22 +770,25 @@ app.post('/archiveOrder', async (req, res) => {
             `);
 
         // Delete the order from the Order table
-        await db
-            .request()
-            .input('order_id', sql.Int, order_id)
-            .query(`
+        await db.request().input("order_id", sql.Int, order_id).query(`
                 DELETE FROM [Order]
                 WHERE order_id = @order_id
             `);
 
-        res.status(200).json({ success: true, message: 'Order archived successfully.' });
+        res.status(200).json({
+            success: true,
+            message: "Order archived successfully.",
+        });
     } catch (error) {
-        console.error('Error archiving order:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
+        console.error("Error archiving order:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 });
 
-app.post('/confirmOrder', async (req, res) => {
+app.post("/confirmOrder", async (req, res) => {
     try {
         const { order_id } = req.body;
 
@@ -791,14 +797,14 @@ app.post('/confirmOrder', async (req, res) => {
         if (!sellerShopId) {
             return res.status(401).json({
                 success: false,
-                message: 'Unauthorized: Seller shop ID not found.',
+                message: "Unauthorized: Seller shop ID not found.",
             });
         }
 
         if (!sellerId) {
             return res.status(401).json({
                 success: false,
-                message: 'Unauthorized: Seller ID not found.',
+                message: "Unauthorized: Seller ID not found.",
             });
         }
 
@@ -807,8 +813,7 @@ app.post('/confirmOrder', async (req, res) => {
         // Fetch the order details
         const orderRecord = await db
             .request()
-            .input('order_id', sql.Int, order_id)
-            .query(`
+            .input("order_id", sql.Int, order_id).query(`
                 SELECT 
                     o.order_id AS history_product_id,
                     p.product_name AS history_product_name,
@@ -824,22 +829,35 @@ app.post('/confirmOrder', async (req, res) => {
 
         const order = orderRecord.recordset[0];
         if (!order) {
-            return res.status(404).json({ success: false, message: 'Order not found.' });
+            return res
+                .status(404)
+                .json({ success: false, message: "Order not found." });
         }
 
         // Insert the order into the History table
         await db
             .request()
-            .input('history_product_id', sql.Int, order.history_product_id)
-            .input('history_product_name', sql.VarChar, order.history_product_name)
-            .input('history_product_price', sql.Decimal(10, 2), order.history_product_price)
-            .input('history_user_id', sql.Int, order.history_user_id)
-            .input('history_seller_id', sql.Int, sellerId)
-            .input('history_order_date', sql.DateTime, order.history_order_date)
-            .input('history_order_quantity', sql.Int, order.history_order_quantity)
-            .input('history_order_type', sql.Int, order.history_order_type)
-            .input('history_shop_id', sql.Int, sellerShopId)
-            .query(`
+            .input("history_product_id", sql.Int, order.history_product_id)
+            .input(
+                "history_product_name",
+                sql.VarChar,
+                order.history_product_name
+            )
+            .input(
+                "history_product_price",
+                sql.Decimal(10, 2),
+                order.history_product_price
+            )
+            .input("history_user_id", sql.Int, order.history_user_id)
+            .input("history_seller_id", sql.Int, sellerId)
+            .input("history_order_date", sql.DateTime, order.history_order_date)
+            .input(
+                "history_order_quantity",
+                sql.Int,
+                order.history_order_quantity
+            )
+            .input("history_order_type", sql.Int, order.history_order_type)
+            .input("history_shop_id", sql.Int, sellerShopId).query(`
                 INSERT INTO History (
                     history_product_id,
                     history_product_name,
@@ -865,24 +883,27 @@ app.post('/confirmOrder', async (req, res) => {
             `);
 
         // Delete the order from the Order table
-        await db
-            .request()
-            .input('order_id', sql.Int, order_id)
-            .query(`
+        await db.request().input("order_id", sql.Int, order_id).query(`
                 DELETE FROM [Order]
                 WHERE order_id = @order_id
             `);
 
-        res.status(200).json({ success: true, message: 'Order confirmed successfully.' });
+        res.status(200).json({
+            success: true,
+            message: "Order confirmed successfully.",
+        });
     } catch (error) {
-        console.error('Error confirming order:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
+        console.error("Error confirming order:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 });
 
-app.get('/notif', async (req, res) => {
+app.get("/notif", async (req, res) => {
     try {
-        const userId = req.session?.login?.id; 
+        const userId = req.session?.login?.id;
         if (!userId) {
             return res.redirect("/login?error=unauthorized");
         }
@@ -890,9 +911,7 @@ app.get('/notif', async (req, res) => {
         const db = await dbPromise;
 
         // Fetch user-specific history, ordered by the latest notification first
-        const historyRecord = await db.request()
-            .input('userId', userId)
-            .query(`
+        const historyRecord = await db.request().input("userId", userId).query(`
                 SELECT history_id, history_product_name, history_order_date
                 FROM History 
                 WHERE history_user_id = @userId
@@ -900,29 +919,27 @@ app.get('/notif', async (req, res) => {
             `);
         const history = historyRecord.recordset;
 
-        res.render('notification', {
-            title: 'Notif',
+        res.render("notification", {
+            title: "Notif",
             styles: [
-                'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
-                'css/BASE.css',
-                'css/header.css',
-                'css/profile.css',
-                'css/searchbar.css',
-                'css/home.css',
-                'css/notif.css'
+                "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
+                "css/BASE.css",
+                "css/header.css",
+                "css/profile.css",
+                "css/searchbar.css",
+                "css/home.css",
+                "css/notif.css",
             ],
             beforeBody: [],
             afterbody: [],
-            nodeModules: [
-                '/node_modules/jquery/dist/jquery.min.js',
-            ],
+            nodeModules: ["/node_modules/jquery/dist/jquery.min.js"],
             scripts: [
-                'https://code.jquery.com/jquery-3.6.0.min.js',
-                'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
-                'js/BASE.js',
-                'js/header.js',
-                'js/profile.js',
-                'js/home.js',
+                "https://code.jquery.com/jquery-3.6.0.min.js",
+                "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+                "js/BASE.js",
+                "js/header.js",
+                "js/profile.js",
+                "js/home.js",
             ],
             history,
             isLoggedIn: !!req.session?.login,
@@ -930,16 +947,16 @@ app.get('/notif', async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send("Internal Server Error");
     }
 });
 
 // home hbs renderer
-app.get('/', async (req, res) => {
+app.get("/", async (req, res) => {
     try {
         const db = await dbPromise;
         const userId = req.session?.login?.id;
-        const isSeller = req.session?.login?.role === 'seller';
+        const isSeller = req.session?.login?.role === "seller";
 
         // Fetch all products
         const productRecord = await db.request().query(`
@@ -951,9 +968,9 @@ app.get('/', async (req, res) => {
         // Fetch user-specific history
         let history = [];
         if (userId && !isSeller) {
-            const historyRecord = await db.request()
-                .input('userId', sql.Int, userId)
-                .query(`
+            const historyRecord = await db
+                .request()
+                .input("userId", sql.Int, userId).query(`
                     SELECT history_id, history_product_name, history_order_date
                     FROM History
                     WHERE history_user_id = @userId
@@ -962,30 +979,29 @@ app.get('/', async (req, res) => {
             history = historyRecord.recordset;
         }
 
-        res.render('home', {
-            title: 'Home',
+        res.render("home", {
+            title: "Home",
             styles: [
-                'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
-                'css/BASE.css',
-                'css/header.css',
-                'css/profile.css',
-                'css/searchbar.css',
-                'css/home.css',
-                'css/theme_toggle.css'
+                "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
+                "css/BASE.css",
+                "css/header.css",
+                "css/profile.css",
+                "css/searchbar.css",
+                "css/home.css",
+                "css/theme_toggle.css",
             ],
             beforeBody: [],
             afterbody: [],
-            nodeModules: [
-                '/node_modules/jquery/dist/jquery.min.js',
-            ],
+            nodeModules: ["/node_modules/jquery/dist/jquery.min.js"],
             scripts: [
-                'https://code.jquery.com/jquery-3.6.0.min.js',
-                'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
-                'js/BASE.js',
-                'js/header.js',
-                'js/profile.js',
-                'js/home.js',
-                'js/theme_toggle.js'
+                "https://code.jquery.com/jquery-3.6.0.min.js",
+                "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+                '/socket.io/socket.io.js',
+                "js/BASE.js",
+                "js/header.js",
+                "js/profile.js",
+                "js/home.js",
+                "js/theme_toggle.js",
             ],
             Product,
             history,
@@ -995,11 +1011,11 @@ app.get('/', async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send("Internal Server Error");
     }
 });
 
-app.get('/api/orderHistory', isSeller, async (req, res) => {
+app.get("/api/orderHistory", isSeller, async (req, res) => {
     try {
         const sellerId = req.session.login.id;
         const db = await dbPromise;
@@ -1007,8 +1023,7 @@ app.get('/api/orderHistory', isSeller, async (req, res) => {
         // Fetch the seller's shop ID
         const sellerRecord = await db
             .request()
-            .input('sellerId', sql.Int, sellerId)
-            .query(`
+            .input("sellerId", sql.Int, sellerId).query(`
                 SELECT seller_shop_id 
                 FROM Seller 
                 WHERE seller_id = @sellerId
@@ -1016,15 +1031,16 @@ app.get('/api/orderHistory', isSeller, async (req, res) => {
 
         const seller = sellerRecord.recordset[0];
         if (!seller) {
-            return res.status(401).json({ success: false, message: 'Unauthorized access.' });
+            return res
+                .status(401)
+                .json({ success: false, message: "Unauthorized access." });
         }
         const shopId = seller.seller_shop_id;
 
         // Fetch order history from the History table
         const orderHistoryRecord = await db
             .request()
-            .input('shopId', sql.Int, shopId)
-            .query(`
+            .input("shopId", sql.Int, shopId).query(`
                 SELECT 
                     h.history_id,
                     h.history_product_name,
@@ -1045,29 +1061,36 @@ app.get('/api/orderHistory', isSeller, async (req, res) => {
         const orderHistory = orderHistoryRecord.recordset;
 
         // Calculate total revenue
-        const totalRevenue = orderHistory.reduce((sum, order) => sum + order.actual_price, 0);
+        const totalRevenue = orderHistory.reduce(
+            (sum, order) => sum + order.actual_price,
+            0
+        );
 
         res.json({ success: true, orderHistory, totalRevenue });
     } catch (error) {
-        console.error('Error fetching order history:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
+        console.error("Error fetching order history:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 });
 
-app.post('/api/updateStock', async (req, res) => {
+app.post("/api/updateStock", async (req, res) => {
     try {
         const { product_id, product_stock } = req.body;
 
         if (!product_id || product_stock === undefined) {
-            return res.status(400).json({ success: false, message: "Invalid input." });
+            return res
+                .status(400)
+                .json({ success: false, message: "Invalid input." });
         }
 
         const db = await dbPromise;
         await db
             .request()
-            .input('product_id', sql.Int, product_id)
-            .input('product_stock', sql.Int, product_stock)
-            .query(`
+            .input("product_id", sql.Int, product_id)
+            .input("product_stock", sql.Int, product_stock).query(`
                 UPDATE Product
                 SET product_stock = @product_stock
                 WHERE product_id = @product_id
@@ -1076,48 +1099,56 @@ app.post('/api/updateStock', async (req, res) => {
         res.json({ success: true, message: "Stock updated successfully." });
     } catch (error) {
         console.error("Error updating stock:", error);
-        res.status(500).json({ success: false, message: "Internal Server Error" });
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 });
 
-app.get('/api/productStock/:productId', async (req, res) => {
+app.get("/api/productStock/:productId", async (req, res) => {
     try {
         const { productId } = req.params;
         const db = await dbPromise;
 
         const productRecord = await db
             .request()
-            .input('product_id', sql.Int, productId)
-            .query(`
+            .input("product_id", sql.Int, productId).query(`
                 SELECT product_stock 
                 FROM Product 
                 WHERE product_id = @product_id
             `);
 
         if (productRecord.recordset.length === 0) {
-            return res.status(404).json({ success: false, message: 'Product not found.' });
+            return res
+                .status(404)
+                .json({ success: false, message: "Product not found." });
         }
 
-        res.json({ success: true, stock: productRecord.recordset[0].product_stock });
+        res.json({
+            success: true,
+            stock: productRecord.recordset[0].product_stock,
+        });
     } catch (error) {
-        console.error('Error fetching product stock:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
+        console.error("Error fetching product stock:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 });
 
 //cart hbs renderer
-app.get('/cart', async (req, res) => {
+app.get("/cart", async (req, res) => {
     try {
         const user_id = req.session?.login?.id;
 
         if (!user_id) {
             return res.redirect("/login?error=unauthorized");
         }
-        
+
         const db = await dbPromise;
-        const cartRecord = await db
-            .request()
-            .input('user_id', sql.Int, user_id)
+        const cartRecord = await db.request().input("user_id", sql.Int, user_id)
             .query(`
             SELECT c.cart_quantity, p.*
             FROM Cart c
@@ -1125,51 +1156,54 @@ app.get('/cart', async (req, res) => {
             WHERE c.cart_user_id = @user_id
             `);
         const cart = cartRecord.recordset;
-        
-        res.render('cart', {
-            title: 'Cart',
+
+        res.render("cart", {
+            title: "Cart",
             styles: [
-                'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
-                'css/BASE.css',
-                'css/header.css',
-                'css/profile.css',
-                'css/cart.css',
+                "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
+                "css/BASE.css",
+                "css/header.css",
+                "css/profile.css",
+                "css/cart.css",
             ],
             beforeBody: [],
             afterbody: [],
-            nodeModules: [
-                '/node_modules/jquery/dist/jquery.min.js',
-            ],
+            nodeModules: ["/node_modules/jquery/dist/jquery.min.js"],
             scripts: [
-                'https://code.jquery.com/jquery-3.6.0.min.js',
-                'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
-                'js/BASE.js',
-                'js/header.js',
-                'js/profile.js',
-                'js/cart.js',
+                "https://code.jquery.com/jquery-3.6.0.min.js",
+                "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+                "js/BASE.js",
+                "js/header.js",
+                "js/profile.js",
+                "js/cart.js",
             ],
             cart,
             isLoggedIn: !!req.session?.login,
-            loginData: req.session?.login || null
+            loginData: req.session?.login || null,
         });
     } catch (error) {
-        console.error('Error fetching cart:', error);
-        res.status(500).send('Internal Server Error');
+        console.error("Error fetching cart:", error);
+        res.status(500).send("Internal Server Error");
     }
 });
 
-app.post('/cart/add', async (req, res) => {
+app.post("/cart/add", async (req, res) => {
     try {
         const { product_id, quantity } = req.body;
         const userId = req.session?.login?.id;
-        const isSeller = req.session?.login?.role === 'seller';
+        const isSeller = req.session?.login?.role === "seller";
 
         if (isSeller) {
-            return res.status(403).json({ success: false, message: 'Sellers cannot add to cart.' });
+            return res.status(403).json({
+                success: false,
+                message: "Sellers cannot add to cart.",
+            });
         }
 
         if (!userId) {
-            return res.status(401).json({ success: false, message: 'Unauthorized' });
+            return res
+                .status(401)
+                .json({ success: false, message: "Unauthorized" });
         }
 
         const db = await dbPromise;
@@ -1177,9 +1211,8 @@ app.post('/cart/add', async (req, res) => {
         // Check if the product already exists in the user's cart
         const existingCartItem = await db
             .request()
-            .input('user_id', sql.Int, userId)
-            .input('product_id', sql.Int, product_id)
-            .query(`
+            .input("user_id", sql.Int, userId)
+            .input("product_id", sql.Int, product_id).query(`
                 SELECT cart_quantity 
                 FROM Cart 
                 WHERE cart_user_id = @user_id AND cart_product_id = @product_id
@@ -1189,10 +1222,13 @@ app.post('/cart/add', async (req, res) => {
             // Update the quantity if the product already exists in the cart
             await db
                 .request()
-                .input('user_id', sql.Int, userId)
-                .input('product_id', sql.Int, product_id)
-                .input('quantity', sql.Int, quantity + existingCartItem.recordset[0].cart_quantity)
-                .query(`
+                .input("user_id", sql.Int, userId)
+                .input("product_id", sql.Int, product_id)
+                .input(
+                    "quantity",
+                    sql.Int,
+                    quantity + existingCartItem.recordset[0].cart_quantity
+                ).query(`
                     UPDATE Cart 
                     SET cart_quantity = @quantity 
                     WHERE cart_user_id = @user_id AND cart_product_id = @product_id
@@ -1201,33 +1237,43 @@ app.post('/cart/add', async (req, res) => {
             // Insert the product into the cart if it doesn't exist
             await db
                 .request()
-                .input('user_id', sql.Int, userId)
-                .input('product_id', sql.Int, product_id)
-                .input('quantity', sql.Int, quantity)
-                .query(`
+                .input("user_id", sql.Int, userId)
+                .input("product_id", sql.Int, product_id)
+                .input("quantity", sql.Int, quantity).query(`
                     INSERT INTO Cart (cart_user_id, cart_product_id, cart_quantity) 
                     VALUES (@user_id, @product_id, @quantity)
                 `);
         }
 
-        res.status(200).json({ success: true, message: 'Product added to cart successfully.' });
+        res.status(200).json({
+            success: true,
+            message: "Product added to cart successfully.",
+        });
     } catch (error) {
-        console.error('Error adding to cart:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
+        console.error("Error adding to cart:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 });
 
-app.post('/cart/checkout', async (req, res) => {
+app.post("/cart/checkout", async (req, res) => {
     try {
         const { orders } = req.body;
         const user_id = req.session?.login?.id; // Get user_id from session
 
         if (!user_id) {
-            return res.status(401).json({ success: false, message: 'User not logged in.' });
+            return res
+                .status(401)
+                .json({ success: false, message: "User not logged in." });
         }
 
         if (!orders || !Array.isArray(orders) || orders.length === 0) {
-            return res.status(400).json({ success: false, message: 'No orders provided or invalid format.' });
+            return res.status(400).json({
+                success: false,
+                message: "No orders provided or invalid format.",
+            });
         }
 
         const db = await dbPromise;
@@ -1239,15 +1285,17 @@ app.post('/cart/checkout', async (req, res) => {
             // Fetch the product_shop_id for the product
             const productResult = await db
                 .request()
-                .input('product_id', sql.Int, product_id)
-                .query(`
+                .input("product_id", sql.Int, product_id).query(`
                     SELECT product_shop_id 
                     FROM [Product] 
                     WHERE product_id = @product_id
                 `);
 
             if (productResult.recordset.length === 0) {
-                return res.status(404).json({ success: false, message: `Product with ID ${product_id} not found.` });
+                return res.status(404).json({
+                    success: false,
+                    message: `Product with ID ${product_id} not found.`,
+                });
             }
 
             const product_shop_id = productResult.recordset[0].product_shop_id;
@@ -1255,12 +1303,11 @@ app.post('/cart/checkout', async (req, res) => {
             // Insert the order into the Order table
             await db
                 .request()
-                .input('user_id', sql.Int, user_id)
-                .input('product_id', sql.Int, product_id)
-                .input('quantity', sql.Int, quantity)
-                .input('price', sql.Decimal(10, 2), price)
-                .input('shop_id', sql.Int, product_shop_id)
-                .query(`
+                .input("user_id", sql.Int, user_id)
+                .input("product_id", sql.Int, product_id)
+                .input("quantity", sql.Int, quantity)
+                .input("price", sql.Decimal(10, 2), price)
+                .input("shop_id", sql.Int, product_shop_id).query(`
                     INSERT INTO [Order] (order_user_id, order_product_id, order_quantity, order_final_price, order_type, order_shop_id)
                     VALUES (@user_id, @product_id, @quantity, @price, 2, @shop_id)
                 `);
@@ -1272,64 +1319,29 @@ app.post('/cart/checkout', async (req, res) => {
 
             await db
                 .request()
-                .input('user_id', sql.Int, user_id)
-                .input('product_id', sql.Int, product_id)
-                .query(`
+                .input("user_id", sql.Int, user_id)
+                .input("product_id", sql.Int, product_id).query(`
                     DELETE FROM Cart 
                     WHERE cart_user_id = @user_id AND cart_product_id = @product_id
                 `);
         }
 
-        res.status(200).json({ success: true, message: 'Checkout successful. Your orders have been placed.' });
+        res.status(200).json({
+            success: true,
+            message: "Checkout successful. Your orders have been placed.",
+        });
     } catch (error) {
-        console.error('Error during checkout:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
+        console.error("Error during checkout:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
 });
 
-const server = http.createServer(app);
 
-const io = new Server(server);
 
-const activeOrders = new Map(); 
-
-io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
-
-    socket.emit('lockedOrders', Array.from(activeOrders.entries()));
-
-    socket.on('lockOrder', (orderId) => {
-        if (activeOrders.has(orderId)) {
-            socket.emit('orderAlreadyLocked', orderId);
-        } else {
-            activeOrders.set(orderId, socket.id);
-            socket.broadcast.emit('orderLocked', { orderId, lockerId: socket.id });
-        }
-    });
-
-    socket.on('unlockOrder', (orderId) => {
-        if (activeOrders.get(orderId) === socket.id) {
-            activeOrders.delete(orderId);
-            socket.broadcast.emit('orderUnlocked', orderId);
-        }
-    });
-
-    socket.on('disconnect', () => {
-        for (const [orderId, lockerId] of activeOrders.entries()) {
-            if (lockerId === socket.id) {
-                activeOrders.delete(orderId);
-                io.emit('orderUnlocked', orderId);
-            }
-        }
-    });
-});
-
-// Start the server
-server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-});
-
-app.get('/api/notifications/count', async (req, res) => {
+app.get("/api/notifications/count", async (req, res) => {
     try {
         const userId = req.session?.login?.id;
 
@@ -1340,24 +1352,25 @@ app.get('/api/notifications/count', async (req, res) => {
         const db = await dbPromise;
 
         // Fetch the count of notifications for the user
-        const notificationCountRecord = await db.request()
-            .input('userId', sql.Int, userId)
-            .query(`
+        const notificationCountRecord = await db
+            .request()
+            .input("userId", sql.Int, userId).query(`
                 SELECT COUNT(*) AS count
                 FROM History
                 WHERE history_user_id = @userId
             `);
 
-        const notificationCount = notificationCountRecord.recordset[0]?.count || 0;
+        const notificationCount =
+            notificationCountRecord.recordset[0]?.count || 0;
 
         res.json({ success: true, count: notificationCount });
     } catch (error) {
-        console.error('Error fetching notification count:', error);
+        console.error("Error fetching notification count:", error);
         res.status(500).json({ success: false, count: 0 });
     }
 });
 
-app.get('/api/cart/count', async (req, res) => {
+app.get("/api/cart/count", async (req, res) => {
     try {
         const userId = req.session?.login?.id;
 
@@ -1368,9 +1381,9 @@ app.get('/api/cart/count', async (req, res) => {
         const db = await dbPromise;
 
         // Fetch the count of items in the cart for the user
-        const cartCountRecord = await db.request()
-            .input('userId', sql.Int, userId)
-            .query(`
+        const cartCountRecord = await db
+            .request()
+            .input("userId", sql.Int, userId).query(`
                 SELECT SUM(cart_quantity) AS count
                 FROM Cart
                 WHERE cart_user_id = @userId
@@ -1380,27 +1393,27 @@ app.get('/api/cart/count', async (req, res) => {
 
         res.json({ success: true, count: cartCount });
     } catch (error) {
-        console.error('Error fetching cart item count:', error);
+        console.error("Error fetching cart item count:", error);
         res.status(500).json({ success: false, count: 0 });
     }
 });
 
-app.get('/order/:orderId', async (req, res) => {
+app.get("/order/:orderId", async (req, res) => {
     try {
         const { orderId } = req.params;
         const userId = req.session?.login?.id;
 
         if (!userId) {
-            return res.redirect('/login?error=unauthorized');
+            return res.redirect("/login?error=unauthorized");
         }
 
         const db = await dbPromise;
 
         // Fetch order details from the History table
-        const orderRecord = await db.request()
-            .input('orderId', sql.Int, orderId)
-            .input('userId', sql.Int, userId)
-            .query(`
+        const orderRecord = await db
+            .request()
+            .input("orderId", sql.Int, orderId)
+            .input("userId", sql.Int, userId).query(`
                 SELECT 
                     h.history_id AS history_id,
                     h.history_product_name AS history_product_name,
@@ -1418,46 +1431,46 @@ app.get('/order/:orderId', async (req, res) => {
         const history = orderRecord.recordset[0];
 
         if (!history) {
-            return res.status(404).send('Order not found or unauthorized access.');
+            return res
+                .status(404)
+                .send("Order not found or unauthorized access.");
         }
 
-        res.render('order', {
-            title: 'Order Receipt',
+        res.render("order", {
+            title: "Order Receipt",
             styles: [
-                'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css',
-                '/css/BASE.css',
-                '/css/header.css',
-                '/css/profile.css',
-                '/css/order.css',
-                '/css/header.css',
-                '/css/profile.css'
+                "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
+                "/css/BASE.css",
+                "/css/header.css",
+                "/css/profile.css",
+                "/css/order.css",
+                "/css/header.css",
+                "/css/profile.css",
             ],
             beforeBody: [],
             afterbody: [],
-            nodeModules: [
-                '/node_modules/jquery/dist/jquery.min.js',
-            ],
+            nodeModules: ["/node_modules/jquery/dist/jquery.min.js"],
             scripts: [
-                'https://code.jquery.com/jquery-3.6.0.min.js',
-                'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
-                '/js/BASE.js',
-                '/js/header.js',
-                '/js/profile.js',
-                '/js/order.js',
-                '/js/header.js',
-                '/js/profile.js'
+                "https://code.jquery.com/jquery-3.6.0.min.js",
+                "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+                "/js/BASE.js",
+                "/js/header.js",
+                "/js/profile.js",
+                "/js/order.js",
+                "/js/header.js",
+                "/js/profile.js",
             ],
             history,
             isLoggedIn: !!req.session?.login,
-            loginData: req.session?.login || null
+            loginData: req.session?.login || null,
         });
     } catch (error) {
-        console.error('Error fetching order details:', error);
-        res.status(500).send('Internal Server Error');
+        console.error("Error fetching order details:", error);
+        res.status(500).send("Internal Server Error");
     }
 });
 
-app.get('/api/userNotifications', async (req, res) => {
+app.get("/api/userNotifications", async (req, res) => {
     try {
         const userId = req.session?.login?.id;
 
@@ -1468,9 +1481,9 @@ app.get('/api/userNotifications', async (req, res) => {
         const db = await dbPromise;
 
         // Fetch user notifications from the History table, ordered by the latest notification first
-        const historyRecords = await db.request()
-            .input('userId', sql.Int, userId)
-            .query(`
+        const historyRecords = await db
+            .request()
+            .input("userId", sql.Int, userId).query(`
                 SELECT 
                     history_id, 
                     history_product_name, 
@@ -1482,35 +1495,99 @@ app.get('/api/userNotifications', async (req, res) => {
 
         res.json({ success: true, history: historyRecords.recordset });
     } catch (error) {
-        console.error('Error fetching user notifications:', error);
+        console.error("Error fetching user notifications:", error);
         res.status(500).json({ success: false, history: [] });
     }
 });
 
-app.post('/api/markNotificationViewed', async (req, res) => {
+app.post("/api/markNotificationViewed", async (req, res) => {
     try {
         const { notificationId } = req.body;
         const userId = req.session?.login?.id;
 
         if (!userId) {
-            return res.status(401).json({ success: false, message: 'Unauthorized' });
+            return res
+                .status(401)
+                .json({ success: false, message: "Unauthorized" });
         }
 
         const db = await dbPromise;
 
         // Mark the notification as viewed
-        await db.request()
-            .input('notificationId', sql.Int, notificationId)
-            .input('userId', sql.Int, userId)
-            .query(`
+        await db
+            .request()
+            .input("notificationId", sql.Int, notificationId)
+            .input("userId", sql.Int, userId).query(`
                 UPDATE History
                 SET history_viewed = 1
                 WHERE history_id = @notificationId AND history_user_id = @userId
             `);
 
-        res.status(200).json({ success: true, message: 'Notification marked as viewed.' });
+        res.status(200).json({
+            success: true,
+            message: "Notification marked as viewed.",
+        });
     } catch (error) {
-        console.error('Error marking notification as viewed:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
+        console.error("Error marking notification as viewed:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
+});
+
+const server = http.createServer(app);
+
+const io = new Server(server);
+
+const activeOrders = new Map();
+
+io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
+
+    socket.emit("lockedOrders", Array.from(activeOrders.entries()));
+
+    socket.on("lockOrder", (orderId) => {
+        if (activeOrders.has(orderId)) {
+            socket.emit("orderAlreadyLocked", orderId);
+        } else {
+            activeOrders.set(orderId, socket.id);
+            socket.broadcast.emit("orderLocked", {
+                orderId,
+                lockerId: socket.id,
+            });
+        }
+    });
+
+    socket.on("unlockOrder", (orderId) => {
+        if (activeOrders.get(orderId) === socket.id) {
+            activeOrders.delete(orderId);
+            socket.broadcast.emit("orderUnlocked", orderId);
+        }
+    });
+
+    socket.on("orderRemove", (orderId) => {
+        if (activeOrders.get(orderId) === socket.id) {
+            activeOrders.delete(orderId);
+            socket.broadcast.emit("orderRemoved", orderId);
+        }
+    });
+
+    socket.on("notificationUpdate", () => {
+        socket.broadcast.emit("refreshNotifications");
+        console.log("Notifications updated");
+    });
+
+    socket.on("disconnect", () => {
+        for (const [orderId, lockerId] of activeOrders.entries()) {
+            if (lockerId === socket.id) {
+                activeOrders.delete(orderId);
+                io.emit("orderUnlocked", orderId);
+            }
+        }
+    });
+});
+
+server.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
 });

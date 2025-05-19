@@ -1,6 +1,7 @@
 $(document).ready(function () {
     // On page load, update the notification badge based on local storage
-    const readNotifications = JSON.parse(localStorage.getItem("readNotifications")) || [];
+    const readNotifications =
+        JSON.parse(localStorage.getItem("readNotifications")) || [];
     const totalNotifications = $(".notification-item").length;
     const unreadCount = totalNotifications - readNotifications.length;
 
@@ -18,10 +19,14 @@ $(document).ready(function () {
         const orderId = $(this).attr("id");
 
         // Mark the notification as read in local storage
-        let readNotifications = JSON.parse(localStorage.getItem("readNotifications")) || [];
+        let readNotifications =
+            JSON.parse(localStorage.getItem("readNotifications")) || [];
         if (!readNotifications.includes(orderId)) {
             readNotifications.push(orderId);
-            localStorage.setItem("readNotifications", JSON.stringify(readNotifications));
+            localStorage.setItem(
+                "readNotifications",
+                JSON.stringify(readNotifications)
+            );
 
             // Reduce the notification count
             const notificationCount = $("#notificationCount");
@@ -157,7 +162,8 @@ $(document).ready(function () {
 
     // Update badge count and visual marking after loading notifications
     function updateNotificationsUI() {
-        const readNotifications = JSON.parse(localStorage.getItem("readNotifications")) || [];
+        const readNotifications =
+            JSON.parse(localStorage.getItem("readNotifications")) || [];
         const totalNotifications = $(".notification-item").length;
         const unreadCount = totalNotifications - readNotifications.length;
 
@@ -183,4 +189,34 @@ $(document).ready(function () {
         updateNotificationsUI();
     });
     updateNotificationsUI();
+
+    const socket = io();
+
+    socket.on("refreshNotifications", () => {
+        loadUserNotifications();
+        updateNotificationsUI();
+        console.log("Notifications refreshed");
+        $.ajax({
+            url: "/api/userNotifications",
+            method: "GET",
+            success: function (response) {
+                if (response.success) {
+                    const notificationList = $("#notificationList");
+                    notificationList.empty();
+                    response.history.forEach((notification) => {
+                        notificationList.append(
+                            `<div class='notification-item' id='${notification.history_id}'>
+                                <p>#${notification.history_id}</p>
+                                <p>${notification.history_product_name}</p>
+                                <p><strong>Process on:</strong> ${notification.history_order_date}</p>
+                            </div>`
+                        );
+                    });
+                }
+            },
+            error: function () {
+                console.error("Failed to load notifications");
+            },
+        });
+    });
 });
