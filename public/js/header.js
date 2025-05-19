@@ -21,7 +21,7 @@ $(document).ready(function () {
         },
     });
 
-    // Fetch cart item count from the server
+
     $.ajax({
         url: "/api/cart/count", // Replace with your API endpoint
         method: "GET",

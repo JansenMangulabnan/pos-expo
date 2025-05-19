@@ -62,7 +62,7 @@ $(document).ready(function () {
         }
     });
 
-    // Handle item removal
+    // Handle item removal from checkout and cart
     $(document).on("click", ".remove-item", function () {
         const row = $(this).closest("tr");
         const productId = row.data("id");
@@ -70,6 +70,24 @@ $(document).ready(function () {
 
         // Remove the highlight from the card
         $(`.cart-product-card[data-id="${productId}"]`).removeClass("in-checkout");
+
+        // Remove the item from the cart in the backend
+        $.ajax({
+            url: "/cart/remove",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ product_id: productId }),
+            success: function (response) {
+                // Optionally, remove the product card from the cart UI
+                $(`.cart-product-card[data-id="${productId}"]`).remove();
+                updateTotal();
+                // Optionally update cart badge
+                if (window.updateCartBadge) updateCartBadge();
+            },
+            error: function (xhr) {
+                alert(xhr.responseJSON?.message || "Failed to remove item from cart.");
+            }
+        });
 
         updateTotal();
     });

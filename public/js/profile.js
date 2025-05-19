@@ -219,4 +219,14 @@ $(document).ready(function () {
             },
         });
     });
+
+    $.ajax({
+        url: "/api/cart/count",
+        method: "GET",
+        success: function (response) {
+            if (response.success) {
+                $("#cartCount").text(response.count);
+            }
+        },
+    });
 });

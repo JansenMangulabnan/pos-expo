@@ -52,12 +52,37 @@ $(document).ready(function () {
             contentType: "application/json",
             data: JSON.stringify({ product_id, quantity }),
             success: function (response) {
-                alert(response.message);
+                if (response.alreadyInCart) {
+                    alert("This item is already in your cart.");
+                }
+                $.ajax({
+                    url: "/api/cart/count",
+                    method: "GET",
+                    success: function (res) {
+                        if (res.success) {
+                            $("#cartCount").text(res.count);
+                        }
+                    },
+                });
             },
             error: function (xhr) {
-                alert(xhr.responseJSON?.message || "Failed to add product to cart.");
+                alert(
+                    xhr.responseJSON?.message ||
+                        "Failed to add product to cart."
+                );
             },
         });
+        setTimeout(function () {
+            $.ajax({
+                url: "/api/cart/count",
+                method: "GET",
+                success: function (res) {
+                    if (res.success) {
+                        $("#cartCount").text(res.count);
+                    }
+                },
+            });
+        }, 100); // 500ms delay before executing the AJAX call
     });
 
     $(".cart-icon").on("click", function () {
@@ -67,5 +92,4 @@ $(document).ready(function () {
     $(".brand").on("click", function () {
         window.location.href = "/";
     });
-
 });

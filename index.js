@@ -1148,9 +1148,10 @@ app.get("/cart", async (req, res) => {
         }
 
         const db = await dbPromise;
+        // Since cart_quantity column is removed, just fetch products in the cart
         const cartRecord = await db.request().input("user_id", sql.Int, user_id)
             .query(`
-            SELECT c.cart_quantity, p.*
+            SELECT p.*
             FROM Cart c
             JOIN Product p ON c.cart_product_id = p.product_id
             WHERE c.cart_user_id = @user_id
@@ -1213,48 +1214,62 @@ app.post("/cart/add", async (req, res) => {
             .request()
             .input("user_id", sql.Int, userId)
             .input("product_id", sql.Int, product_id).query(`
-                SELECT cart_quantity 
+                SELECT 1 
                 FROM Cart 
                 WHERE cart_user_id = @user_id AND cart_product_id = @product_id
             `);
 
         if (existingCartItem.recordset.length > 0) {
-            // Update the quantity if the product already exists in the cart
-            await db
-                .request()
-                .input("user_id", sql.Int, userId)
-                .input("product_id", sql.Int, product_id)
-                .input(
-                    "quantity",
-                    sql.Int,
-                    quantity + existingCartItem.recordset[0].cart_quantity
-                ).query(`
-                    UPDATE Cart 
-                    SET cart_quantity = @quantity 
-                    WHERE cart_user_id = @user_id AND cart_product_id = @product_id
-                `);
+            // Item already in cart, do not add again
+            return res.status(200).json({
+                success: false,
+                alreadyInCart: true,
+                message: "Item is already in your cart.",
+            });
         } else {
             // Insert the product into the cart if it doesn't exist
             await db
                 .request()
                 .input("user_id", sql.Int, userId)
                 .input("product_id", sql.Int, product_id)
-                .input("quantity", sql.Int, quantity).query(`
-                    INSERT INTO Cart (cart_user_id, cart_product_id, cart_quantity) 
-                    VALUES (@user_id, @product_id, @quantity)
+                .query(`
+                    INSERT INTO Cart (cart_user_id, cart_product_id) 
+                    VALUES (@user_id, @product_id)
                 `);
         }
-
-        res.status(200).json({
-            success: true,
-            message: "Product added to cart successfully.",
-        });
     } catch (error) {
         console.error("Error adding to cart:", error);
         res.status(500).json({
             success: false,
             message: "Internal Server Error",
         });
+    }
+});
+
+app.post("/cart/remove", async (req, res) => {
+    try {
+        const { product_id } = req.body;
+        const userId = req.session?.login?.id;
+
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        const db = await dbPromise;
+
+        await db
+            .request()
+            .input("user_id", sql.Int, userId)
+            .input("product_id", sql.Int, product_id)
+            .query(`
+                DELETE FROM Cart
+                WHERE cart_user_id = @user_id AND cart_product_id = @product_id
+            `);
+
+        res.json({ success: true, message: "Item removed from cart." });
+    } catch (error) {
+        console.error("Error removing from cart:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 });
 
@@ -1380,11 +1395,11 @@ app.get("/api/cart/count", async (req, res) => {
 
         const db = await dbPromise;
 
-        // Fetch the count of items in the cart for the user
+        // Fetch the count of unique items in the cart for the user
         const cartCountRecord = await db
             .request()
             .input("userId", sql.Int, userId).query(`
-                SELECT SUM(cart_quantity) AS count
+                SELECT COUNT(*) AS count
                 FROM Cart
                 WHERE cart_user_id = @userId
             `);
