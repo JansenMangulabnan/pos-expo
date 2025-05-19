@@ -1486,3 +1486,31 @@ app.get('/api/userNotifications', async (req, res) => {
         res.status(500).json({ success: false, history: [] });
     }
 });
+
+app.post('/api/markNotificationViewed', async (req, res) => {
+    try {
+        const { notificationId } = req.body;
+        const userId = req.session?.login?.id;
+
+        if (!userId) {
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
+        }
+
+        const db = await dbPromise;
+
+        // Mark the notification as viewed
+        await db.request()
+            .input('notificationId', sql.Int, notificationId)
+            .input('userId', sql.Int, userId)
+            .query(`
+                UPDATE History
+                SET history_viewed = 1
+                WHERE history_id = @notificationId AND history_user_id = @userId
+            `);
+
+        res.status(200).json({ success: true, message: 'Notification marked as viewed.' });
+    } catch (error) {
+        console.error('Error marking notification as viewed:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});

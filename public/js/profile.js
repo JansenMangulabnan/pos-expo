@@ -1,6 +1,40 @@
 $(document).ready(function () {
+    // On page load, update the notification badge based on local storage
+    const readNotifications = JSON.parse(localStorage.getItem("readNotifications")) || [];
+    const totalNotifications = $(".notification-item").length;
+    const unreadCount = totalNotifications - readNotifications.length;
+
+    $("#notificationCount").text(unreadCount > 0 ? unreadCount : 0);
+
+    // Visually mark read notifications
+    $(".notification-item").each(function () {
+        const orderId = $(this).attr("id");
+        if (readNotifications.includes(orderId)) {
+            $(this).addClass("read"); // Add a class to style read notifications
+        }
+    });
+
     $(document).on("click", ".notification-item", function () {
         const orderId = $(this).attr("id");
+
+        // Mark the notification as read in local storage
+        let readNotifications = JSON.parse(localStorage.getItem("readNotifications")) || [];
+        if (!readNotifications.includes(orderId)) {
+            readNotifications.push(orderId);
+            localStorage.setItem("readNotifications", JSON.stringify(readNotifications));
+
+            // Reduce the notification count
+            const notificationCount = $("#notificationCount");
+            const currentCount = parseInt(notificationCount.text(), 10);
+            if (currentCount > 0) {
+                notificationCount.text(currentCount - 1);
+            }
+
+            // Visually mark the notification as read
+            $(this).addClass("read");
+        }
+
+        // Redirect to the order receipt page
         window.location.href = `/order/${orderId}`;
     });
 
@@ -120,4 +154,33 @@ $(document).ready(function () {
             toggleNotif = false;
         }
     });
+
+    // Update badge count and visual marking after loading notifications
+    function updateNotificationsUI() {
+        const readNotifications = JSON.parse(localStorage.getItem("readNotifications")) || [];
+        const totalNotifications = $(".notification-item").length;
+        const unreadCount = totalNotifications - readNotifications.length;
+
+        const notificationCountElement = $("#notificationCount");
+        if (unreadCount > 0) {
+            notificationCountElement.text(unreadCount);
+            notificationCountElement.show();
+        } else {
+            notificationCountElement.text(0);
+            notificationCountElement.hide();
+        }
+
+        $(".notification-item").each(function () {
+            const orderId = $(this).attr("id");
+            if (readNotifications.includes(orderId)) {
+                $(this).addClass("read");
+            }
+        });
+    }
+
+    // Call updateNotificationsUI after dynamically loading notifications
+    $(document).on("ajaxSuccess", function () {
+        updateNotificationsUI();
+    });
+    updateNotificationsUI();
 });
