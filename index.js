@@ -884,22 +884,21 @@ app.get('/notif', async (req, res) => {
     try {
         const userId = req.session?.login?.id; 
         if (!userId) {
-            return res.redirect("/login?error=unauthorized")
+            return res.redirect("/login?error=unauthorized");
         }
-        
 
         const db = await dbPromise;
 
-        // Fetch user-specific history
+        // Fetch user-specific history, ordered by the latest notification first
         const historyRecord = await db.request()
             .input('userId', userId)
             .query(`
                 SELECT history_id, history_product_name, history_order_date
                 FROM History 
                 WHERE history_user_id = @userId
+                ORDER BY history_order_date DESC
             `);
         const history = historyRecord.recordset;
-        console.log(history)
 
         res.render('notification', {
             title: 'Notif',
@@ -940,6 +939,7 @@ app.get('/', async (req, res) => {
     try {
         const db = await dbPromise;
         const userId = req.session?.login?.id;
+        const isSeller = req.session?.login?.role === 'seller';
 
         // Fetch all products
         const productRecord = await db.request().query(`
@@ -950,7 +950,16 @@ app.get('/', async (req, res) => {
 
         // Fetch user-specific history
         let history = [];
-        if (userId) {
+        if (userId && !isSeller) {
+            const historyRecord = await db.request()
+                .input('userId', sql.Int, userId)
+                .query(`
+                    SELECT history_id, history_product_name, history_order_date
+                    FROM History
+                    WHERE history_user_id = @userId
+                    ORDER BY history_order_date DESC
+                `);
+            history = historyRecord.recordset;
         }
 
         res.render('home', {
@@ -979,7 +988,9 @@ app.get('/', async (req, res) => {
                 'js/theme_toggle.js'
             ],
             Product,
+            history,
             isLoggedIn: !!req.session?.login,
+            isSeller,
             loginData: req.session?.login || null, // Pass the entire session login object
         });
     } catch (error) {
@@ -1150,10 +1161,15 @@ app.get('/cart', async (req, res) => {
 app.post('/cart/add', async (req, res) => {
     try {
         const { product_id, quantity } = req.body;
-        const user_id = req.session?.login?.id; // Get user_id from session
+        const userId = req.session?.login?.id;
+        const isSeller = req.session?.login?.role === 'seller';
 
-        if (!user_id) {
-            return res.status(401).json({ success: false, message: 'User not logged in.' });
+        if (isSeller) {
+            return res.status(403).json({ success: false, message: 'Sellers cannot add to cart.' });
+        }
+
+        if (!userId) {
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
         }
 
         const db = await dbPromise;
@@ -1161,7 +1177,7 @@ app.post('/cart/add', async (req, res) => {
         // Check if the product already exists in the user's cart
         const existingCartItem = await db
             .request()
-            .input('user_id', sql.Int, user_id)
+            .input('user_id', sql.Int, userId)
             .input('product_id', sql.Int, product_id)
             .query(`
                 SELECT cart_quantity 
@@ -1170,22 +1186,22 @@ app.post('/cart/add', async (req, res) => {
             `);
 
         if (existingCartItem.recordset.length > 0) {
-            // Update quantity if the product is already in the cart
+            // Update the quantity if the product already exists in the cart
             await db
                 .request()
-                .input('user_id', sql.Int, user_id)
+                .input('user_id', sql.Int, userId)
                 .input('product_id', sql.Int, product_id)
-                .input('quantity', sql.Int, quantity)
+                .input('quantity', sql.Int, quantity + existingCartItem.recordset[0].cart_quantity)
                 .query(`
                     UPDATE Cart 
-                    SET cart_quantity = cart_quantity + @quantity 
+                    SET cart_quantity = @quantity 
                     WHERE cart_user_id = @user_id AND cart_product_id = @product_id
                 `);
         } else {
-            // Insert new product into the cart
+            // Insert the product into the cart if it doesn't exist
             await db
                 .request()
-                .input('user_id', sql.Int, user_id)
+                .input('user_id', sql.Int, userId)
                 .input('product_id', sql.Int, product_id)
                 .input('quantity', sql.Int, quantity)
                 .query(`
@@ -1451,7 +1467,7 @@ app.get('/api/userNotifications', async (req, res) => {
 
         const db = await dbPromise;
 
-        // Fetch user notifications from the History table
+        // Fetch user notifications from the History table, ordered by the latest notification first
         const historyRecords = await db.request()
             .input('userId', sql.Int, userId)
             .query(`
@@ -1461,6 +1477,7 @@ app.get('/api/userNotifications', async (req, res) => {
                     history_order_date
                 FROM History
                 WHERE history_user_id = @userId
+                ORDER BY history_order_date DESC
             `);
 
         res.json({ success: true, history: historyRecords.recordset });
