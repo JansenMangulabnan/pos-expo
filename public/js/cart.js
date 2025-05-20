@@ -67,9 +67,9 @@ $(document).ready(function () {
         let quantity = parseInt(quantityElem.text());
         if (quantity > 1) {
             quantity -= 1;
-            const price = parseFloat(row.find("td:nth-child(5)").text().replace("₱", ""));
+            const price = parseFloat(row.find(".total-price").text().replace("₱", ""));
             quantityElem.text(quantity);
-            row.find(".total-price").text(`₱${(quantity * price).toFixed(2)}`);
+            row.find(".total-price").text(`₱${price.toFixed(2)}`);
             updateTotal();
         }
     });
@@ -116,18 +116,11 @@ $(document).ready(function () {
         $("#cart-checkout-items tr").each(function () {
             const productId = $(this).data("id");
             const quantity = parseInt($(this).find(".quantity").text());
-            const price = parseFloat(
-                $(this).find("td:nth-child(3)").text().replace("₱", "")
-            );
-            const totalPrice = parseFloat(
-                $(this).find(".total-price").text().replace("₱", "")
-            );
-
+            const unitPrice = parseFloat($(this).find("td:nth-child(5)").text().replace("₱", ""));
             orders.push({
                 product_id: productId,
                 quantity: quantity,
-                price: price,
-                total_price: totalPrice,
+                price: unitPrice * quantity // Backend expects 'price' field
             });
         });
 
