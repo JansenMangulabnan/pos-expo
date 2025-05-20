@@ -171,7 +171,9 @@ $(document).ready(function () {
                     <td>
                         <div class="pos-quantity-container">
                             <button class="pos-decrease-qty">-</button>
-                            <div class="pos-quantity" contenteditable="true">${order.quantity}</div>
+                            <div class="pos-quantity" contenteditable="true">${
+                                order.quantity
+                            }</div>
                             <button class="pos-increase-qty">+</button>
                         </div>
                     </td>
@@ -203,7 +205,11 @@ $(document).ready(function () {
 
         // Restore focus and caret position
         if (isContentEditable) {
-            const $newFocusedElement = $orderItems.find(`[data-id="${$focusedElement.closest("tr").data("id")}"] .pos-quantity`);
+            const $newFocusedElement = $orderItems.find(
+                `[data-id="${$focusedElement
+                    .closest("tr")
+                    .data("id")}"] .pos-quantity`
+            );
             $newFocusedElement.focus();
 
             const range = document.createRange();
@@ -342,17 +348,18 @@ $(document).ready(function () {
 
     $("#apply-discount-btn").on("click", function () {
         const total = parseFloat($("#pos-order-total").text());
-        if (isNaN(total) || total <= 0) return alert("No items in the order to apply a discount.");
-    
+        if (isNaN(total) || total <= 0)
+            return alert("No items in the order to apply a discount.");
+
         discountApplied = !discountApplied;
-    
+
         if (discountApplied) {
             const discount = total * 0.2;
             const final = total - discount;
-    
+
             $("#pos-discount-amount").text(discount.toFixed(2));
             $("#pos-final-total-amount").text(final.toFixed(2));
-    
+
             $("#pos-discount-indicator, #pos-final-total").show();
             $(this).text("Remove Senior/PWD Discount");
         } else {
@@ -437,11 +444,50 @@ $(document).ready(function () {
                 },
             });
         }
-        window.location.href = "/shop"
+        window.location.href = "/shop";
     });
 
     const socket = io();
 
+    socket.on("orderUpdate", function () {
+        console.log("Order updated");
+        $.ajax({
+            url: "/api/shopOrders",
+            method: "GET",
+            success: function (response) {
+                if (response.success && Array.isArray(response.orders)) {
+                    const $ordersContainer = $(".orders-container");
+                    $ordersContainer.empty();
+                    response.orders.forEach((order) => {
+                        $ordersContainer.append(`
+                            <div class="order-card" data-order-id="${order.order_id}">
+                                <div class="left-content">
+                                    <h2>Order ID: ${order.order_id}</h2>
+                                    <p><strong>Product:</strong> ${order.product_name}</p>
+                                    <p><strong>Seller:</strong> ${order.seller_name}</p>
+                                    <p><strong>Customer:</strong> ${order.user_name}</p>
+                                    <p><strong>Date:</strong> ${order.order_date}</p>
+                                    <p><strong>Quantity:</strong> ${order.order_quantity}</p>
+                                    <p><strong>Total Price:</strong> ₱${order.order_final_price}</p>
+                                </div>
+                                <div class="right-content">
+                                    <p><strong>Status:</strong>Pending</p>
+                                    <div class="order-options" style="display: none;">
+                                        <button class="delete-order-btn" data-order-id="${order.order_id}">Delete Order</button>
+                                        <button class="confirm-order-btn" data-order-id="${order.order_id}">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    });
+                }
+            },
+            error: function () {
+                console.error("Failed to fetch updated orders.");
+            },
+        });
+    });
+    
     socket.on("lockedOrders", (lockedOrders) => {
         lockedOrders.forEach(([orderId, lockerId]) => {
             if (socket.id !== lockerId) {
@@ -477,7 +523,6 @@ $(document).ready(function () {
             .find(".confirm-order-btn, .delete-order-btn")
             .prop("disabled", false);
         $orderCard.find(".lock-overlay").remove();
-
     });
 
     socket.on("orderRemoved", (orderId) => {
@@ -494,8 +539,8 @@ $(document).ready(function () {
     });
 
     $.ajax({
-        url: '/api/orderHistory',
-        method: 'GET',
+        url: "/api/orderHistory",
+        method: "GET",
         success: function (response) {
             if (response.success) {
                 const orderHistory = response.orderHistory;
@@ -506,14 +551,21 @@ $(document).ready(function () {
                 const currentYear = now.getFullYear();
 
                 // Filter for current month
-                const currentMonthOrders = orderHistory.filter(order => {
+                const currentMonthOrders = orderHistory.filter((order) => {
                     const date = new Date(order.history_order_date);
-                    return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+                    return (
+                        date.getMonth() === currentMonth &&
+                        date.getFullYear() === currentYear
+                    );
                 });
 
                 // Get the current week number
                 function getCurrentWeekNumber(date) {
-                    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+                    const firstDayOfMonth = new Date(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        1
+                    );
                     const dayOfMonth = date.getDate();
                     const adjustedDate = dayOfMonth + firstDayOfMonth.getDay(); // Adjust for the first day of the week
                     return Math.ceil(adjustedDate / 7); // Divide by 7 to get the week number
@@ -523,19 +575,29 @@ $(document).ready(function () {
                 const currentWeekNumber = getCurrentWeekNumber(now);
 
                 // Filter for current week orders
-                const currentWeekOrders = currentMonthOrders.filter(order => {
+                const currentWeekOrders = currentMonthOrders.filter((order) => {
                     const date = new Date(order.history_order_date);
                     return getCurrentWeekNumber(date) === currentWeekNumber;
                 });
 
                 // Prepare data for the daily income chart (current week only)
-                const dailyLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                const dailyLabels = [
+                    "Sunday",
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                ];
                 const dailyData = new Array(7).fill(0);
 
                 // Only use current week orders for the daily chart
-                currentWeekOrders.forEach(order => {
+                currentWeekOrders.forEach((order) => {
                     const date = new Date(order.history_order_date);
-                    const revenue = order.history_product_price * order.history_order_quantity;
+                    const revenue =
+                        order.history_product_price *
+                        order.history_order_quantity;
 
                     // Group by day of the week
                     const dayIndex = date.getDay();
@@ -543,7 +605,9 @@ $(document).ready(function () {
                 });
 
                 // Render the daily income chart (current week)
-                const dailyCtx = document.getElementById("dailyIncomeChart").getContext("2d");
+                const dailyCtx = document
+                    .getElementById("dailyIncomeChart")
+                    .getContext("2d");
                 new Chart(dailyCtx, {
                     type: "line",
                     data: {
@@ -580,13 +644,21 @@ $(document).ready(function () {
                 });
 
                 // Prepare data for the weekly income chart (current month only)
-                const weeklyLabels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+                const weeklyLabels = [
+                    "Week 1",
+                    "Week 2",
+                    "Week 3",
+                    "Week 4",
+                    "Week 5",
+                ];
                 const weeklyData = new Array(5).fill(0);
 
                 // Only use current month orders for the weekly chart
-                currentMonthOrders.forEach(order => {
+                currentMonthOrders.forEach((order) => {
                     const date = new Date(order.history_order_date);
-                    const revenue = order.history_product_price * order.history_order_quantity;
+                    const revenue =
+                        order.history_product_price *
+                        order.history_order_quantity;
 
                     // Group by week of the month
                     const weekIndex = getWeekOfMonth(date) - 1; // Subtract 1 to make it zero-based
@@ -596,7 +668,9 @@ $(document).ready(function () {
                 });
 
                 // Render the weekly income chart (current month)
-                const weeklyCtx = document.getElementById("weeklyIncomeChart").getContext("2d");
+                const weeklyCtx = document
+                    .getElementById("weeklyIncomeChart")
+                    .getContext("2d");
                 new Chart(weeklyCtx, {
                     type: "line",
                     data: {
@@ -634,23 +708,37 @@ $(document).ready(function () {
 
                 // Prepare data for the monthly chart (current year only)
                 const monthlyLabels = [
-                    "January", "February", "March", "April", "May", "June",
-                    "July", "August", "September", "October", "November", "December"
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
                 ];
                 const monthlyData = new Array(12).fill(0);
 
                 // Only use current year orders for the monthly chart
-                orderHistory.forEach(order => {
+                orderHistory.forEach((order) => {
                     const date = new Date(order.history_order_date);
                     if (date.getFullYear() === currentYear) {
                         const monthIndex = date.getMonth();
-                        const revenue = order.history_product_price * order.history_order_quantity;
+                        const revenue =
+                            order.history_product_price *
+                            order.history_order_quantity;
                         monthlyData[monthIndex] += revenue;
                     }
                 });
 
                 // Render the monthly income chart (current year)
-                const monthlyCtx = document.getElementById("monthlyIncomeChart").getContext("2d");
+                const monthlyCtx = document
+                    .getElementById("monthlyIncomeChart")
+                    .getContext("2d");
                 new Chart(monthlyCtx, {
                     type: "line",
                     data: {
@@ -688,15 +776,34 @@ $(document).ready(function () {
                 });
 
                 // Prepare data for annual chart (all years in data)
-                const years = [...new Set(orderHistory.map(order => new Date(order.history_order_date).getFullYear()))].sort();
-                const annualData = years.map(year => {
+                const years = [
+                    ...new Set(
+                        orderHistory.map((order) =>
+                            new Date(order.history_order_date).getFullYear()
+                        )
+                    ),
+                ].sort();
+                const annualData = years.map((year) => {
                     return orderHistory
-                        .filter(order => new Date(order.history_order_date).getFullYear() === year)
-                        .reduce((sum, order) => sum + order.history_product_price * order.history_order_quantity, 0);
+                        .filter(
+                            (order) =>
+                                new Date(
+                                    order.history_order_date
+                                ).getFullYear() === year
+                        )
+                        .reduce(
+                            (sum, order) =>
+                                sum +
+                                order.history_product_price *
+                                    order.history_order_quantity,
+                            0
+                        );
                 });
 
                 // Render the annual income chart as a line chart
-                const annualCtx = document.getElementById("annualIncomeChart").getContext("2d");
+                const annualCtx = document
+                    .getElementById("annualIncomeChart")
+                    .getContext("2d");
                 new Chart(annualCtx, {
                     type: "line", // Ensure the chart type is "line"
                     data: {
@@ -734,11 +841,19 @@ $(document).ready(function () {
                 });
 
                 // Optionally, update total revenue for current month
-                const totalRevenue = currentMonthOrders.reduce((sum, order) =>
-                    sum + order.history_product_price * order.history_order_quantity, 0);
+                const totalRevenue = currentMonthOrders.reduce(
+                    (sum, order) =>
+                        sum +
+                        order.history_product_price *
+                            order.history_order_quantity,
+                    0
+                );
                 $("#total-revenue").text(`₱${totalRevenue.toFixed(2)}`);
             } else {
-                console.error("Failed to fetch order history:", response.message);
+                console.error(
+                    "Failed to fetch order history:",
+                    response.message
+                );
             }
         },
         error: function (xhr) {
@@ -747,8 +862,8 @@ $(document).ready(function () {
     });
 
     $.ajax({
-        url: '/api/orderHistory',
-        method: 'GET',
+        url: "/api/orderHistory",
+        method: "GET",
         success: function (response) {
             if (response.success) {
                 const orderHistory = response.orderHistory;
@@ -775,24 +890,37 @@ $(document).ready(function () {
                     } = order;
 
                     // Format the date
-                    const formattedDate = new Date(history_order_date).toLocaleDateString();
+                    const formattedDate = new Date(
+                        history_order_date
+                    ).toLocaleDateString();
 
                     // Append the order details to the container
                     $orderHistoryContainer.append(`
                         <div class="order-history-item">
                             <div><strong>Order ID:</strong> ${history_id}</div>
                             <div><strong>Product Name:</strong> ${history_product_name}</div>
-                            <div><strong>Price:</strong> ₱${history_product_price.toFixed(2)}</div>
+                            <div><strong>Price:</strong> ₱${history_product_price.toFixed(
+                                2
+                            )}</div>
                             <div><strong>Quantity:</strong> ${history_order_quantity}</div>
-                            <div><strong>Total:</strong> ₱${actual_price.toFixed(2)}</div>
+                            <div><strong>Total:</strong> ₱${actual_price.toFixed(
+                                2
+                            )}</div>
                             <div><strong>Date:</strong> ${formattedDate}</div>
-                            <div><strong>User:</strong> ${user_name || 'N/A'}</div>
-                            <div><strong>Seller:</strong> ${seller_name || 'N/A'}</div>
+                            <div><strong>User:</strong> ${
+                                user_name || "N/A"
+                            }</div>
+                            <div><strong>Seller:</strong> ${
+                                seller_name || "N/A"
+                            }</div>
                         </div>
                     `);
                 });
             } else {
-                console.error("Failed to fetch order history:", response.message);
+                console.error(
+                    "Failed to fetch order history:",
+                    response.message
+                );
             }
         },
         error: function (xhr) {
@@ -812,10 +940,13 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/api/updateStock', // Backend endpoint to update stock
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ product_id: productId, product_stock: newStock }),
+            url: "/api/updateStock", // Backend endpoint to update stock
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                product_id: productId,
+                product_stock: newStock,
+            }),
             success: function (response) {
                 alert(response.message);
             },

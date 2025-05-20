@@ -7,8 +7,12 @@ $(document).ready(function () {
     $(".cart-product-card").on("click", function () {
         const productId = $(this).data("id");
         const productName = $(this).find(".cart-product-name").text();
-        const productPrice = parseFloat($(this).find(".cart-product-price").text().replace("₱", ""));
-        const existingRow = $(`#cart-checkout-items tr[data-id="${productId}"]`);
+        const productPrice = parseFloat(
+            $(this).find(".cart-product-price").text().replace("₱", "")
+        );
+        const existingRow = $(
+            `#cart-checkout-items tr[data-id="${productId}"]`
+        );
 
         if (existingRow.length > 0) {
             // If the product is already in the checkout list, remove it
@@ -42,7 +46,9 @@ $(document).ready(function () {
         const row = $(this).closest("tr");
         const quantityElem = row.find(".quantity");
         const quantity = parseInt(quantityElem.text()) + 1;
-        const price = parseFloat(row.find("td:nth-child(3)").text().replace("₱", ""));
+        const price = parseFloat(
+            row.find("td:nth-child(3)").text().replace("₱", "")
+        );
         quantityElem.text(quantity);
         row.find(".total-price").text(`₱${(quantity * price).toFixed(2)}`);
         updateTotal();
@@ -55,7 +61,9 @@ $(document).ready(function () {
         let quantity = parseInt(quantityElem.text());
         if (quantity > 1) {
             quantity -= 1;
-            const price = parseFloat(row.find("td:nth-child(3)").text().replace("₱", ""));
+            const price = parseFloat(
+                row.find("td:nth-child(3)").text().replace("₱", "")
+            );
             quantityElem.text(quantity);
             row.find(".total-price").text(`₱${(quantity * price).toFixed(2)}`);
             updateTotal();
@@ -69,7 +77,9 @@ $(document).ready(function () {
         row.remove();
 
         // Remove the highlight from the card
-        $(`.cart-product-card[data-id="${productId}"]`).removeClass("in-checkout");
+        $(`.cart-product-card[data-id="${productId}"]`).removeClass(
+            "in-checkout"
+        );
 
         // Remove the item from the cart in the backend
         $.ajax({
@@ -85,21 +95,29 @@ $(document).ready(function () {
                 if (window.updateCartBadge) updateCartBadge();
             },
             error: function (xhr) {
-                alert(xhr.responseJSON?.message || "Failed to remove item from cart.");
-            }
+                alert(
+                    xhr.responseJSON?.message ||
+                        "Failed to remove item from cart."
+                );
+            },
         });
 
         updateTotal();
     });
 
+    const socket = io();
     // Handle checkout button click
     $("#order-checkout-btn").on("click", function () {
         const orders = [];
         $("#cart-checkout-items tr").each(function () {
             const productId = $(this).data("id");
             const quantity = parseInt($(this).find(".quantity").text());
-            const price = parseFloat($(this).find("td:nth-child(3)").text().replace("₱", ""));
-            const totalPrice = parseFloat($(this).find(".total-price").text().replace("₱", ""));
+            const price = parseFloat(
+                $(this).find("td:nth-child(3)").text().replace("₱", "")
+            );
+            const totalPrice = parseFloat(
+                $(this).find(".total-price").text().replace("₱", "")
+            );
 
             orders.push({
                 product_id: productId,
@@ -126,12 +144,18 @@ $(document).ready(function () {
                 $("#cart-checkout-items").empty();
                 $(".cart-product-card").removeClass("in-checkout");
                 updateTotal();
+                socket.emit("checkoutEvent");
             },
             error: function (xhr) {
-                alert(xhr.responseJSON?.message || "An error occurred during checkout.");
+                alert(
+                    xhr.responseJSON?.message ||
+                        "An error occurred during checkout."
+                );
             },
         });
-        location.reload();
+        setTimeout(function () {
+            location.reload();
+        }, 100);
     });
 
     // Update total price
@@ -142,4 +166,8 @@ $(document).ready(function () {
         });
         $("#cart-checkout-total").text(total.toFixed(2));
     }
+    // $(".debug").on("click", function () {
+    //     socket.emit("checkoutEvent");
+    //     console.log("Socket event emitted");
+    // });
 });

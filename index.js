@@ -936,6 +936,7 @@ app.get("/notif", async (req, res) => {
             scripts: [
                 "https://code.jquery.com/jquery-3.6.0.min.js",
                 "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+                '/socket.io/socket.io.js',
                 "js/BASE.js",
                 "js/header.js",
                 "js/profile.js",
@@ -1173,6 +1174,7 @@ app.get("/cart", async (req, res) => {
             scripts: [
                 "https://code.jquery.com/jquery-3.6.0.min.js",
                 "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+                '/socket.io/socket.io.js',
                 "js/BASE.js",
                 "js/header.js",
                 "js/profile.js",
@@ -1551,6 +1553,56 @@ app.post("/api/markNotificationViewed", async (req, res) => {
     }
 });
 
+app.get("/api/shopOrders", async (req, res) => {
+    try {
+        // Only allow sellers to access their shop orders
+        if (!req.session?.login || req.session.login.role !== "seller") {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        const sellerId = req.session.login.id;
+        const db = await dbPromise;
+
+        // Get the seller's shop ID
+        const sellerRecord = await db
+            .request()
+            .input("sellerId", sql.Int, sellerId).query(`
+                SELECT seller_shop_id 
+                FROM Seller 
+                WHERE seller_id = @sellerId
+            `);
+
+        const seller = sellerRecord.recordset[0];
+        if (!seller) {
+            return res.status(401).json({ success: false, message: "Unauthorized access." });
+        }
+        const shopId = seller.seller_shop_id;
+
+        // Fetch all current orders for this shop
+        const ordersRecord = await db.request().input("shopId", sql.Int, shopId)
+            .query(`
+                SELECT 
+                    o.order_id,
+                    p.product_name,
+                    s.seller_name,
+                    u.user_name,
+                    o.order_date,
+                    o.order_quantity,
+                    o.order_final_price
+                FROM [Order] o
+                LEFT JOIN [Product] p ON o.order_product_id = p.product_id
+                LEFT JOIN [Seller] s ON o.order_seller_id = s.seller_id
+                LEFT JOIN [User] u ON o.order_user_id = u.user_id
+                WHERE o.order_shop_id = @shopId
+            `);
+
+        res.json({ success: true, orders: ordersRecord.recordset });
+    } catch (error) {
+        console.error("Error fetching shop orders:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+});
+
 const server = http.createServer(app);
 
 const io = new Server(server);
@@ -1591,6 +1643,11 @@ io.on("connection", (socket) => {
     socket.on("notificationUpdate", () => {
         socket.broadcast.emit("refreshNotifications");
         console.log("Notifications updated");
+    });
+    
+    socket.on("checkoutEvent", () => {
+        socket.broadcast.emit("orderUpdate");
+        console.log("Order checked out");
     });
 
     socket.on("disconnect", () => {
