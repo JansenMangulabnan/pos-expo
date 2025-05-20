@@ -12,9 +12,11 @@ body {
     gap: 20px;
 }
 
+
 .cart-icon {
     display: none;
 }
+
 
 .top-details {
     display: flex;
@@ -53,12 +55,13 @@ body {
 }
 
 .notification-icon {
-    color: var(--text);
+    display: none;
+    /* color: var(--text);
     font-size: 2rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center; */
 }
 
 .shop_name {
