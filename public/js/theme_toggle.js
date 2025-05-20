@@ -4,10 +4,11 @@ $(document).ready(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "light") {
         $("body").addClass("light-mode");
+        $toggleButton.empty().append("<i class='bx bxs-moon'></i>");
     }
     
     $toggleButton.on("click", () => {
-        $("body").toggleClass("light-mode");
+        $("body").toggleClass("light-mode");;
         
         if ($("body").hasClass("light-mode")) {
             $toggleButton.fadeOut(300, () => {

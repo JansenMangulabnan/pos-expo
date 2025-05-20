@@ -50,7 +50,7 @@
     height: 45px;
     border-radius: 50%;
     background-color: var(--input);
-    color: var(--input_element);
+    color: var(--input-text);
     font-size: 1.5rem;
     font-weight: bold;
     display: flex;
@@ -189,7 +189,7 @@
 .notification-icon,
 .cart-icon {
     font-size: 2rem;
-    color: var(--button-primary);
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     align-self: center;
@@ -207,8 +207,8 @@
     position: absolute;
     top: -5px;
     right: -5px;
-    background-color: var(--text-primary);
-    color: var(--button-text-primary);
+    background-color: red;
+    color: white;
     font-size: 0.8rem;
     font-weight: bold;
     padding: 4px 8px;
@@ -260,8 +260,8 @@
     position: absolute;
     top: -5px;
     right: -5px;
-    background-color: var(--text-primary);
-    color: var(--button-text-primary);
+    background-color: red;
+    color: white;
     font-size: 0.8rem;
     font-weight: bold;
     padding: 4px 8px;

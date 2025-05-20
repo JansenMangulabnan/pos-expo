@@ -118,6 +118,7 @@ app.get("/signup", (req, res) => {
             "https://code.jquery.com/jquery-3.6.0.min.js",
             "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
             "js/signup.js",
+            "js/BASE.js",
         ],
     });
 });
@@ -205,6 +206,7 @@ app.get("/login", (req, res) => {
             "https://code.jquery.com/jquery-3.6.0.min.js",
             "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
             "js/login.js",
+            "js/BASE.js",
         ],
     });
 });

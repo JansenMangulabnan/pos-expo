@@ -1,5 +1,10 @@
-body {
+html {
+
     background-color: var(--background);
+    height: 100%;
+}
+
+body {
     color: var(--text-primary);
     font-family: sans-serif;
 }
