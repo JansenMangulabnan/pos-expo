@@ -81,16 +81,4 @@ $(document).ready(function () {
     $(".brand").on("click", function () {
         window.location.href = "/";
     });
-    
-    setTimeout(function () {
-        $.ajax({
-            url: "/api/cart/count",
-            method: "GET",
-            success: function (res) {
-                if (res.success) {
-                    $("#cartCount").text(res.count);
-                }
-            },
-        });
-    }, 100); 
 });

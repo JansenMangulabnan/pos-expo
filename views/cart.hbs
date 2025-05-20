@@ -14,6 +14,7 @@
                     </div>
                     <div class="cart-product-info">
                         <h3 class="cart-product-name">{{product_name}}</h3>
+                        <p class="cart-product-desc">{{product_description}}</p>
                         <p class="cart-product-price">₱{{product_price}}</p>
                     </div>
                 </div>
@@ -28,8 +29,10 @@
                 <table class="cart-checkout-table">
                     <thead>
                         <tr>
+                            <th>Image</th>
                             <th>Product</th>
-                            <th>Qty</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
                             <th>Price</th>
                             <th>Total</th>
                             <th>Action</th>
@@ -43,7 +46,7 @@
                     <span>Total:</span>
                     <span>₱<span id="cart-checkout-total">0.00</span></span>
                 </div>
-                <button id="order-checkout-btn" class="checkout-btn">Proceed to Checkout</button>
+                <button id="order-checkout-btn" class="checkout-btn">Place Order</button>
             </div>
         </div>
     </div>

@@ -23,13 +23,21 @@ $(document).ready(function () {
             // If the product is not in the checkout list, add it
             $(this).addClass("in-checkout");
 
+            // Get product image and description
+            const productImg = $(this).find(".product-img").attr("src");
+            const productDesc = $(this).find(".cart-product-desc").text();
+
             $("#cart-checkout-items").append(`
                 <tr data-id="${productId}">
+                    <td><img src="${productImg}" alt="${productName}" class="checkout-product-img" style="width:40px;height:40px;object-fit:cover;border-radius:4px;" /></td>
                     <td>${productName}</td>
+                    <td>${productDesc}</td>
                     <td>
-                        <button class="decrease-qty">-</button>
-                        <span class="quantity">1</span>
-                        <button class="increase-qty">+</button>
+                        <div class="product-qty">    
+                            <button class="decrease-qty">-</button>
+                            <span class="quantity">1</span>
+                            <button class="increase-qty">+</button>
+                        </div>
                     </td>
                     <td>₱${productPrice.toFixed(2)}</td>
                     <td class="total-price">₱${productPrice.toFixed(2)}</td>
@@ -46,9 +54,7 @@ $(document).ready(function () {
         const row = $(this).closest("tr");
         const quantityElem = row.find(".quantity");
         const quantity = parseInt(quantityElem.text()) + 1;
-        const price = parseFloat(
-            row.find("td:nth-child(3)").text().replace("₱", "")
-        );
+        const price = parseFloat(row.find("td:nth-child(5)").text().replace("₱", ""));
         quantityElem.text(quantity);
         row.find(".total-price").text(`₱${(quantity * price).toFixed(2)}`);
         updateTotal();
@@ -61,9 +67,7 @@ $(document).ready(function () {
         let quantity = parseInt(quantityElem.text());
         if (quantity > 1) {
             quantity -= 1;
-            const price = parseFloat(
-                row.find("td:nth-child(3)").text().replace("₱", "")
-            );
+            const price = parseFloat(row.find("td:nth-child(5)").text().replace("₱", ""));
             quantityElem.text(quantity);
             row.find(".total-price").text(`₱${(quantity * price).toFixed(2)}`);
             updateTotal();

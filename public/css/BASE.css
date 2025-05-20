@@ -32,11 +32,11 @@ body.light-mode {
 
     --input-text: #444444;
     --input-element: #f9f9f9;
-    --input-border: #cccccc;
+    --input-border: #a4a4a4;
     --input: #e8e8e8;
 
-    --button-primary: #f0eaea;
-    --button-primary-hover: #dadada;
+    --button-primary: #838383;
+    --button-primary-hover: #666666;
     --button-secondary: #919191;
     --button-secondary-hover: #bbbbbb;
 
