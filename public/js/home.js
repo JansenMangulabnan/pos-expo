@@ -55,17 +55,15 @@ $(document).ready(function () {
                 if (response.alreadyInCart) {
                     alert("This item is already in your cart.");
                 }
-                setTimeout(function () {
-                    $.ajax({
-                        url: "/api/cart/count",
-                        method: "GET",
-                        success: function (res) {
-                            if (res.success) {
-                                $("#cartCount").text(res.count);
-                            }
-                        },
-                    });
-                }, 100);
+                // Use the count from the response for instant badge update
+                if (typeof response.count !== 'undefined') {
+                    $("#cartCount").text(response.count);
+                    if (response.count > 0) {
+                        $("#cartCount").show();
+                    } else {
+                        $("#cartCount").hide();
+                    }
+                }
             },
             error: function (xhr) {
                 alert(

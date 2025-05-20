@@ -1223,9 +1223,16 @@ app.post("/cart/add", async (req, res) => {
 
         if (existingCartItem.recordset.length > 0) {
             // Item already in cart, do not add again
+            // Return current cart count for immediate badge update
+            const cartCountRecord = await db
+                .request()
+                .input("user_id", sql.Int, userId)
+                .query(`SELECT COUNT(*) AS count FROM Cart WHERE cart_user_id = @user_id`);
+            const cartCount = cartCountRecord.recordset[0]?.count || 0;
             return res.status(200).json({
                 success: false,
                 alreadyInCart: true,
+                count: cartCount,
                 message: "Item is already in your cart.",
             });
         } else {
@@ -1238,6 +1245,18 @@ app.post("/cart/add", async (req, res) => {
                     INSERT INTO Cart (cart_user_id, cart_product_id) 
                     VALUES (@user_id, @product_id)
                 `);
+            // Return new cart count after insert
+            const cartCountRecord = await db
+                .request()
+                .input("user_id", sql.Int, userId)
+                .query(`SELECT COUNT(*) AS count FROM Cart WHERE cart_user_id = @user_id`);
+            const cartCount = cartCountRecord.recordset[0]?.count || 0;
+            return res.status(200).json({
+                success: true,
+                alreadyInCart: false,
+                count: cartCount,
+                message: "Item added to cart.",
+            });
         }
     } catch (error) {
         console.error("Error adding to cart:", error);
