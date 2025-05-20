@@ -1470,6 +1470,7 @@ app.get("/order/:orderId", async (req, res) => {
             scripts: [
                 "https://code.jquery.com/jquery-3.6.0.min.js",
                 "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
+                '/socket.io/socket.io.js',
                 "/js/BASE.js",
                 "/js/header.js",
                 "/js/profile.js",

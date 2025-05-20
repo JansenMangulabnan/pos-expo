@@ -108,60 +108,78 @@ $(document).ready(function () {
 
     let toggleNotif = false;
 
-    // Fetch and display user notifications
-    function loadUserNotifications() {}
+    // Fetch and display notifications for user or seller
+    function loadNotifications() {
+        const notificationList = $("#notificationList");
+        notificationList.empty();
+        if (isSeller) {
+            $.ajax({
+                url: "/api/shopOrders",
+                method: "GET",
+                success: function (response) {
+                    if (response.success && Array.isArray(response.orders)) {
+                        response.orders.forEach((order) => {
+                            notificationList.append(
+                                `<div class='notification-item' id='order-${order.order_id}'>
+                                    <p><strong>New Order:</strong> #${order.order_id}</p>
+                                    <p>${order.product_name}</p>
+                                    <p><strong>Customer:</strong> ${order.user_name}</p>
+                                    <p><strong>Quantity:</strong> ${order.order_quantity}</p>
+                                    <p><strong>Date:</strong> ${order.order_date}</p>
+                                    <p><strong>Total Price:</strong> ₱${order.order_final_price}</p>
+                                </div>`
+                            );
+                        });
+                        updateNotificationsUI();
+                    }
+                },
+                error: function () {
+                    console.error("Failed to load seller notifications");
+                },
+            });
+        } else {
+            $.ajax({
+                url: "/api/userNotifications",
+                method: "GET",
+                success: function (response) {
+                    if (response.success) {
+                        response.history.forEach((notification) => {
+                            notificationList.append(
+                                `<div class='notification-item' id='${notification.history_id}'>
+                                    <p>#${notification.history_id}</p>
+                                    <p>${notification.history_product_name}</p>
+                                    <p><strong>Process on:</strong> ${notification.history_order_date}</p>
+                                </div>`
+                            );
+                        });
+                        updateNotificationsUI();
+                    }
+                },
+                error: function () {
+                    console.error("Failed to load notifications");
+                },
+            });
+        }
+    }
 
-    $(".notification-icon").click(function () {
+    // Notification icon click: show/hide and load notifications
+    $(".notification-icon").off("click").on("click", function () {
         toggleNotif = !toggleNotif;
         if (toggleNotif) {
             $("#notificationDetails").css("display", "flex");
             setTimeout(() => {
                 $("#notificationDetails").css("opacity", "1");
             }, 0);
-            loadUserNotifications();
+            loadNotifications();
         } else {
             $("#notificationDetails").css("opacity", "0");
             setTimeout(() => {
                 $("#notificationDetails").css("display", "none");
             }, 300);
         }
-
-        $.ajax({
-            url: "/api/userNotifications",
-            method: "GET",
-            success: function (response) {
-                if (response.success) {
-                    const notificationList = $("#notificationList");
-                    notificationList.empty();
-                    response.history.forEach((notification) => {
-                        notificationList.append(
-                            `<div class='notification-item' id='${notification.history_id}'>
-                                <p>#${notification.history_id}</p>
-                                <p>${notification.history_product_name}</p>
-                                <p><strong>Process on:</strong> ${notification.history_order_date}</p>
-                            </div>`
-                        );
-                    });
-                }
-            },
-            error: function () {
-                console.error("Failed to load notifications");
-            },
-        });
     });
 
-    $(document).click(function (e) {
-        if (
-            !$(e.target).closest(".notification-icon, #notificationDetails")
-                .length
-        ) {
-            $("#notificationDetails").css("display", "none");
-            toggleNotif = false;
-        }
-    });
-
-    // Update badge count and visual marking after loading notifications
-    function updateNotificationsUI() {
+    const updateNotificationsUI = () => {
         const readNotifications =
             JSON.parse(localStorage.getItem("readNotifications")) || [];
         const totalNotifications = $(".notification-item").length;
@@ -182,7 +200,7 @@ $(document).ready(function () {
                 $(this).addClass("read");
             }
         });
-    }
+    };
 
     // Call updateNotificationsUI after dynamically loading notifications
     $(document).on("ajaxSuccess", function () {
@@ -193,32 +211,17 @@ $(document).ready(function () {
     const socket = io();
 
     socket.on("refreshNotifications", () => {
-        loadUserNotifications();
-        updateNotificationsUI();
-        console.log("Notifications refreshed");
-        $.ajax({
-            url: "/api/userNotifications",
-            method: "GET",
-            success: function (response) {
-                if (response.success) {
-                    const notificationList = $("#notificationList");
-                    notificationList.empty();
-                    response.history.forEach((notification) => {
-                        notificationList.append(
-                            `<div class='notification-item' id='${notification.history_id}'>
-                                <p>#${notification.history_id}</p>
-                                <p>${notification.history_product_name}</p>
-                                <p><strong>Process on:</strong> ${notification.history_order_date}</p>
-                            </div>`
-                        );
-                    });
-                }
-            },
-            error: function () {
-                console.error("Failed to load notifications");
-            },
-        });
+        if (!isSeller) {
+            loadNotifications();
+            updateNotificationsUI();
+            console.log("Notifications refreshed");
+        }
     });
+    socket.on('orderUpdate', () => {
+        if (isSeller) {
+            loadNotifications();
+        }
+    })
 
     $.ajax({
         url: "/api/cart/count",
