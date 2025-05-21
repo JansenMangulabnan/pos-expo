@@ -118,3 +118,9 @@ body {
     outline: none;
     transition: all 0.3s ease;
 }
+
+@media (max-width: 600px) {
+    body {
+        height: 100%;
+    }
+}

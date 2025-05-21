@@ -40,3 +40,12 @@
     font-weight: bold;
     color: var(--text-primary); /* Green color to indicate positive revenue */
 }
+
+@media (max-width: 768px) {
+    
+    .shop-content,
+    .flex-container,
+    .content-reports {
+        height: 100%;
+    }
+}

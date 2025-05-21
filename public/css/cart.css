@@ -193,3 +193,24 @@
     transition: background-color 0.3s, transform 0.2s;
     align-self: center;
 }
+
+@media (max-width: 600px) {
+    .search-container {
+        width: 200px;
+    }
+
+    .cart-main {
+        flex-direction: column;
+    }
+
+    .cart-product-list,
+    .cart-checkout-section {
+        margin-right: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .cart-checkout-section {
+        margin-top: 20px;
+    }
+}

@@ -11,7 +11,7 @@
 
 .order-card {
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
     padding: 20px;
     border-radius: 10px;
     background-color: var(--div);
@@ -29,8 +29,7 @@
 }
 
 .right-content {
-   align-self: center;
-
+    align-self: center;
 }
 
 .order-options {
@@ -84,4 +83,28 @@
     font-size: 1.5em;
     font-weight: bold;
     z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .orders-container {
+        padding: 0 10px 10px 10px;
+    }
+    .order-card {
+        flex-direction: column;
+        align-items: center;
+    }
+    .order-options {
+        margin-top: 10px;
+    }
+
+    .shop-content,
+    .flex-container,
+    .content-order {
+        height: 100%;
+    }
+
+    .orders-container {
+        /* Subtract the navbar height (e.g., 60px) from viewport height */
+        height: calc(100vh + 200px);
+    }
 }

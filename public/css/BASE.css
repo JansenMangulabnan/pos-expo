@@ -44,7 +44,6 @@ body.light-mode {
     --button-text-secondary: #ffffff;
 }
 
-
 /* General Reset and Styling */
 * {
     margin: 0;
@@ -73,4 +72,9 @@ body {
     color: var(--text);
 }
 
+@media (max-width: 600px) {
+    body {
+        zoom: 0.65;
+    }
+}
 

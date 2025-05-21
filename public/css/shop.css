@@ -180,3 +180,9 @@ body {
     text-decoration: underline;
     outline: none;
 }
+
+@media (max-width: 600px) {
+    .sidebar {
+        height: 100%;
+    }
+}

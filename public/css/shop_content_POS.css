@@ -112,11 +112,11 @@
     margin-bottom: 15px;
 }
 
-.pos-order-table th, .pos-order-table td {
+.pos-order-table th,
+.pos-order-table td {
     padding: 10px;
     text-align: center;
     color: var(--text-primary);
-
 }
 
 .pos-order-summary {
@@ -127,7 +127,7 @@
 }
 
 #pos-checkout-btn {
-    padding: 12px 25px;
+    padding: 10px;
     background-color: var(--button-primary);
     color: var(--button-text-primary);
     border: none;
@@ -143,7 +143,7 @@
 }
 
 #apply-discount-btn {
-    padding: 10px 20px;
+    padding: 10px ;
     background-color: var(--button-primary);
     color: var(--button-text-primary);
     border: none;
@@ -189,7 +189,7 @@ button.pos-remove-item {
     border: none;
     border-radius: 5px; /* Slightly rounded corners for consistency */
     cursor: pointer;
-    font-size: 1.2em; /* Larger font size for visibility */ 
+    font-size: 1.2em; /* Larger font size for visibility */
 }
 
 .pos-quantity-container {
@@ -224,4 +224,32 @@ button.pos-increase-qty {
 button.pos-increase-qty:hover,
 button.pos-decrease-qty:hover {
     background-color: var(--button-primary);
+}
+
+@media (max-width: 600px) {
+    .pos-main {
+        flex-direction: column;
+    }
+
+    .pos-product-list,
+    .pos-order-section {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .pos-order-section {
+        margin-top: 20px;
+        overflow-x: auto ;
+    }
+
+
+    .shop-content,
+    .flex-container,
+    .pos-container {
+        height: 100%;
+    }
+    
+    .pos-order-table {
+        font-size: 0.9em;
+    }
 }
