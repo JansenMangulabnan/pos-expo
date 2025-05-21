@@ -414,27 +414,33 @@ $(document).ready(function () {
         event.stopPropagation();
         const orderId = $(this).data("order-id");
 
-        if (confirm(`Are you sure you want to delete order ${orderId}?`)) {
-            $.ajax({
-                url: "/archiveOrder",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ order_id: orderId }),
-                success: function (response) {
-                    showAlert({
-                        message: response.message
-                    });
-                    $(`.order-card[data-order-id="${orderId}"]`).remove();
-                    socket.emit("orderRemove", orderId);
-                },
-                error: function (xhr) {
-                    showAlert({
-                        message: "Error archiving order: " + xhr.responseText
-                    });
-                },
-            });
-        }
-        location.reload();
+        showAlert({
+            message: `Are you sure you want to delete order ${orderId}?`,
+            secondaryButton: {
+                text: "Cancel"
+            },
+            onOk: function () {
+                $.ajax({
+                    url: "/archiveOrder",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ order_id: orderId }),
+                    success: function (response) {
+                        showAlert({
+                            message: response.message
+                        });
+                        $(`.order-card[data-order-id="${orderId}"]`).remove();
+                        socket.emit("orderRemove", orderId);
+                    },
+                    error: function (xhr) {
+                        showAlert({
+                            message: "Error archiving order: " + xhr.responseText
+                        });
+                    },
+                });
+                window.location.href = "/shop";
+            }
+        });
     });
 
     $(document).on("click", ".confirm-order-btn", function (event) {
@@ -459,6 +465,7 @@ $(document).ready(function () {
                         $(`.order-card[data-order-id="${orderId}"]`).remove();
                         socket.emit("orderRemove", orderId);
                         socket.emit("notificationUpdate");
+                        window.location.href = "/shop";
                     },
                     error: function (xhr) {
                         showAlert({
@@ -466,7 +473,6 @@ $(document).ready(function () {
                         });
                     },
                 });
-                window.location.href = "/shop";
             }
         });
     });
@@ -987,6 +993,18 @@ $(document).ready(function () {
             },
         });
     });
+
+    // Permission level restriction for seller
+    const permissionLevel = window.loginData && window.loginData.permission_level;
+    if (permissionLevel === 2) {
+        // Prevent all edit, delete, and stock update actions
+        $(document).on("click", ".edit-btn, .delete-btn, .update-stock-btn, .add-product-btn, .remove-item, .pos-remove-item, .pos-increase-qty, .pos-decrease-qty", function(e) {
+            showAlert({ message: "You do not have permission to perform this action." });
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+    }
 });
 
 function showPopup(message) {

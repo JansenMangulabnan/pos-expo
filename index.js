@@ -261,12 +261,13 @@ app.post("/login", async (req, res) => {
             const sellerShopRecord = await db
                 .request()
                 .input("sellerId", sql.Int, login.id).query(`
-                    SELECT seller_shop_id FROM Seller WHERE seller_id = @sellerId
+                    SELECT seller_shop_id, seller_permission FROM Seller WHERE seller_id = @sellerId
                 `);
 
             const sellerShop = sellerShopRecord.recordset[0];
             if (sellerShop) {
                 login.seller_shop_id = sellerShop.seller_shop_id;
+                login.seller_permission = sellerShop.seller_permission;
             }
         }
 
@@ -467,6 +468,9 @@ app.post("/sellerAdd", sellerUpload.single("product_img"), async (req, res) => {
 
 //sellerUpdate request handler
 app.post("/sellerUpdate", async (req, res) => {
+    if (req.session?.login?.seller_permission === 2) {
+        return res.status(403).send("You do not have permission to edit products.");
+    }
     try {
         const {
             product_id,
@@ -591,6 +595,9 @@ app.post(
 
 //sellerDelete request handler
 app.post("/sellerDelete", async (req, res) => {
+    if (req.session?.login?.seller_permission === 2) {
+        return res.status(403).send("You do not have permission to delete products.");
+    }
     try {
         const { product_id } = req.body;
 
@@ -687,6 +694,9 @@ app.post("/sellerCheckout", async (req, res) => {
 });
 
 app.post("/archiveOrder", async (req, res) => {
+    if (req.session?.login?.seller_permission === 2) {
+        return res.status(403).send("You do not have permission to delete orders.");
+    }
     try {
         const { order_id } = req.body;
 
@@ -1084,6 +1094,9 @@ app.get("/api/orderHistory", isSeller, async (req, res) => {
 });
 
 app.post("/api/updateStock", async (req, res) => {
+    if (req.session?.login?.seller_permission === 2) {
+        return res.status(403).send("You do not have permission to update stock.");
+    }
     try {
         const { product_id, product_stock } = req.body;
 
