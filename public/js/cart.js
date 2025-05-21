@@ -99,10 +99,9 @@ $(document).ready(function () {
                 if (window.updateCartBadge) updateCartBadge();
             },
             error: function (xhr) {
-                alert(
-                    xhr.responseJSON?.message ||
-                        "Failed to remove item from cart."
-                );
+                showAlert({
+                    message: xhr.responseJSON?.message || "Failed to remove item from cart."
+                });
             },
         });
 
@@ -125,7 +124,9 @@ $(document).ready(function () {
         });
 
         if (orders.length === 0) {
-            alert("Your checkout list is empty.");
+            showAlert({
+                message: "Your checkout list is empty."
+            });
             return;
         }
 
@@ -136,7 +137,9 @@ $(document).ready(function () {
             contentType: "application/json",
             data: JSON.stringify({ orders }),
             success: function (response) {
-                alert(response.message);
+                showAlert({
+                    message: response.message
+                });
                 // Clear the checkout list and remove highlights
                 $("#cart-checkout-items").empty();
                 $(".cart-product-card").removeClass("in-checkout");
@@ -144,10 +147,9 @@ $(document).ready(function () {
                 socket.emit("checkoutEvent");
             },
             error: function (xhr) {
-                alert(
-                    xhr.responseJSON?.message ||
-                        "An error occurred during checkout."
-                );
+                showAlert({
+                    message: xhr.responseJSON?.message || "An error occurred during checkout."
+                });
             },
         });
         setTimeout(function () {

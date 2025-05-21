@@ -29,7 +29,9 @@ $(document).ready(function () {
                 location.reload();
             },
             error: function (xhr) {
-                alert("Error deleting product: " + xhr.responseText);
+                showAlert({
+                    message: "Error deleting product: " + xhr.responseText
+                });
             },
         });
     });

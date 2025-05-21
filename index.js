@@ -377,6 +377,7 @@ app.get("/shop", isSeller, async (req, res) => {
             styles: [
                 "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
                 "css/BASE.css",
+                "css/alert.css",
                 "css/shop_nav.css",
                 "css/searchbar.css",
                 "css/shop_modal.css",
@@ -396,6 +397,7 @@ app.get("/shop", isSeller, async (req, res) => {
                 "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
                 "/socket.io/socket.io.js",
                 "https://cdn.jsdelivr.net/npm/chart.js",
+                "js/alert.js",
                 "js/BASE.js",
                 "js/shop_nav.js",
                 "js/profile.js",
@@ -987,6 +989,7 @@ app.get("/", async (req, res) => {
             styles: [
                 "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
                 "css/BASE.css",
+                "css/alert.css",
                 "css/header.css",
                 "css/profile.css",
                 "css/searchbar.css",
@@ -1000,6 +1003,7 @@ app.get("/", async (req, res) => {
                 "https://code.jquery.com/jquery-3.6.0.min.js",
                 "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
                 '/socket.io/socket.io.js',
+                "js/alert.js",
                 "js/BASE.js",
                 "js/header.js",
                 "js/profile.js",
@@ -1166,6 +1170,7 @@ app.get("/cart", async (req, res) => {
             styles: [
                 "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
                 "css/BASE.css",
+                "css/alert.css",
                 "css/header.css",
                 "css/profile.css",
                 "css/cart.css",
@@ -1178,6 +1183,7 @@ app.get("/cart", async (req, res) => {
                 "https://unpkg.com/boxicons@2.1.4/dist/boxicons.js",
                 '/socket.io/socket.io.js',
                 "js/BASE.js",
+                "js/alert.js",
                 "js/header.js",
                 "js/profile.js",
                 "js/cart.js",

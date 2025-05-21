@@ -53,7 +53,10 @@ $(document).ready(function () {
             data: JSON.stringify({ product_id, quantity }),
             success: function (response) {
                 if (response.alreadyInCart) {
-                    alert("This item is already in your cart.");
+                    showAlert({
+                        message: "This item is already in your cart.",
+                    });
+                    return; // Prevents further UI updates if alert is shown
                 }
                 // Use the count from the response for instant badge update
                 if (typeof response.count !== 'undefined') {
@@ -66,10 +69,9 @@ $(document).ready(function () {
                 }
             },
             error: function (xhr) {
-                alert(
-                    xhr.responseJSON?.message ||
-                        "Failed to add product to cart."
-                );
+                showAlert({
+                    message: xhr.responseJSON?.message || "Failed to add product to cart."
+                });
             },
         });
     });

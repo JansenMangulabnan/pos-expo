@@ -74,7 +74,9 @@ $(document).ready(function () {
                 location.reload();
             },
             error: function (xhr) {
-                alert("Error adding product: " + xhr.responseText);
+                showAlert({
+                    message: "Error adding product: " + xhr.responseText
+                });
             },
         });
     });
@@ -290,7 +292,9 @@ $(document).ready(function () {
     // Checkout button
     $("#pos-checkout-btn").on("click", function () {
         if (!Object.keys(orders).length) {
-            alert("No items in the order.");
+            showAlert({
+                message: "No items in the order."
+            });
             return;
         }
 
@@ -327,7 +331,9 @@ $(document).ready(function () {
             contentType: "application/json",
             data: JSON.stringify({ orders: ordersArray }), // Send the orders array
             success: function (response) {
-                alert(response.message);
+                showAlert({
+                    message: response.message
+                });
 
                 // Clear the orders object
                 for (let key in orders) {
@@ -338,7 +344,9 @@ $(document).ready(function () {
                 updateOrders();
             },
             error: function (xhr) {
-                alert("Error processing checkout: " + xhr.responseText);
+                showAlert({
+                    message: "Error processing checkout: " + xhr.responseText
+                });
             },
         });
         window.location.href = "/shop";
@@ -349,7 +357,9 @@ $(document).ready(function () {
     $("#apply-discount-btn").on("click", function () {
         const total = parseFloat($("#pos-order-total").text());
         if (isNaN(total) || total <= 0)
-            return alert("No items in the order to apply a discount.");
+            return showAlert({
+                message: "No items in the order to apply a discount."
+            });
 
         discountApplied = !discountApplied;
 
@@ -411,12 +421,16 @@ $(document).ready(function () {
                 contentType: "application/json",
                 data: JSON.stringify({ order_id: orderId }),
                 success: function (response) {
-                    alert(response.message);
+                    showAlert({
+                        message: response.message
+                    });
                     $(`.order-card[data-order-id="${orderId}"]`).remove();
                     socket.emit("orderRemove", orderId);
                 },
                 error: function (xhr) {
-                    alert("Error archiving order: " + xhr.responseText);
+                    showAlert({
+                        message: "Error archiving order: " + xhr.responseText
+                    });
                 },
             });
         }
@@ -427,24 +441,34 @@ $(document).ready(function () {
         event.stopPropagation();
         const orderId = $(this).data("order-id");
 
-        if (confirm(`Are you sure you want to confirm order ${orderId}?`)) {
-            $.ajax({
-                url: "/confirmOrder",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ order_id: orderId }),
-                success: function (response) {
-                    alert(response.message);
-                    $(`.order-card[data-order-id="${orderId}"]`).remove();
-                    socket.emit("orderRemove", orderId);
-                    socket.emit("notificationUpdate");
-                },
-                error: function (xhr) {
-                    alert("Error confirming order: " + xhr.responseText);
-                },
-            });
-        }
-        window.location.href = "/shop";
+        showAlert({
+            message: `Are you sure you want to confirm order ${orderId}?`,
+            secondaryButton: {
+                text: "Cancel"
+            },
+            onOk: function () {
+                $.ajax({
+                    url: "/confirmOrder",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ order_id: orderId }),
+                    success: function (response) {
+                        showAlert({
+                            message: response.message
+                        });
+                        $(`.order-card[data-order-id="${orderId}"]`).remove();
+                        socket.emit("orderRemove", orderId);
+                        socket.emit("notificationUpdate");
+                    },
+                    error: function (xhr) {
+                        showAlert({
+                            message: "Error confirming order: " + xhr.responseText
+                        });
+                    },
+                });
+                window.location.href = "/shop";
+            }
+        });
     });
 
     const socket = io();
@@ -535,7 +559,9 @@ $(document).ready(function () {
     });
 
     socket.on("orderAlreadyLocked", (orderId) => {
-        alert(`Order ${orderId} is already locked by another seller.`);
+        showAlert({
+            message: `Order ${orderId} is already locked by another seller.`
+        });
     });
 
     $.ajax({
@@ -935,7 +961,9 @@ $(document).ready(function () {
         const newStock = parseInt($row.find(".product-stock").val(), 10);
 
         if (isNaN(newStock) || newStock < 0) {
-            alert("Invalid stock value.");
+            showAlert({
+                message: "Invalid stock value."
+            });
             return;
         }
 
@@ -948,10 +976,14 @@ $(document).ready(function () {
                 product_stock: newStock,
             }),
             success: function (response) {
-                alert(response.message);
+                showAlert({
+                    message: response.message
+                });
             },
             error: function (xhr) {
-                alert("Error updating stock: " + xhr.responseText);
+                showAlert({
+                    message: "Error updating stock: " + xhr.responseText
+                });
             },
         });
     });

@@ -147,8 +147,9 @@ $(document).ready(function () {
                 isEditing = false; // Reset the flag after saving
             },
             error: function (xhr) {
-                alert("Error updating product: " + xhr.responseText);
-                isEditing = false; // Reset the flag even if there's an error
+                showAlert({
+                    message: "Error updating product: " + xhr.responseText
+                });
             },
         });
     });

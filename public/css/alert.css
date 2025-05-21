@@ -1,0 +1,83 @@
+.custom-alert {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+.modal-backdrop {
+  display: flex;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+    justify-content: center; 
+    align-items: center;
+}
+.modal-content {
+    z-index: 3;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--div);
+    padding: 50px;
+    border-radius: 10px;
+    width: 500px;
+    text-align: center;
+}
+#custom-alert-message {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    display: block;
+}
+.button-container {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+.custom-alert-btn {
+    background: var(--button-primary);
+    color: var(--button-primary-text);
+    border: none;
+    border-radius: 5px;
+    padding: 8px 22px;
+    font-size: 1rem;
+    margin: 0 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.custom-alert-btn:hover {
+    background: var(--button-primary-hover);
+}
+.custom-alert-btn.secondary {
+    background: var(--button-secondary);
+    color: var(--button-secondary-text);
+}
+.custom-alert-btn.secondary:hover {
+    background: var(--button-secondary-hover);
+}
+.submit-btn {
+    background-color: var(--button-primary);
+    color: var(--button-primary-text);
+}
+.submit-btn:hover {
+    background-color: var(--button-primary-hover);
+}
+.close-btn {
+    background-color: #e0e0e0;
+    color: #333;
+}
+.close-btn:hover {
+    background-color: #bdbdbd;
+}
