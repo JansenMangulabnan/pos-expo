@@ -13,10 +13,8 @@ $(document).ready(function () {
     // Set the active class on the corresponding sidebar item
     $(".sidebar-item").removeClass("active");
     $(
-        `.sidebar-item:contains(${
-            savedSection.split("-")[1].charAt(0).toUpperCase() +
-            savedSection.split("-")[1].slice(1)
-        })`
+        `.sidebar-item:contains(${savedSection.split("-")[1].charAt(0).toUpperCase() +
+            savedSection.split("-")[1].slice(1)})`
     ).addClass("active");
 
     // Handle sidebar navigation clicks
@@ -39,6 +37,8 @@ $(document).ready(function () {
             section = "content-reports";
         } else if ($(this).text().trim() === "Orders") {
             section = "content-order";
+        } else if ($(this).text().trim() === "History") {
+            section = "content-history";
         }
 
         // Save the active section to localStorage

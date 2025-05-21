@@ -1,0 +1,27 @@
+<div class="history-container">
+    <h2>Order History</h2>
+    <div id="order-history-list">
+        {{#if history}}
+            {{#each history}}
+                <div class="history-card">
+                    <div class="history-info">
+                        <div><strong>History ID:</strong> {{history_id}}</div>
+                        <div><strong>Order/Product ID:</strong> {{history_product_id}}</div>
+                        <div><strong>Product:</strong> {{history_product_name}}</div>
+                        <div><strong>Quantity:</strong> {{history_order_quantity}}</div>
+                        <div><strong>Price:</strong> ₱{{history_product_price}}</div>
+                        <div><strong>Total:</strong> ₱{{actual_price}}</div>
+                        <div><strong>Order Date:</strong> {{history_order_date}}</div>
+                        <div><strong>Completed Date:</strong> {{history_date}}</div>
+                        <div><strong>Order Type:</strong> {{history_order_type}}</div>
+                        <div><strong>Shop ID:</strong> {{history_shop_id}}</div>
+                        <div><strong>User:</strong> {{user_name}}</div>
+                        <div><strong>Seller:</strong> {{seller_name}}</div>
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            <p>No order history found.</p>
+        {{/if}}
+    </div>
+</div>

@@ -1,0 +1,149 @@
+/* Order History Section Styles */
+.history-container {
+    padding: 20px;
+    background-color: var(--div);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin: 20px 0;
+    min-height: 200px;
+}
+
+.shop-content {
+    padding: 20px;
+    overflow: auto;
+}
+
+.history-container {
+    height: 80vh;
+    overflow-y: auto;
+
+}
+
+.history-container h2 {
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+#order-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.history-card {
+    background: var(--div-hover);
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    transition: background 0.2s;
+}
+
+.history-card:hover {
+    background: var(--button-secondary-hover);
+}
+
+.history-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .history-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px;
+    }
+    .history-info {
+        gap: 10px;
+        font-size: 0.95rem;
+    }
+    .history-container {
+        padding: 10px;
+        height: calc(100vh + 200px);
+    }
+
+
+}
+
+/* Receipt Modal Styles */
+.history-receipt-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    /* Center the modal using flex */
+    display: flex;
+}
+.history-receipt-modal .modal-backdrop {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1;
+}
+.history-receipt-modal .modal-content {
+    position: relative;
+    z-index: 2;
+    background: var(--div);
+    border-radius: 10px;
+    padding: 32px 24px 24px 24px;
+    min-width: 320px;
+    max-width: 90vw;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Left align content */
+    margin: auto;
+}
+.history-receipt-modal h2 {
+    margin-bottom: 18px;
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+.history-receipt-modal .receipt-details {
+    margin-bottom: 18px;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    align-items: flex-start;
+}
+.history-receipt-modal .close-btn {
+    align-self: flex-end;
+    background: var(--button-primary);
+    color: var(--button-text-primary);
+    border: none;
+    border-radius: 5px;
+    padding: 8px 18px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.history-receipt-modal .close-btn:hover {
+    background: var(--button-primary-hover);
+}
+@media (max-width: 600px) {
+    .history-receipt-modal .modal-content {
+        min-width: 0;
+        width: 95vw;
+        padding: 16px 6vw 16px 6vw;
+    }
+}

@@ -373,6 +373,34 @@ app.get("/shop", isSeller, async (req, res) => {
             `);
         const orderHistory = orderHistoryRecord.recordset;
 
+        const historyRecord = await db
+            .request()
+            .input("shopId", sql.Int, shopId)
+            .query(`
+                SELECT 
+                    h.history_id,
+                    h.history_product_id,
+                    h.history_product_name,
+                    h.history_product_price,
+                    h.history_shop_id,
+                    h.history_user_id,
+                    h.history_seller_id,
+                    h.history_order_date,
+                    h.history_order_quantity,
+                    h.history_order_type,
+                    h.history_date,
+                    u.user_name AS user_name,
+                    s.seller_name AS seller_name,
+                    (h.history_product_price * h.history_order_quantity) AS actual_price
+                FROM History h
+                LEFT JOIN [User] u ON h.history_user_id = u.user_id
+                LEFT JOIN [Seller] s ON h.history_seller_id = s.seller_id
+                WHERE h.history_shop_id = @shopId
+            `);
+        const history = historyRecord.recordset;
+
+
+
         res.render("shop", {
             title: "Shop",
             styles: [
@@ -388,6 +416,7 @@ app.get("/shop", isSeller, async (req, res) => {
                 "css/shop_content_report.css",
                 "css/shop_content_inventory.css",
                 "css/shop_content_order.css",
+                "css/shop_content_history.css",
                 "css/shop.css",
             ],
             beforeBody: [],
@@ -407,10 +436,13 @@ app.get("/shop", isSeller, async (req, res) => {
                 "js/shop_modal.js",
                 "js/searchbar.js",
                 "js/profile.js",
+                "js/theme_toggle.js", // Added theme toggle script for shop page
+                "js/shop_content_history.js", // Added history js
             ],
             products,
             orders,
             orderHistory,
+            history,
             sellerShopId: shopId,
             shops,
             isLoggedIn: !!req.session?.login,
@@ -1060,13 +1092,17 @@ app.get("/api/orderHistory", isSeller, async (req, res) => {
             .input("shopId", sql.Int, shopId).query(`
                 SELECT 
                     h.history_id,
+                    h.history_product_id,
                     h.history_product_name,
                     h.history_product_price,
-                    h.history_order_quantity,
-                    h.history_order_date,
+                    h.history_shop_id,
                     h.history_user_id,
-                    u.user_name AS user_name,
                     h.history_seller_id,
+                    h.history_order_date,
+                    h.history_order_quantity,
+                    h.history_order_type,
+                    h.history_date,
+                    u.user_name AS user_name,
                     s.seller_name AS seller_name,
                     (h.history_product_price * h.history_order_quantity) AS actual_price
                 FROM History h
