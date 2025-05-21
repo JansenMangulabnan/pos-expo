@@ -189,12 +189,76 @@
     text-align: center;
 }
 
-@media (max-width: 600px) {
-    .product-sub-info {
-        display: flex;
+.editable-div {
+    border: 1px solid var(--input-element, #ccc);
+    border-radius: 5px;
+    background: var(--input, #fff);
+    color: var(--text-primary, #222);
+    padding: 8px 10px;
+    font-size: 1rem;
+    min-width: 60px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    margin: 0 2px;
+    display: inline-block;
+}
+.editable-div:focus {
+    border-color: var(--button-primary, #0078d4);
+    box-shadow: 0 0 0 2px var(--button-primary-hover, #cce4ff);
+    background: var(--input, #fff);
+}
+@media (max-width: 768px) {
+    .product-card {
         flex-direction: row;
-        gap: 3px;
-        margin-top: 0;
-        
+        align-items: flex-start;
+    }
+    .product-info {
+        width: 100%;
+    }
+    .product-name,
+    .product-desc,
+    .product-id,
+    .product-qty,
+    .product-category,
+    .product-price,
+    .product-stock {
+        font-size: 12px;
+        width: auto;
+    }
+
+    .product-id,
+    .product-qty,
+    .product-category,
+    .product-price,
+    .product-stock {
+        font-size: 12px;
+        width: auto;
+    }
+
+    .product-actions {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Place product-status above product-actions */
+    .product-info {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .product-actions {
+        order: 2;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-status {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
     }
 }
